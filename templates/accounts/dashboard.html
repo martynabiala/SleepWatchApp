@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - SleepWatch{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <section class="hero-card">
+        <div class="eyebrow">Dashboard</div>
+        <h1>Witaj, {{ profile.display_name|default:request.user.username }}</h1>
+        <p>
+            Twoje konto jest aktywne, e-mail <strong>{{ request.user.email }}</strong> został
+            potwierdzony, a profil jest gotowy do analizy snu.
+        </p>
+        <div class="actions">
+            <a class="button" href="{% url 'sleep_import' %}">Importuj dane snu</a>
+            <a class="button secondary" href="{% url 'sleep_list' %}">Historia nocy</a>
+            <a class="button" href="{% url 'profile' %}">Edytuj profil</a>
+            <a class="button secondary" href="{% url 'password_reset' %}">Reset hasła</a>
+        </div>
+    </section>
+
+    <aside class="soft-card">
+        <h3>Ostatnia noc</h3>
+        {% if last_sleep %}
+            <div class="meta-list">
+                <div class="meta-row">
+                    <span class="meta-key">Data</span>
+                    <strong>{{ last_sleep.sleep_date|date:"d.m.Y" }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Czas snu</span>
+                    <strong>{{ last_sleep.sleep_duration_display }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Średnie tętno</span>
+                    <strong>{{ last_sleep.avg_heart_rate|default:"-" }}</strong>
+                </div>
+            </div>
+        {% else %}
+            <p>Nie masz jeszcze zaimportowanych danych snu.</p>
+        {% endif %}
+    </aside>
+</div>
+
+<div class="grid stats">
+    <div class="stat">
+        <span>Status konta</span>
+        <strong>Aktywne</strong>
+    </div>
+    <div class="stat">
+        <span>Docelowy czas snu</span>
+        <strong>{{ profile.sleep_goal_hours }} h</strong>
+    </div>
+    <div class="stat">
+        <span>Grupa wiekowa</span>
+        <strong>{{ profile.get_age_group_display|default:"Nie ustawiono" }}</strong>
+    </div>
+    <div class="stat">
+        <span>Aktywność fizyczna</span>
+        <strong>{{ profile.get_lifestyle_display|default:"Nie ustawiono" }}</strong>
+    </div>
+</div>
+
+<section class="soft-card" style="margin-top: 24px;">
+    <h3>Analiza własnych danych</h3>
+    <p>Porównanie Twoich ostatnich 7 dni z pełniejszym obrazem z ostatnich 30 dni.</p>
+    <div class="comparison-grid">
+        <div class="comparison-card">
+            <h4>Średni czas snu</h4>
+            <div class="comparison-value">{{ self_comparison.last_7.avg_sleep_display }}</div>
+            <div class="comparison-delta">
+                7 dni vs 30 dni: {{ self_comparison.delta_sleep_display }}
+            </div>
+        </div>
+        <div class="comparison-card">
+            <h4>Średnie tętno</h4>
+            <div class="comparison-value">{{ self_comparison.last_7.avg_hr_display }}</div>
+            <div class="comparison-delta">
+                7 dni vs 30 dni: {{ self_comparison.delta_hr_display }}
+            </div>
+        </div>
+        <div class="comparison-card">
+            <h4>Udział dobrych nocy</h4>
+            <div class="comparison-value">{{ self_comparison.good_night_share_7 }}%</div>
+            <div class="comparison-delta">
+                7 dni vs 30 dni: {{ self_comparison.delta_good_night_share_display }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="soft-card" style="margin-top: 24px;">
+    <h3>Wnioski z Twoich danych</h3>
+    <div class="insight-list">
+        {% for insight in self_insights %}
+            <article class="insight-card insight-{{ insight.tone }}">
+                <h4>{{ insight.title }}</h4>
+                <p>{{ insight.body }}</p>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="panel-grid">
+    <section class="soft-card">
+        <h3>Trendy 7 dni</h3>
+        <div class="meta-list">
+            <div class="meta-row">
+                <span class="meta-key">Zapisane noce</span>
+                <strong>{{ stats_7.total }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Średni czas snu</span>
+                <strong>{{ stats_7.avg_sleep_display }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Średnie tętno</span>
+                <strong>{{ stats_7.avg_hr }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Dobre / złe noce</span>
+                <strong>{{ stats_7.good_nights }} / {{ stats_7.bad_nights }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="soft-card">
+        <h3>Trendy 30 dni</h3>
+        <div class="meta-list">
+            <div class="meta-row">
+                <span class="meta-key">Zapisane noce</span>
+                <strong>{{ stats_30.total }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Średni czas snu</span>
+                <strong>{{ stats_30.avg_sleep_display }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Średnie SpO2 min</span>
+                <strong>{{ stats_30.avg_spo2 }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Dobre / złe noce</span>
+                <strong>{{ stats_30.good_nights }} / {{ stats_30.bad_nights }}</strong>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="soft-card" style="margin-top: 24px;">
+    <h3>Ten miesiąc vs poprzedni miesiąc</h3>
+    <div class="comparison-grid">
+        <div class="comparison-card">
+            <h4>Średni czas snu</h4>
+            <div class="comparison-value">{{ month_comparison.current.avg_sleep_display }}</div>
+            <div class="comparison-delta">
+                {{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}:
+                {{ month_comparison.delta_sleep }}
+            </div>
+        </div>
+        <div class="comparison-card">
+            <h4>Średnie tętno</h4>
+            <div class="comparison-value">{{ month_comparison.current.avg_hr_display }}</div>
+            <div class="comparison-delta">
+                {{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}:
+                {{ month_comparison.delta_hr }}
+            </div>
+        </div>
+        <div class="comparison-card">
+            <h4>Dobre noce</h4>
+            <div class="comparison-value">{{ month_comparison.current.good_nights }}</div>
+            <div class="comparison-delta">
+                {{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}:
+                {{ month_comparison.delta_good_nights }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="chart-grid">
+    <section class="soft-card chart-card">
+        <h3>Wykres czasu snu - 7 dni</h3>
+        {% if sleep_chart_7 %}
+            <div class="chart-meta">
+                <span>Min: {{ sleep_chart_7.min_value }}</span>
+                <span>Max: {{ sleep_chart_7.max_value }}</span>
+            </div>
+            <svg class="chart-svg" viewBox="0 0 320 120" aria-label="Wykres czasu snu">
+                <polyline class="chart-line" points="{{ sleep_chart_7.points }}"></polyline>
+                {% for point in sleep_chart_7.labels %}
+                    <circle class="chart-dot" cx="{{ point.x }}" cy="{{ point.y }}" r="4"></circle>
+                {% endfor %}
+            </svg>
+        {% else %}
+            <p>Za mało danych, aby pokazać wykres czasu snu.</p>
+        {% endif %}
+    </section>
+
+    <section class="soft-card chart-card">
+        <h3>Wykres średniego tętna - 7 dni</h3>
+        {% if hr_chart_7 %}
+            <div class="chart-meta">
+                <span>Min: {{ hr_chart_7.min_value }}</span>
+                <span>Max: {{ hr_chart_7.max_value }}</span>
+            </div>
+            <svg class="chart-svg" viewBox="0 0 320 120" aria-label="Wykres średniego tętna">
+                <polyline class="chart-line" points="{{ hr_chart_7.points }}"></polyline>
+                {% for point in hr_chart_7.labels %}
+                    <circle class="chart-dot" cx="{{ point.x }}" cy="{{ point.y }}" r="4"></circle>
+                {% endfor %}
+            </svg>
+        {% else %}
+            <p>Za mało danych, aby pokazać wykres średniego tętna.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

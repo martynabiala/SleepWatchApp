@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sprawdź e-mail - SleepWatch{% endblock %}
+{% block topbar %}{% endblock %}
+
+{% block content %}
+<div class="auth-logo-wrap">
+    <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch">
+</div>
+<div class="eyebrow">Aktywacja</div>
+<h1>Sprawdź skrzynkę e-mail</h1>
+<p>
+    Konto zostało utworzone. Wiadomość z linkiem aktywacyjnym
+    została wysłana na podany adres e-mail.
+</p>
+
+<div class="actions">
+    <a class="button secondary" href="{% url 'login' %}">Przejdź do logowania</a>
+</div>
+{% endblock %}

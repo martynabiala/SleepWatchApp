@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Szczegóły nocy - SleepWatch{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <section class="hero-card">
+        <div class="eyebrow">Szczegóły nocy</div>
+        <h1>{{ sleep_record.sleep_date|date:"d.m.Y" }}</h1>
+        <p>Podstawowe dane zapisane dla wybranej nocy.</p>
+
+        <div class="grid stats">
+            <div class="stat">
+                <span>Czas snu</span>
+                <strong>{{ sleep_record.sleep_duration_display }}</strong>
+            </div>
+            <div class="stat">
+                <span>Średnie tętno</span>
+                <strong>{{ sleep_record.avg_heart_rate|default:"-" }}</strong>
+            </div>
+            <div class="stat">
+                <span>Minimalne SpO2</span>
+                <strong>{{ sleep_record.min_spo2|default:"-" }}</strong>
+            </div>
+            <div class="stat">
+                <span>Ruch</span>
+                <strong>{{ sleep_record.get_movement_level_display }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <aside class="soft-card">
+        <h3>Dodatkowe dane</h3>
+        <div class="meta-list">
+            <div class="meta-row">
+                <span class="meta-key">Źródło</span>
+                <strong>{{ sleep_record.get_source_display }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Średnie tętno</span>
+                <strong>{{ sleep_record.avg_heart_rate|default:"-" }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Maksymalne tętno</span>
+                <strong>{{ sleep_record.max_heart_rate|default:"-" }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Dodano</span>
+                <strong>{{ sleep_record.created_at|date:"d.m.Y H:i" }}</strong>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<section class="soft-card" style="margin-top: 24px;">
+    <h3>Notatka</h3>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            {% for field in note_form %}
+                <div {% if field.name == "note_text" %}style="grid-column: 1 / -1;"{% endif %}>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="helptext">{{ field.help_text }}</div>
+                    {% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Zapisz notatkę</button>
+    </form>
+</section>
+
+<div class="actions">
+    <a class="button secondary" href="{% url 'sleep_list' %}">Wróć do listy nocy</a>
+</div>
+{% endblock %}

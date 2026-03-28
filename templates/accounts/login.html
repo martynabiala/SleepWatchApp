@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Logowanie - SleepWatch{% endblock %}
+{% block topbar %}{% endblock %}
+
+{% block content %}
+<div class="auth-logo-wrap">
+    <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch">
+</div>
+<div class="eyebrow">Logowanie</div>
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <div>
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+        </div>
+    {% endfor %}
+    {% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+    {% endif %}
+    <button type="submit">Zaloguj</button>
+</form>
+<div class="auth-links">
+    <a class="auth-link" href="{% url 'password_reset' %}">Nie pamiętasz hasła?</a>
+    <a class="auth-link subtle" href="{% url 'signup' %}">Nie masz konta? Utwórz konto</a>
+</div>
+{% endblock %}

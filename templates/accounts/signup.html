@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Rejestracja - SleepWatch{% endblock %}
+{% block topbar %}{% endblock %}
+
+{% block content %}
+<div class="auth-logo-wrap">
+    <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch">
+    <div class="auth-logo-note">Zacznij dbać o swój sen</div>
+</div>
+<div class="eyebrow">Rejestracja</div>
+<h1>Utwórz konto SleepWatch</h1>
+<p>Wypełnij formularz. Konto zostanie aktywowane po kliknięciu linku wysłanego na e-mail.</p>
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <div>
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+                <div class="helptext">{{ field.help_text }}</div>
+            {% endif %}
+            {{ field.errors }}
+        </div>
+    {% endfor %}
+    <button type="submit">Zarejestruj konto</button>
+</form>
+<div class="actions">
+    <a class="button secondary" href="{% url 'login' %}">Mam już konto</a>
+</div>
+{% endblock %}

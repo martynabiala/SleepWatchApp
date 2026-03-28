@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Historia importów - SleepWatch{% endblock %}
+
+{% block content %}
+<section class="hero-card">
+    <div class="eyebrow">Historia importów</div>
+    <h1>Lista wykonanych importów</h1>
+    <p>Tutaj widzisz wszystkie próby importu plików i ich wynik.</p>
+    <div class="actions">
+        <a class="button" href="{% url 'sleep_import' %}">Nowy import</a>
+        <a class="button secondary" href="{% url 'sleep_list' %}">Historia nocy</a>
+    </div>
+</section>
+
+<section class="soft-card" style="margin-top: 24px;">
+    {% if imports %}
+        <div class="meta-list">
+            {% for item in imports %}
+                <div class="meta-row">
+                    <span class="meta-key">
+                        {{ item.imported_at|date:"d.m.Y H:i" }} | {{ item.file_name }} | {{ item.get_source_display }}
+                    </span>
+                    <strong>
+                        Dodane: {{ item.added_count }}, duplikaty: {{ item.duplicate_count }}, błędy: {{ item.error_count }}
+                    </strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Brak historii importów.</p>
+    {% endif %}
+</section>
+{% endblock %}

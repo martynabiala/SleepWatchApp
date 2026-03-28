@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Dodaj noc - SleepWatch{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <section class="hero-card">
+        <div class="eyebrow">Dodaj noc</div>
+        <h1>Dodaj noc ręcznie</h1>
+        <p>Uzupełnij podstawowe dane snu, jeśli nie chcesz korzystać z importu CSV.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="helptext">{{ field.help_text }}</div>
+                        {% endif %}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="actions">
+                <button type="submit">Zapisz noc</button>
+                <a class="button secondary" href="{% url 'sleep_list' %}">Wróć do historii</a>
+            </div>
+        </form>
+    </section>
+
+    <aside class="soft-card">
+        <h3>Co możesz wpisać?</h3>
+        <div class="meta-list">
+            <div class="meta-row">
+                <span class="meta-key">Data nocy</span>
+                <strong>Wymagana</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Czas snu</span>
+                <strong>W minutach</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Tętno i SpO2</span>
+                <strong>Opcjonalne</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Ruch w nocy</span>
+                <strong>Niski / średni / wysoki</strong>
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}

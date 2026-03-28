@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Import danych - SleepWatch{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <section class="hero-card">
+        <div class="eyebrow">Import danych</div>
+        <h1>Wgraj dane snu z pliku CSV</h1>
+        <p>Użyj poniższego formularza, aby zaimportować dane snu z pliku CSV. Upewnij się, że plik jest sformatowany zgodnie z wymaganiami.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="helptext">{{ field.help_text }}</div>
+                    {% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <div class="actions">
+                <button type="submit">Importuj dane</button>
+                <a class="button secondary" href="{% url 'sleep_add' %}">Dodaj noc ręcznie</a>
+            </div>
+        </form>
+    </section>
+
+    <aside class="soft-card">
+        <h3>Format CSV</h3>
+        <p>Wymagane kolumny:</p>
+        <div class="meta-list">
+            {% for column in required_columns %}
+                <div class="meta-row">
+                    <span class="meta-key">{{ column }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        <p style="margin-top: 16px;">
+            Dopuszczalne wartości dla <code>movement_level</code>:
+            <code>low</code>, <code>medium</code>, <code>high</code>, <code>unknown</code>.
+        </p>
+    </aside>
+</div>
+
+<section class="soft-card" style="margin-top: 24px;">
+    <h3>Ostatnie importy</h3>
+    {% if recent_imports %}
+        <div class="meta-list">
+            {% for item in recent_imports %}
+                <div class="meta-row">
+                    <span class="meta-key">{{ item.imported_at|date:"d.m.Y H:i" }} - {{ item.file_name }}</span>
+                    <strong>Dodano {{ item.added_count }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Nie masz jeszcze żadnych importów.</p>
+    {% endif %}
+    <div class="actions">
+        <a class="button secondary" href="{% url 'sleep_import_history' %}">Pełna historia importów</a>
+        <a class="button secondary" href="{% url 'sleep_list' %}">Zobacz noce</a>
+    </div>
+</section>
+{% endblock %}

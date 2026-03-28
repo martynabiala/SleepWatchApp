@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Historia nocy - SleepWatch{% endblock %}
+
+{% block content %}
+<section class="hero-card">
+    <div class="eyebrow">Historia nocy</div>
+    <h1>Lista zapisanych nocy</h1>
+    <p>Filtruj zapisane noce po dacie i przeglądaj szczegóły dotyczące Twojego snu.</p>
+
+    <form method="get">
+        <div class="form-grid">
+            <div>
+                <label for="id_date_from">Od daty</label>
+                <input id="id_date_from" type="date" name="date_from" value="{{ date_from }}">
+            </div>
+            <div>
+                <label for="id_date_to">Do daty</label>
+                <input id="id_date_to" type="date" name="date_to" value="{{ date_to }}">
+            </div>
+        </div>
+        <div class="actions">
+            <button type="submit">Filtruj</button>
+            <a class="button secondary" href="{% url 'sleep_list' %}">Wyczyść</a>
+            <a class="button secondary" href="{% url 'sleep_import' %}">Import danych</a>
+            <a class="button secondary" href="{% url 'sleep_add' %}">Dodaj noc ręcznie</a>
+        </div>
+    </form>
+</section>
+
+<section class="soft-card" style="margin-top: 24px;">
+    <h3>Twoje noce</h3>
+    {% if sleep_records %}
+        <div class="meta-list">
+            {% for item in sleep_records %}
+                <div class="meta-row">
+                    <span class="meta-key">
+                        {{ item.sleep_date|date:"d.m.Y" }} | {{ item.sleep_duration_display }} |
+                        HR {{ item.avg_heart_rate|default:"-" }} | SpO2 {{ item.min_spo2|default:"-" }}
+                    </span>
+                    <a class="auth-link" href="{% url 'sleep_detail' item.pk %}">Szczegóły</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Brak zapisanych nocy dla wybranego zakresu.</p>
+    {% endif %}
+</section>
+{% endblock %}

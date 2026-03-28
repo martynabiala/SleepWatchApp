@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Profil - SleepWatch{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <section class="hero-card">
+        <div class="eyebrow">Profil</div>
+        <h1>Edytuj dane użytkownika</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in user_form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+
+                {% for field in profile_form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit">Zapisz profil</button>
+        </form>
+    </section>
+
+    <aside class="soft-card">
+        <h3>Podgląd profilu</h3>
+        <div class="meta-list">
+            <div class="meta-row">
+                <span class="meta-key">Nazwa użytkownika</span>
+                <strong>{{ profile.display_name|default:"Brak" }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Grupa wiekowa</span>
+                <strong>{{ profile.get_age_group_display|default:"Brak" }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Aktywność fizyczna</span>
+                <strong>{{ profile.get_lifestyle_display|default:"Brak" }}</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Docelowy czas snu</span>
+                <strong>{{ profile.sleep_goal_hours }} h</strong>
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}

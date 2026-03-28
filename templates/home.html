@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}SleepWatch - Start{% endblock %}
+
+{% block content %}
+<section class="hero-card" style="max-width: 860px; margin: 0 auto; text-align: center; padding: 42px 36px;">
+    <div class="auth-logo-wrap" style="margin-bottom: 28px;">
+        <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch" style="max-width: 420px; width: min(420px, 80vw);">
+    </div>
+    <div class="eyebrow">Sleep Tracking</div>
+    <h1>Spokojne miejsce do monitorowania snu i budowania zdrowych nawyków</h1>
+
+    <div class="actions" style="justify-content: center;">
+        <a class="button" href="{% url 'signup' %}">Utwórz konto</a>
+        <a class="button secondary" href="{% url 'login' %}">Zaloguj się</a>
+    </div>
+</section>
+{% endblock %}
