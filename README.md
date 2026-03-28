@@ -45,12 +45,8 @@ Projekt obsluguje dwa tryby wysylki e-mail:
 
 ## Jak uruchomic aplikacje
 
-1. Przejdz do katalogu projektu:
-
-```powershell
-cd D:\Aplikacja_SleepWatch
-```
-
+1. Przejdz do katalogu projektu
+   
 2. Jesli trzeba, zainstaluj zaleznosci:
 
 ```powershell
