@@ -18,13 +18,19 @@ def env_bool(name: str, default: bool) -> bool:
 
 SECRET_KEY = 'django-insecure-8!scd=(zi$aaf2t=3sa$lrq3*qu!21g0&5f5mxd&#ap3$bii#9'
 DEBUG = env_bool("DEBUG", True)
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
+ALLOWED_HOSTS = ["sleepwatch.onrender.com",
+    "localhost",
+    "127.0.0.1"]
 extra_allowed_hosts = [
     host.strip()
     for host in os.getenv("ALLOWED_HOSTS_EXTRA", "").split(",")
     if host.strip()
 ]
 ALLOWED_HOSTS.extend(extra_allowed_hosts)
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://sleepwatch.onrender.com",
+]
 
 if DEBUG:
     # Ulatwia testy lokalne z telefonu w tej samej sieci.
