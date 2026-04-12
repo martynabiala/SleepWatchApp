@@ -173,25 +173,6 @@
             align-items: center;
         }
 
-        .music-toggle {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(250, 246, 255, 0.9));
-            color: var(--text);
-            border: 1px solid rgba(142, 124, 232, 0.14);
-            box-shadow: none;
-            min-width: 48px;
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            font-size: 1.15rem;
-            line-height: 1;
-        }
-
-        .music-toggle.is-off {
-            color: rgba(68, 41, 71, 0.48);
-            border-color: rgba(142, 124, 232, 0.1);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(245, 241, 250, 0.86));
-        }
-
         a,
         button {
             transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
@@ -894,7 +875,6 @@
                             <a class="secondary" href="{% url 'sleep_list' %}">Noce</a>
                             <a class="secondary" href="{% url 'sleep_analysis' %}">Analiza</a>
                             <a class="secondary" href="{% url 'peer_sleep' %}">Sen w grupie</a>
-                            <a class="secondary" href="{% url 'sync_sources' %}">Zrodla</a>
                             <a class="secondary" href="{% url 'profile' %}">Profil</a>
                             {% if user.is_staff %}
                                 <a class="secondary" href="/admin/">Admin</a>

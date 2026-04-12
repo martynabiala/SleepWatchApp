@@ -788,8 +788,7 @@ class SleepModuleTests(TestCase):
 
         self.assertEqual(response.status_code, 401)
 
-    def test_profile_shows_sync_status_and_token_controls(self):
-        SleepApiToken.objects.create(user=self.user)
+    def test_profile_shows_sync_status_without_token_controls(self):
         SleepSyncConnection.objects.create(
             user=self.user,
             provider=SleepRecord.SOURCE_HEALTH_CONNECT,
@@ -802,7 +801,7 @@ class SleepModuleTests(TestCase):
 
         self.assertContains(response, "Integracje mobilne")
         self.assertContains(response, "Health Connect")
-        self.assertContains(response, "Generuj token API")
+        self.assertNotContains(response, "Generuj token API")
 
     def test_mobile_login_api_returns_fresh_token(self):
         response = self.client.post(

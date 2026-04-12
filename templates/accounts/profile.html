@@ -215,21 +215,6 @@
         color: var(--accent-dark);
     }
 
-    .sync-token-box {
-        border-radius: 22px;
-        border: 1px dashed rgba(142, 124, 232, 0.28);
-        background: rgba(255, 255, 255, 0.7);
-        padding: 18px;
-        display: grid;
-        gap: 12px;
-    }
-
-    .sync-token-actions {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
     .profile-badges-header {
         display: grid;
         gap: 8px;
@@ -451,7 +436,10 @@
                         {{ profile_form.avatar.errors }}
                     </div>
                 </div>
-                <button type="submit">Zapisz profil</button>
+                <div class="profile-actions">
+                    <button type="submit">Zapisz profil</button>
+                    <a class="button secondary" href="{% url 'profile' %}">Wroc do profilu</a>
+                </div>
             </form>
         </section>
     {% else %}
@@ -570,6 +558,7 @@
                         {% endfor %}
                     </div>
 
+                    {% comment %}
                     <div class="sync-token-box">
                         <div>
                             <strong>Token API dla aplikacji mobilnej</strong>
@@ -600,6 +589,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% endcomment %}
                 </article>
             </section>
 

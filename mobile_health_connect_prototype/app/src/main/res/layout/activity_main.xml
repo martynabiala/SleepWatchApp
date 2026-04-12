@@ -191,10 +191,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="Dashboard"
+                    android:text="Panel glowny"
                     android:textColor="@color/sleepwatch_text"
                     android:textSize="22sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Mobilna wersja SleepWatch prowadzi Cie od logowania, przez wybor zrodla danych, az do synchronizacji snu."
+                    android:textColor="@color/sleepwatch_muted" />
 
                 <TextView
                     android:id="@+id/summaryText"
@@ -205,6 +212,48 @@
                     android:padding="16dp"
                     android:text="Konto: polaczone"
                     android:textColor="@color/sleepwatch_text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_card_soft"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:text="Dashboard"
+                        android:textColor="@color/sleepwatch_text"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_card_soft"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:text="Import"
+                        android:textColor="@color/sleepwatch_text"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_card_soft"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:text="Profil"
+                        android:textColor="@color/sleepwatch_text"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/logoutButton"
@@ -246,6 +295,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:background="@drawable/sleepwatch_card_soft"
+                    android:padding="16dp"
                     android:textColor="@color/sleepwatch_muted" />
 
                 <Button
@@ -275,17 +326,15 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <EditText
+                <TextView
                     android:id="@+id/apiTokenInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:background="@drawable/sleepwatch_card_soft"
-                    android:hint="Token API"
-                    android:inputType="textNoSuggestions"
                     android:padding="16dp"
-                    android:textColor="@color/sleepwatch_text"
-                    android:textColorHint="@color/sleepwatch_muted" />
+                    android:text="Token API zapisany automatycznie po zalogowaniu."
+                    android:textColor="@color/sleepwatch_muted" />
 
                 <Button
                     android:id="@+id/checkAvailabilityButton"

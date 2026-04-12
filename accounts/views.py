@@ -235,38 +235,15 @@ def profile_view(request: HttpRequest) -> HttpResponse:
     is_edit_mode = request.method == "POST" or request.GET.get("edit") == "1"
     badges = build_badges(SleepRecord.objects.filter(user=request.user).select_related("note"))
     sync_connections = build_sync_connections(request.user)
-    api_token = getattr(request.user, "sleep_api_token", None)
-    plain_api_token = None
 
     if request.method == "POST":
-        action = request.POST.get("action")
-        if action == "generate_api_token":
-            api_token, _ = SleepApiToken.objects.get_or_create(user=request.user)
-            plain_api_token = api_token.rotate_key()
-            api_token.save()
-            messages.success(
-                request,
-                "Wygenerowano nowy token API do synchronizacji mobilnej. Zachowaj go po stronie aplikacji Android.",
-            )
-            is_edit_mode = False
-            user_form = UserUpdateForm(instance=request.user)
-            profile_form = ProfileForm(instance=profile)
-        elif action == "revoke_api_token":
-            if api_token:
-                api_token.delete()
-                api_token = None
-                messages.success(request, "Token API zostal usuniety.")
-            is_edit_mode = False
-            user_form = UserUpdateForm(instance=request.user)
-            profile_form = ProfileForm(instance=profile)
-        else:
-            user_form = UserUpdateForm(request.POST, instance=request.user)
-            profile_form = ProfileForm(request.POST, instance=profile)
-            if user_form.is_valid() and profile_form.is_valid():
-                user_form.save()
-                profile_form.save()
-                messages.success(request, "Profil zostal zaktualizowany.")
-                return redirect("profile")
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, instance=profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, "Profil zostal zaktualizowany.")
+            return redirect("profile")
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileForm(instance=profile)
@@ -282,8 +259,6 @@ def profile_view(request: HttpRequest) -> HttpResponse:
             "badges": badges[:4],
             "badges_total": len(badges),
             "sync_connections": sync_connections,
-            "api_token": api_token,
-            "plain_api_token": plain_api_token,
         },
     )
 

@@ -8,4 +8,5 @@
     <color name="sleepwatch_muted">#7A6990</color>
     <color name="sleepwatch_accent">#8E7CE8</color>
     <color name="sleepwatch_accent_soft">#DCD4FF</color>
+    <color name="sleepwatch_launcher_bg">#FCFAFF</color>
 </resources>

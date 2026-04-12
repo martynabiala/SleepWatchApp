@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var passwordInput: EditText
     private lateinit var passwordRepeatInput: EditText
     private lateinit var parentEmailInput: EditText
-    private lateinit var apiTokenInput: EditText
+    private lateinit var apiTokenInput: TextView
 
     private lateinit var sourceSpinner: Spinner
     private lateinit var ageGroupSpinner: Spinner
@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refreshSessionUi() {
-        val hasToken = apiTokenInput.text.toString().trim().isNotBlank()
+        val hasToken = !preferences.getString(KEY_API_TOKEN, "").isNullOrBlank()
         authContainer.visibility = if (hasToken) View.GONE else View.VISIBLE
         appContainer.visibility = if (hasToken) View.VISIBLE else View.GONE
         updateSourceUi()
@@ -222,11 +222,12 @@ class MainActivity : AppCompatActivity() {
                     MobileSessionApiClient(backendUrl).login(loginValue, passwordValue)
                 }
             }.onSuccess { result ->
-                apiTokenInput.setText(result.token)
+                apiTokenInput.text = "Token API zapisany automatycznie po zalogowaniu."
                 val selectedIndex = SyncSource.entries.indexOfFirst { it.provider == result.preferredSyncSource }
                 if (selectedIndex >= 0) {
                     sourceSpinner.setSelection(selectedIndex)
                 }
+                preferences.edit().putString(KEY_API_TOKEN, result.token).apply()
                 saveLocalConfiguration()
                 passwordInput.setText("")
                 summaryText.text = "Konto: ${result.displayName} (@${result.username})"
@@ -278,7 +279,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveSourcePreference() {
         val backendUrl = backendUrlInput.text.toString().trim()
-        val apiToken = apiTokenInput.text.toString().trim()
+        val apiToken = preferences.getString(KEY_API_TOKEN, "").orEmpty()
         val preferredSource = getSelectedSource().provider
 
         if (backendUrl.isBlank() || apiToken.isBlank()) {
@@ -332,7 +333,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val backendUrl = backendUrlInput.text.toString().trim()
-        val apiToken = apiTokenInput.text.toString().trim()
+        val apiToken = preferences.getString(KEY_API_TOKEN, "").orEmpty()
         if (backendUrl.isBlank() || apiToken.isBlank()) {
             updateStatus("Najpierw zaloguj sie do konta.")
             return
@@ -368,7 +369,7 @@ class MainActivity : AppCompatActivity() {
         preferences.edit()
             .remove(KEY_API_TOKEN)
             .apply()
-        apiTokenInput.setText("")
+        apiTokenInput.text = "Zaloguj sie, aby aplikacja zapisala token automatycznie."
         passwordInput.setText("")
         passwordRepeatInput.setText("")
         authMode = AuthMode.LOGIN
@@ -397,7 +398,6 @@ class MainActivity : AppCompatActivity() {
     private fun saveLocalConfiguration() {
         preferences.edit()
             .putString(KEY_BACKEND_URL, backendUrlInput.text.toString().trim())
-            .putString(KEY_API_TOKEN, apiTokenInput.text.toString().trim())
             .putString(KEY_SYNC_SOURCE, getSelectedSource().provider)
             .putString(KEY_LOGIN, loginInput.text.toString().trim())
             .apply()
@@ -405,8 +405,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun restoreSavedConfiguration() {
         backendUrlInput.setText(preferences.getString(KEY_BACKEND_URL, ""))
-        apiTokenInput.setText(preferences.getString(KEY_API_TOKEN, ""))
         loginInput.setText(preferences.getString(KEY_LOGIN, ""))
+        apiTokenInput.text = if (preferences.getString(KEY_API_TOKEN, "").isNullOrBlank()) {
+            "Zaloguj sie, aby aplikacja zapisala token automatycznie."
+        } else {
+            "Token API zapisany automatycznie po zalogowaniu."
+        }
         val savedSource = preferences.getString(KEY_SYNC_SOURCE, SyncSource.HEALTH_CONNECT.provider)
         val selectedIndex = SyncSource.entries.indexOfFirst { it.provider == savedSource }.coerceAtLeast(0)
         sourceSpinner.setSelection(selectedIndex)
@@ -414,7 +418,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshSummaryIfPossible() {
         val backendUrl = backendUrlInput.text.toString().trim()
-        val apiToken = apiTokenInput.text.toString().trim()
+        val apiToken = preferences.getString(KEY_API_TOKEN, "").orEmpty()
         if (backendUrl.isBlank() || apiToken.isBlank()) {
             summaryText.text = "Konto: niepolaczone"
             return
