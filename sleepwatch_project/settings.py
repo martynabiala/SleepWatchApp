@@ -16,11 +16,20 @@ if ENV_FILE.exists():
 def env_bool(name: str, default: bool) -> bool:
     return os.getenv(name, str(default)).lower() in {"1", "true", "yes", "on"}
 
-SECRET_KEY = 'django-insecure-8!scd=(zi$aaf2t=3sa$lrq3*qu!21g0&5f5mxd&#ap3$bii#9'
+
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-change-me")
 DEBUG = env_bool("DEBUG", True)
-ALLOWED_HOSTS = ["sleepwatch.onrender.com",
+
+ALLOWED_HOSTS = [
+    "sleepwatch.onrender.com",
     "localhost",
-    "127.0.0.1"]
+    "127.0.0.1",
+]
+
+render_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if render_hostname:
+    ALLOWED_HOSTS.append(render_hostname)
+
 extra_allowed_hosts = [
     host.strip()
     for host in os.getenv("ALLOWED_HOSTS_EXTRA", "").split(",")
@@ -32,9 +41,16 @@ CSRF_TRUSTED_ORIGINS = [
     "https://sleepwatch.onrender.com",
 ]
 
+extra_csrf = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+CSRF_TRUSTED_ORIGINS.extend(extra_csrf)
+
 if DEBUG:
-    # Ulatwia testy lokalne z telefonu w tej samej sieci.
     ALLOWED_HOSTS.append("*")
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -49,6 +65,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,37 +94,49 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sleepwatch_project.wsgi.application'
 
-DB_ENGINE = os.getenv("DB_ENGINE", "sqlite").lower()
 
-if DB_ENGINE == "mysql":
-    import pymysql
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
-    # Django 6 checks the MySQLdb version even when PyMySQL is used as a drop-in.
-    # Expose a compatible version so the MySQL backend can initialize on Windows.
-    pymysql.version_info = (2, 2, 1, "final", 0)
-    pymysql.__version__ = "2.2.1"
-    pymysql.install_as_MySQLdb()
+if DATABASE_URL:
+    import dj_database_url
 
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.getenv("DB_NAME", "sleepwatch"),
-            'USER': os.getenv("DB_USER", "root"),
-            'PASSWORD': os.getenv("DB_PASSWORD", ""),
-            'HOST': os.getenv("DB_HOST", "127.0.0.1"),
-            'PORT': os.getenv("DB_PORT", "3306"),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-            },
-        }
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=False,
+        )
     }
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+    DB_ENGINE = os.getenv("DB_ENGINE", "sqlite").lower()
+
+    if DB_ENGINE == "mysql":
+        import pymysql
+
+        pymysql.version_info = (2, 2, 1, "final", 0)
+        pymysql.__version__ = "2.2.1"
+        pymysql.install_as_MySQLdb()
+
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.getenv("DB_NAME", "sleepwatch"),
+                'USER': os.getenv("DB_USER", "root"),
+                'PASSWORD': os.getenv("DB_PASSWORD", ""),
+                'HOST': os.getenv("DB_HOST", "127.0.0.1"),
+                'PORT': os.getenv("DB_PORT", "3306"),
+                'OPTIONS': {
+                    'charset': 'utf8mb4',
+                },
+            }
         }
-    }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -145,7 +174,7 @@ EMAIL_DELIVERY_MODE = os.getenv("EMAIL_DELIVERY_MODE", "file").lower()
 
 if EMAIL_DELIVERY_MODE == "gmail":
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.getenv("EMAIL_HOST", 'smtp.gmail.com')
+    EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
     EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
     EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", True)
     EMAIL_USE_SSL = env_bool("EMAIL_USE_SSL", False)
