@@ -1,8 +1,8 @@
 Witaj {{ user.username }},
 
-dziekujemy za rejestracje w aplikacji SleepWatch.
+dziękujemy za rejestrację w aplikacji SleepWatch.
 
-Aby aktywowac konto, kliknij ponizszy link:
+Aby aktywować konto, kliknij poniższy link:
 {{ activation_link }}
 
-Jesli to nie Ty zakladales konto, zignoruj ta wiadomosc.
+Jeśli to nie Ty zakładałeś konto, zignoruj tą wiadomość.

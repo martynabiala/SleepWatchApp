@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sleepwatch_bg_top">#FCFAFF</color>
+    <color name="sleepwatch_bg_bottom">#F4EEFF</color>
+    <color name="sleepwatch_card">#FFFDFD</color>
+    <color name="sleepwatch_card_soft">#F5F0FF</color>
+    <color name="sleepwatch_text">#412B4D</color>
+    <color name="sleepwatch_muted">#7A6990</color>
+    <color name="sleepwatch_accent">#8E7CE8</color>
+    <color name="sleepwatch_accent_soft">#DCD4FF</color>
+</resources>

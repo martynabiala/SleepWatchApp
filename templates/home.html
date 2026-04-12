@@ -1,19 +1,182 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}SleepWatch - Start{% endblock %}
+{% block title %}SleepWatch - Strona główna{% endblock %}
 
 {% block content %}
-<section class="hero-card" style="max-width: 860px; margin: 0 auto; text-align: center; padding: 42px 36px;">
-    <div class="auth-logo-wrap" style="margin-bottom: 28px;">
-        <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch" style="max-width: 420px; width: min(420px, 80vw);">
-    </div>
-    <div class="eyebrow">Sleep Tracking</div>
-    <h1>Spokojne miejsce do monitorowania snu i budowania zdrowych nawyków</h1>
+<style>
+    .home-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+        gap: 24px;
+        align-items: stretch;
+    }
 
-    <div class="actions" style="justify-content: center;">
-        <a class="button" href="{% url 'signup' %}">Utwórz konto</a>
-        <a class="button secondary" href="{% url 'login' %}">Zaloguj się</a>
-    </div>
+    .home-main,
+    .home-side {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .home-main {
+        padding: 42px 38px;
+        background:
+            radial-gradient(circle at top right, rgba(172, 147, 255, 0.14), transparent 30%),
+            radial-gradient(circle at bottom left, rgba(142, 124, 232, 0.1), transparent 32%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 246, 255, 0.95)),
+            rgba(255, 255, 255, 0.96);
+    }
+
+    .home-main::after {
+        content: "";
+        position: absolute;
+        inset: auto -40px -60px auto;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(172, 147, 255, 0.15), rgba(172, 147, 255, 0));
+        pointer-events: none;
+    }
+
+    .home-side {
+        display: grid;
+        gap: 16px;
+        padding: 28px;
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 246, 255, 0.94)),
+            rgba(255, 255, 255, 0.96);
+    }
+
+    .home-title {
+        max-width: 12ch;
+        margin-bottom: 14px;
+        font-size: clamp(2.7rem, 5vw, 4.4rem);
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+    }
+
+    .home-lead {
+        max-width: 54ch;
+        font-size: 1.05rem;
+    }
+
+    .home-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+    }
+
+    .home-feature {
+        padding: 16px 18px;
+        border-radius: 20px;
+        border: 1px solid rgba(142, 124, 232, 0.08);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 246, 234, 0.88));
+    }
+
+    .home-feature strong,
+    .home-stat strong {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text);
+        font-size: 1rem;
+    }
+
+    .home-side-header {
+        display: grid;
+        gap: 10px;
+    }
+
+    .home-side-header .auth-logo-wrap {
+        margin-bottom: 0;
+    }
+
+    .home-side-header .auth-logo {
+        width: min(300px, 78vw);
+        max-width: 300px;
+    }
+
+    .home-stat-grid {
+        display: grid;
+        gap: 14px;
+    }
+
+    .home-stat {
+        border-radius: 22px;
+        border: 1px solid rgba(142, 124, 232, 0.08);
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.96), rgba(250, 246, 255, 0.9));
+        padding: 18px 20px;
+    }
+
+    .home-stat-value {
+        font-size: 2rem;
+        line-height: 1;
+        color: var(--accent-dark);
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    @media (max-width: 920px) {
+        .home-hero {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .home-main,
+        .home-side {
+            padding: 24px;
+        }
+    }
+</style>
+
+<section class="home-hero">
+    <article class="hero-card home-main">
+        <div class="eyebrow">Monitorowanie snu</div>
+        <h1 class="home-title">Sen pod kontrolą, bez ciężkiego medycznego klimatu</h1>
+        <p class="home-lead">SleepWatch może wyglądać bardziej jak spokojny nocny rytuał niż zwykły panel z danymi. Zbieraj noce, wyłapuj trendy i buduj lepsze nawyki w jednym miejscu.</p>
+
+        <div class="actions">
+            <a class="button" href="{% url 'signup' %}">Utwórz konto</a>
+            <a class="button secondary" href="{% url 'login' %}">Zaloguj się</a>
+        </div>
+
+        <div class="home-features">
+            <div class="home-feature">
+                <strong>Wyraźne trendy</strong>
+                <p>Najważniejsze liczby i wykresy pod ręką, bez szukania po ekranie.</p>
+            </div>
+            <div class="home-feature">
+                <strong>Codzienny kontekst</strong>
+                <p>Notatki, stres, kofeina i trening obok danych ze snu.</p>
+            </div>
+            <div class="home-feature">
+                <strong>Spokojny rytm</strong>
+                <p>Interfejs, który wspiera regularność zamiast przytłaczać.</p>
+            </div>
+        </div>
+    </article>
+
+    <aside class="soft-card home-side">
+        <div class="home-side-header">
+            <div class="auth-logo-wrap">
+                <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch">
+            </div>
+            <p>Nowa warstwa wizualna jest bardziej zgodna z logo: lekka, przyjazna i oparta na jasnym fiolecie oraz miękkim różowym akcencie.</p>
+        </div>
+
+        <div class="home-stat-grid">
+            <div class="home-stat">
+                <strong>Atmosfera</strong>
+                <div class="home-stat-value">Lekkość</div>
+                <p>Jasny fiolet, pudrowy róż i spokojne tło budujące bardziej przyjazny charakter.</p>
+            </div>
+            <div class="home-stat">
+                <strong>Priorytet</strong>
+                <div class="home-stat-value">Fokus</div>
+                <p>Mocniejsza hierarchia treści, żeby najważniejsze podsumowania były od razu widoczne.</p>
+            </div>
+        </div>
+    </aside>
 </section>
 {% endblock %}

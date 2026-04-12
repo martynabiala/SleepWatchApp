@@ -1,0 +1,1 @@
+# Prototyp bez dodatkowych reguł.

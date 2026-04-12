@@ -7,7 +7,7 @@
     <section class="hero-card">
         <div class="eyebrow">Dodaj noc</div>
         <h1>Dodaj noc ręcznie</h1>
-        <p>Uzupełnij podstawowe dane snu, jeśli nie chcesz korzystać z importu CSV.</p>
+        <p>Uzupełnij godziny zaśnięcia i pobudki, a czas snu wyliczy się automatycznie. Możesz też dodać liczbę nocnych wybudzeń, jeśli ją pamiętasz.</p>
 
         <form method="post">
             {% csrf_token %}
@@ -23,6 +23,18 @@
                     </div>
                 {% endfor %}
             </div>
+
+            <div class="soft-card" style="margin-top: 8px; padding: 20px;">
+                <h3>Podgląd czasu snu</h3>
+                <div class="meta-list">
+                    <div class="meta-row">
+                        <span class="meta-key">Wyliczony czas snu</span>
+                        <strong id="sleep-duration-preview">Uzupełnij godziny</strong>
+                    </div>
+                </div>
+                <p id="sleep-duration-feedback" style="margin-top: 12px;">Po uzupełnieniu godzin zobaczysz tutaj krótką ocenę tej nocy.</p>
+            </div>
+
             <div class="actions">
                 <button type="submit">Zapisz noc</button>
                 <a class="button secondary" href="{% url 'sleep_list' %}">Wróć do historii</a>
@@ -31,25 +43,106 @@
     </section>
 
     <aside class="soft-card">
-        <h3>Co możesz wpisać?</h3>
+        <h3>Jak to działa?</h3>
         <div class="meta-list">
             <div class="meta-row">
                 <span class="meta-key">Data nocy</span>
                 <strong>Wymagana</strong>
             </div>
             <div class="meta-row">
+                <span class="meta-key">Godzina zaśnięcia</span>
+                <strong>Wymagana</strong>
+            </div>
+            <div class="meta-row">
+                <span class="meta-key">Godzina pobudki</span>
+                <strong>Wymagana</strong>
+            </div>
+            <div class="meta-row">
                 <span class="meta-key">Czas snu</span>
-                <strong>W minutach</strong>
+                <strong>Liczony automatycznie</strong>
             </div>
             <div class="meta-row">
-                <span class="meta-key">Tętno i SpO2</span>
-                <strong>Opcjonalne</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Ruch w nocy</span>
-                <strong>Niski / średni / wysoki</strong>
+                <span class="meta-key">Liczba wybudzeń</span>
+                <strong>Opcjonalna</strong>
             </div>
         </div>
     </aside>
 </div>
+
+<script>
+    (function () {
+        const bedtimeInput = document.getElementById("id_bedtime");
+        const wakeTimeInput = document.getElementById("id_wake_time");
+        const preview = document.getElementById("sleep-duration-preview");
+        const feedback = document.getElementById("sleep-duration-feedback");
+        const sleepGoalHours = {{ request.user.profile.sleep_goal_hours|default:8 }};
+
+        function updatePreview() {
+            const bedtime = bedtimeInput?.value;
+            const wakeTime = wakeTimeInput?.value;
+
+            if (!bedtime || !wakeTime) {
+                preview.textContent = "Uzupełnij godziny";
+                feedback.textContent = "Po uzupełnieniu godzin zobaczysz tutaj krótką ocenę tej nocy.";
+                return;
+            }
+
+            const [bedHour, bedMinute] = bedtime.split(":").map(Number);
+            const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
+
+            if (
+                Number.isNaN(bedHour) || Number.isNaN(bedMinute) ||
+                Number.isNaN(wakeHour) || Number.isNaN(wakeMinute)
+            ) {
+                preview.textContent = "Nieprawidłowy format godzin";
+                feedback.textContent = "Sprawdź, czy obie godziny są wpisane poprawnie.";
+                return;
+            }
+
+            let bedtimeMinutes = bedHour * 60 + bedMinute;
+            let wakeMinutes = wakeHour * 60 + wakeMinute;
+
+            if (wakeMinutes <= bedtimeMinutes) {
+                wakeMinutes += 24 * 60;
+            }
+
+            const duration = wakeMinutes - bedtimeMinutes;
+
+            if (duration < 60) {
+                preview.textContent = "Za krótki czas snu";
+                feedback.textContent = "Taki wpis wygląda nielogicznie, więc sprawdź godziny jeszcze raz.";
+                return;
+            }
+
+            if (duration > 16 * 60) {
+                preview.textContent = "Za długi czas snu";
+                feedback.textContent = "Taki wpis wygląda nietypowo, więc sprawdź godziny jeszcze raz.";
+                return;
+            }
+
+            const hours = Math.floor(duration / 60);
+            const minutes = duration % 60;
+            preview.textContent = `${hours}h ${String(minutes).padStart(2, "0")}m`;
+
+            const goalMinutes = sleepGoalHours * 60;
+            const diff = duration - goalMinutes;
+
+            if (duration < 6 * 60) {
+                feedback.textContent = "To dość krótki sen. Warto uważać, jeśli taki wynik powtarza się częściej.";
+            } else if (diff < -30) {
+                feedback.textContent = "Ta noc jest wyraźnie krótsza od Twojego docelowego czasu snu.";
+            } else if (Math.abs(diff) <= 30) {
+                feedback.textContent = "Ta noc jest blisko Twojego docelowego czasu snu.";
+            } else {
+                feedback.textContent = "Ta noc jest dłuższa niż Twój docelowy czas snu.";
+            }
+        }
+
+        bedtimeInput?.addEventListener("input", updatePreview);
+        bedtimeInput?.addEventListener("change", updatePreview);
+        wakeTimeInput?.addEventListener("input", updatePreview);
+        wakeTimeInput?.addEventListener("change", updatePreview);
+        updatePreview();
+    })();
+</script>
 {% endblock %}

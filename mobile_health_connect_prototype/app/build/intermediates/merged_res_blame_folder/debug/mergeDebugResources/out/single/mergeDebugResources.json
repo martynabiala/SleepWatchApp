@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "com.sleepwatch.mobile.app-debug-4:/layout_activity_main.xml.flat",
+        "source": "com.sleepwatch.mobile.app-main-6:/layout/activity_main.xml"
+    },
+    {
+        "merged": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-debug-4:\\drawable_sleepwatch_background.xml.flat",
+        "source": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-main-6:\\drawable\\sleepwatch_background.xml"
+    },
+    {
+        "merged": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-debug-4:\\drawable_sleepwatch_card_soft.xml.flat",
+        "source": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-main-6:\\drawable\\sleepwatch_card_soft.xml"
+    },
+    {
+        "merged": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-debug-4:\\drawable_sleepwatch_card.xml.flat",
+        "source": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-main-6:\\drawable\\sleepwatch_card.xml"
+    },
+    {
+        "merged": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-debug-4:\\layout_activity_main.xml.flat",
+        "source": "D:\\GradlerHome\\daemon\\9.0.0\\com.sleepwatch.mobile.app-main-6:\\layout\\activity_main.xml"
+    }
+]

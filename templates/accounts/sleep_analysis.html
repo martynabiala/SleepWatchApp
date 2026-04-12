@@ -1,0 +1,525 @@
+{% extends "base.html" %}
+
+{% block title %}Analiza snu - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .shell {
+        max-width: 1380px;
+    }
+
+    .panel {
+        padding: 36px;
+    }
+
+    .analysis-page {
+        display: grid;
+        gap: 24px;
+    }
+
+    .analysis-header {
+        display: grid;
+        gap: 18px;
+    }
+
+    .analysis-range {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .analysis-range a {
+        text-decoration: none;
+    }
+
+    .analysis-range .button.active {
+        background: linear-gradient(135deg, var(--accent) 0%, #c18cff 100%);
+        color: #fff;
+    }
+
+    .analysis-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .analysis-summary-card,
+    .analysis-insight-card {
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.92);
+        padding: 20px;
+        display: grid;
+        gap: 8px;
+    }
+
+    .analysis-summary-card strong {
+        font-size: 1.9rem;
+        line-height: 1;
+    }
+
+    .analysis-insights {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .analysis-insight-card {
+        background:
+            radial-gradient(circle at top right, rgba(193, 140, 255, 0.14), transparent 34%),
+            rgba(255, 255, 255, 0.92);
+    }
+
+    .analysis-insight-card h3,
+    .analysis-chart-copy h3 {
+        margin: 0;
+    }
+
+    .analysis-insight-card p,
+    .analysis-chart-copy p {
+        margin: 0;
+    }
+
+    .analysis-chart-card {
+        display: grid;
+        gap: 16px;
+        padding: 26px;
+        background:
+            radial-gradient(circle at top right, rgba(193, 140, 255, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 244, 255, 0.97));
+    }
+
+    .analysis-chart-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .analysis-chart-copy {
+        display: grid;
+        gap: 6px;
+    }
+
+    .analysis-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        border: 1px solid rgba(145, 124, 232, 0.18);
+        background: rgba(255, 255, 255, 0.82);
+        color: var(--accent-dark);
+    }
+
+    .chip-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        display: inline-block;
+    }
+
+    .dot-sleep {
+        background: #8e7ce8;
+    }
+
+    .dot-heart {
+        background: #4fa8df;
+    }
+
+    .dot-awakenings {
+        background: #ef8f70;
+    }
+
+    .analysis-chart-card .chart-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .analysis-stat {
+        border-radius: 18px;
+        border: 1px solid rgba(145, 124, 232, 0.14);
+        background: rgba(255, 255, 255, 0.82);
+        padding: 12px 14px;
+        display: grid;
+        gap: 4px;
+    }
+
+    .analysis-stat span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    .analysis-stat strong {
+        color: var(--text);
+        font-size: 1.08rem;
+    }
+
+    .analysis-canvas-wrap {
+        border-radius: 24px;
+        border: 1px solid rgba(145, 124, 232, 0.14);
+        background: #fff;
+        padding: 18px 18px 12px;
+    }
+
+    .analysis-canvas-wrap canvas {
+        width: 100%;
+        height: 380px;
+        display: block;
+    }
+
+    .analysis-empty {
+        border-radius: 24px;
+        border: 1px dashed rgba(145, 124, 232, 0.24);
+        background: rgba(255, 255, 255, 0.75);
+        padding: 24px;
+        color: var(--muted);
+    }
+
+    .chart-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+
+    .analysis-chart-card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    @media (max-width: 860px) {
+        .analysis-summary,
+        .analysis-insights,
+        .analysis-chart-card .chart-meta,
+        .chart-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .analysis-chart-card:last-child {
+            grid-column: auto;
+        }
+
+        .analysis-canvas-wrap canvas {
+            height: 260px;
+        }
+    }
+</style>
+
+<div class="analysis-page">
+    <section class="hero-card analysis-header">
+        <div>
+            <div class="eyebrow">Analiza snu</div>
+            <h1>Wykresy i trendy</h1>
+            <p>Zobacz swoje dane w szerszym zakresie i przełączaj wykresy między 30 dniami, 90 dniami i ostatnim rokiem.</p>
+        </div>
+
+        <div class="analysis-range">
+            {% for option in range_options %}
+                <a
+                    class="button{% if option.value != selected_range %} secondary{% else %} active{% endif %}"
+                    href="{% url 'sleep_analysis' %}?range={{ option.value }}"
+                >
+                    {{ option.label }}
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="analysis-summary">
+        <article class="analysis-summary-card">
+            <span>Zakres</span>
+            <strong>{{ selected_range_label }}</strong>
+        </article>
+        <article class="analysis-summary-card">
+            <span>Średni czas snu</span>
+            <strong>{{ analysis_stats.avg_sleep_display }}</strong>
+        </article>
+        <article class="analysis-summary-card">
+            <span>Średnie tętno</span>
+            <strong>{{ analysis_stats.avg_hr }}</strong>
+        </article>
+    </section>
+
+    <section class="analysis-insights">
+        <article class="analysis-insight-card">
+            <h3>Sen</h3>
+            <p>Najlepiej pokazuje regularność i to, czy zbliżasz się do swojego celu snu.</p>
+        </article>
+        <article class="analysis-insight-card">
+            <h3>Tętno</h3>
+            <p>Pomaga zauważyć noce spokojniejsze i te bardziej obciążające organizm.</p>
+        </article>
+        <article class="analysis-insight-card">
+            <h3>Wybudzenia</h3>
+            <p>Dają szybki wgląd w to, czy sen był bardziej ciągły czy częściej przerywany.</p>
+        </article>
+    </section>
+
+    <div class="panel-grid">
+        <section class="soft-card">
+            <h3>Podsumowanie zakresu</h3>
+            <div class="meta-list">
+                <div class="meta-row">
+                    <span class="meta-key">Zapisane noce</span>
+                    <strong>{{ analysis_stats.total }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Średni czas snu</span>
+                    <strong>{{ analysis_stats.avg_sleep_display }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Średnie tętno</span>
+                    <strong>{{ analysis_stats.avg_hr }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Dobre / słabe noce</span>
+                    <strong>{{ analysis_stats.good_nights }} / {{ analysis_stats.bad_nights }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="soft-card">
+            <h3>Jak czytać tę sekcję?</h3>
+            <p>Dłuższy zakres lepiej pokazuje ogólne trendy. Krótszy zakres szybciej ujawnia ostatnie zmiany w śnie, tętnie i liczbie wybudzeń.</p>
+        </section>
+    </div>
+
+    <div class="chart-grid">
+        <section class="soft-card chart-card analysis-chart-card">
+            <div class="analysis-chart-head">
+                <div class="analysis-chart-copy">
+                    <h3>Wykres czasu snu</h3>
+                    <p>Pokazuje, jak zmieniała się długość Twojego snu w wybranym zakresie.</p>
+                </div>
+                <span class="analysis-chip"><span class="chip-dot dot-sleep"></span>Trend snu</span>
+            </div>
+            {% if sleep_chart %}
+                <div class="chart-meta">
+                    <div class="analysis-stat">
+                        <span>Najkrótsza noc</span>
+                        <strong>{{ sleep_chart.min_value }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Średnio</span>
+                        <strong>{{ analysis_stats.avg_sleep_display }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Najdłuższa noc</span>
+                        <strong>{{ sleep_chart.max_value }}</strong>
+                    </div>
+                </div>
+                <div class="analysis-canvas-wrap">
+                    <canvas id="sleepChart" aria-label="Wykres czasu snu"></canvas>
+                </div>
+            {% else %}
+                <div class="analysis-empty">Za mało danych, aby pokazać wykres czasu snu.</div>
+            {% endif %}
+        </section>
+
+        <section class="soft-card chart-card analysis-chart-card">
+            <div class="analysis-chart-head">
+                <div class="analysis-chart-copy">
+                    <h3>Wykres średniego tętna</h3>
+                    <p>Pomaga uchwycić noce spokojniejsze i te bardziej obciążające organizm.</p>
+                </div>
+                <span class="analysis-chip"><span class="chip-dot dot-heart"></span>Trend tętna</span>
+            </div>
+            {% if hr_chart %}
+                <div class="chart-meta">
+                    <div class="analysis-stat">
+                        <span>Najniższa wartość</span>
+                        <strong>{{ hr_chart.min_value }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Średnio</span>
+                        <strong>{{ analysis_stats.avg_hr }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Najwyższa wartość</span>
+                        <strong>{{ hr_chart.max_value }}</strong>
+                    </div>
+                </div>
+                <div class="analysis-canvas-wrap">
+                    <canvas id="hrChart" aria-label="Wykres średniego tętna"></canvas>
+                </div>
+            {% else %}
+                <div class="analysis-empty">Za mało danych, aby pokazać wykres średniego tętna.</div>
+            {% endif %}
+        </section>
+
+        <section class="soft-card chart-card analysis-chart-card">
+            <div class="analysis-chart-head">
+                <div class="analysis-chart-copy">
+                    <h3>Wykres liczby wybudzeń</h3>
+                    <p>Pokazuje, czy w kolejnych nocach sen był bardziej przerywany.</p>
+                </div>
+                <span class="analysis-chip"><span class="chip-dot dot-awakenings"></span>Trend wybudzeń</span>
+            </div>
+            {% if awakenings_chart %}
+                <div class="chart-meta">
+                    <div class="analysis-stat">
+                        <span>Najmniej wybudzeń</span>
+                        <strong>{{ awakenings_chart.min_value }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Zapisane noce</span>
+                        <strong>{{ awakenings_chart.total_points }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Najwięcej wybudzeń</span>
+                        <strong>{{ awakenings_chart.max_value }}</strong>
+                    </div>
+                </div>
+                <div class="analysis-canvas-wrap">
+                    <canvas id="awakeningsChart" aria-label="Wykres liczby wybudzeń"></canvas>
+                </div>
+            {% else %}
+                <div class="analysis-empty">Za mało danych, aby pokazać wykres liczby wybudzeń.</div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+
+{{ sleep_chart|json_script:"sleep-chart-data" }}
+{{ hr_chart|json_script:"hr-chart-data" }}
+{{ awakenings_chart|json_script:"awakenings-chart-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+    function readChartData(id) {
+        const element = document.getElementById(id);
+        return element ? JSON.parse(element.textContent) : null;
+    }
+
+    function createLineChart(canvasId, chartData, options) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || !chartData || !window.Chart) {
+            return;
+        }
+
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: options.label,
+                    data: chartData.values,
+                    borderColor: options.color,
+                    backgroundColor: options.fill,
+                    pointBackgroundColor: "#ffffff",
+                    pointBorderColor: options.color,
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    borderWidth: 4,
+                    tension: 0.35,
+                    fill: true,
+                    spanGaps: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: "#4b3562",
+                        titleColor: "#ffffff",
+                        bodyColor: "#ffffff",
+                        cornerRadius: 12,
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return chartData.display_values[context.dataIndex];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: "#6f5275",
+                            maxTicksLimit: 6,
+                            font: {
+                                size: 12,
+                                weight: "600"
+                            }
+                        },
+                        border: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            color: "#6f5275",
+                            padding: 10,
+                            font: {
+                                size: 12,
+                                weight: "600"
+                            },
+                            callback: options.tickFormatter
+                        },
+                        grid: {
+                            color: "rgba(145, 124, 232, 0.12)"
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function minutesToHourLabel(value) {
+        const hours = Math.floor(value / 60);
+        const minutes = Math.round(value % 60);
+        return minutes === 0 ? hours + " h" : hours + " h " + String(minutes).padStart(2, "0");
+    }
+
+    const sleepChartData = readChartData("sleep-chart-data");
+    const hrChartData = readChartData("hr-chart-data");
+    const awakeningsChartData = readChartData("awakenings-chart-data");
+
+    createLineChart("sleepChart", sleepChartData, {
+        label: "Czas snu",
+        color: "#8e7ce8",
+        fill: "rgba(142, 124, 232, 0.14)",
+        tickFormatter: function(value) {
+            return minutesToHourLabel(value);
+        }
+    });
+
+    createLineChart("hrChart", hrChartData, {
+        label: "Średnie tętno",
+        color: "#4fa8df",
+        fill: "rgba(79, 168, 223, 0.14)",
+        tickFormatter: function(value) {
+            return value;
+        }
+    });
+
+    createLineChart("awakeningsChart", awakeningsChartData, {
+        label: "Liczba wybudzeń",
+        color: "#ef8f70",
+        fill: "rgba(239, 143, 112, 0.14)",
+        tickFormatter: function(value) {
+            return value;
+        }
+    });
+</script>
+{% endblock %}

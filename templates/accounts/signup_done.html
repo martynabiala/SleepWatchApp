@@ -10,10 +10,17 @@
 </div>
 <div class="eyebrow">Aktywacja</div>
 <h1>Sprawdź skrzynkę e-mail</h1>
-<p>
-    Konto zostało utworzone. Wiadomość z linkiem aktywacyjnym
-    została wysłana na podany adres e-mail.
-</p>
+{% if signup_flow == "child" %}
+    <p>
+        Konto dziecka zostało utworzone. Wiadomość z prośbą o zgodę została wysłana
+        na adres e-mail rodzica lub opiekuna. Konto aktywuje się dopiero po potwierdzeniu zgody.
+    </p>
+{% else %}
+    <p>
+        Konto zostało utworzone. Wiadomość z linkiem aktywacyjnym
+        została wysłana na podany adres e-mail.
+    </p>
+{% endif %}
 
 <div class="actions">
     <a class="button secondary" href="{% url 'login' %}">Przejdź do logowania</a>

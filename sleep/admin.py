@@ -12,9 +12,8 @@ class SleepRecordAdmin(admin.ModelAdmin):
         "sleep_duration_minutes",
         "avg_heart_rate",
         "min_spo2",
-        "movement_level",
     )
-    list_filter = ("source", "movement_level", "sleep_date")
+    list_filter = ("source", "sleep_date")
     search_fields = ("user__username", "user__email")
 
 
@@ -43,5 +42,5 @@ class SleepNoteAdmin(admin.ModelAdmin):
         "stress_level",
         "updated_at",
     )
-    list_filter = ("sleep_quality", "training_level", "caffeine_after_16", "alcohol")
+    list_filter = ("sleep_quality", "training_level", "caffeine_used", "alcohol")
     search_fields = ("user__username", "sleep_record__sleep_date")

@@ -30,6 +30,7 @@ class SleepWatchUserAdmin(UserAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = (
         "display_name",
+        "avatar",
         "user",
         "age_group",
         "lifestyle",

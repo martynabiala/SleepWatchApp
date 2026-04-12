@@ -11,22 +11,52 @@
 </div>
 <div class="eyebrow">Rejestracja</div>
 <h1>Utwórz konto SleepWatch</h1>
-<p>Wypełnij formularz. Konto zostanie aktywowane po kliknięciu linku wysłanego na e-mail.</p>
 <form method="post">
     {% csrf_token %}
-    {% for field in form %}
-        <div>
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-            {% if field.help_text %}
-                <div class="helptext">{{ field.help_text }}</div>
-            {% endif %}
-            {{ field.errors }}
-        </div>
-    {% endfor %}
+    <div class="form-grid">
+        {% for field in form %}
+            <div
+                {% if field.name == "parent_email" %}id="parent-email-field" style="grid-column: 1 / -1;"{% endif %}
+            >
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="helptext">{{ field.help_text }}</div>
+                {% endif %}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+    </div>
     <button type="submit">Zarejestruj konto</button>
 </form>
 <div class="actions">
     <a class="button secondary" href="{% url 'login' %}">Mam już konto</a>
 </div>
+
+<script>
+    (function () {
+        const ageGroupInput = document.getElementById("id_age_group");
+        const parentEmailField = document.getElementById("parent-email-field");
+        const parentEmailInput = document.getElementById("id_parent_email");
+
+        function toggleParentEmailField() {
+            const isChildAccount = ageGroupInput?.value === "under_18";
+
+            if (!parentEmailField) {
+                return;
+            }
+
+            parentEmailField.style.display = isChildAccount ? "block" : "none";
+            if (parentEmailInput) {
+                parentEmailInput.required = isChildAccount;
+                if (!isChildAccount) {
+                    parentEmailInput.value = "";
+                }
+            }
+        }
+
+        ageGroupInput?.addEventListener("change", toggleParentEmailField);
+        toggleParentEmailField();
+    })();
+</script>
 {% endblock %}

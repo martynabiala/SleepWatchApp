@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Osiągnięcia - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .achievements-page {
+        display: grid;
+        gap: 24px;
+    }
+
+    .achievements-hero,
+    .achievements-grid-card {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background:
+            radial-gradient(circle at top right, rgba(193, 140, 255, 0.14), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 244, 255, 0.96));
+        padding: 28px;
+    }
+
+    .achievements-hero {
+        display: grid;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .achievements-summary {
+        display: grid;
+        gap: 14px;
+    }
+
+    .achievements-kpis {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .achievements-kpi {
+        border-radius: 22px;
+        border: 1px solid rgba(142, 124, 232, 0.12);
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+        padding: 18px 20px;
+        display: grid;
+        gap: 8px;
+    }
+
+    .achievements-kpi span {
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+
+    .achievements-kpi strong {
+        font-size: 1.8rem;
+        line-height: 1;
+    }
+
+    .achievements-progress {
+        display: grid;
+        gap: 10px;
+    }
+
+    .achievements-progress-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        font-weight: 700;
+    }
+
+    .achievements-progress-bar {
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(142, 124, 232, 0.1);
+        overflow: hidden;
+    }
+
+    .achievements-progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #8e7ce8, #c18cff);
+    }
+
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .achievement-card {
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.82);
+        display: grid;
+        gap: 10px;
+    }
+
+    .achievement-card-earned {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 241, 255, 0.94));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+    }
+
+    .achievement-card-locked {
+        opacity: 0.72;
+    }
+
+    .achievement-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        font-size: 1.25rem;
+        background: rgba(142, 124, 232, 0.14);
+        color: var(--accent-dark);
+    }
+
+    .achievement-card h3,
+    .achievement-card p {
+        margin: 0;
+    }
+
+    .achievement-status {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--accent-dark);
+    }
+
+    @media (max-width: 920px) {
+        .achievements-hero,
+        .achievements-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 720px) {
+        .achievements-kpis {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="achievements-page">
+    <section class="achievements-hero">
+        <div class="achievements-summary">
+            <div class="eyebrow">Osiągnięcia</div>
+            <h1>Wszystkie odznaki</h1>
+            <p>Tu zobaczysz cały zestaw odznak związanych z regularnością, notatkami i uzupełnianiem profilu.</p>
+
+            <div class="achievements-kpis">
+                <article class="achievements-kpi">
+                    <span>Odblokowane</span>
+                    <strong>{{ earned_badges }}</strong>
+                </article>
+                <article class="achievements-kpi">
+                    <span>Wszystkie odznaki</span>
+                    <strong>{{ badges_total }}</strong>
+                </article>
+            </div>
+
+            <div class="achievements-progress">
+                <div class="achievements-progress-head">
+                    <span>Postęp</span>
+                    <strong>{{ earned_badges }} z {{ badges_total }}</strong>
+                </div>
+                <div class="achievements-progress-bar" aria-hidden="true">
+                    <div class="achievements-progress-fill" style="width: {{ badges_progress }}%;"></div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="achievements-grid-card">
+        <div class="achievements-grid">
+            {% for badge in badges %}
+                <article class="achievement-card {% if badge.earned %}achievement-card-earned{% else %}achievement-card-locked{% endif %}">
+                    <div class="achievement-icon">{{ badge.icon }}</div>
+                    <h3>{{ badge.title }}</h3>
+                    <p>{{ badge.description }}</p>
+                    <div class="achievement-status">
+                        {% if badge.earned %}Odblokowana{% else %}W trakcie{% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

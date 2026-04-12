@@ -1,0 +1,380 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:2:1-50:12
+INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:2:1-50:12
+INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:2:1-50:12
+INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:2:1-50:12
+MERGED from [com.google.android.material:material:1.12.0] D:\GradlerHome\caches\9.0.0\transforms\90e7a98786a3041981e879f54c0f2103\transformed\material-1.12.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat-resources:1.7.0] D:\GradlerHome\caches\9.0.0\transforms\9933ec3dd71096b88485c5450108ae80\transformed\jetified-appcompat-resources-1.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] D:\GradlerHome\caches\9.0.0\transforms\c19817810fef1570453fb24e2754ebce\transformed\constraintlayout-2.0.1\AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat:1.7.0] D:\GradlerHome\caches\9.0.0\transforms\15e9fdf5aacbb553dc55f0d9e512609b\transformed\appcompat-1.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\5300a22a5f2820e68fabaa71acb3075a\transformed\jetified-emoji2-views-helper-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\1f48dfaa35b2566d298b69ca830d09fc\transformed\drawerlayout-1.1.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\8a3d952bfe2a2ba7023426dfaa28ef70\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.5.0] D:\GradlerHome\caches\9.0.0\transforms\c95e4859e29b01a10b48089994db1c48\transformed\transition-1.5.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\bd6e56eeb98a5cdc1c7dd3cd014e313a\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\1427fe88261375be8dc3dfe3610ec659\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\77b4a69f6c4b93a8a65f8bfe38ba76ca\transformed\vectordrawable-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\f10d22c0205cb27d3773e10c07118812\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment:1.5.4] D:\GradlerHome\caches\9.0.0\transforms\4f6f7d9e4849e86b0657ff711234021c\transformed\fragment-1.5.4\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\89ecde81e820d06a4ea0ca770f223b14\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\445e77528cfab33179cca1e1793cdaee\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\060745f9df012aec9b55375b650644e5\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\b95724b807f8554416e07e47b05da6fd\transformed\recyclerview-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\a64437697d463b59c94fa734408c6549\transformed\customview-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.activity:activity-ktx:1.10.1] D:\GradlerHome\caches\9.0.0\transforms\8cd4ee62db5cd3bc9c21fd5abf48ab4c\transformed\jetified-activity-ktx-1.10.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.10.1] D:\GradlerHome\caches\9.0.0\transforms\85631229d0352ef6f885f8bda446f71b\transformed\jetified-activity-1.10.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] D:\GradlerHome\caches\9.0.0\transforms\c632d86491ee8fc25e5a116f0c1d8c94\transformed\jetified-savedstate-ktx-1.2.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] D:\GradlerHome\caches\9.0.0\transforms\f8a990c4cc30cc88cdd886436f7f7cfb\transformed\jetified-savedstate-1.2.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\82db09a7e5ed136a07bb19f3f3ac2d3a\transformed\jetified-lifecycle-livedata-core-ktx-2.8.7\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\9400bc81e832a8883074a8bee0f299c5\transformed\lifecycle-viewmodel-2.8.7\AndroidManifest.xml:2:1-5:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\c2340ee9c73eea812a624ef9e348cca2\transformed\jetified-lifecycle-viewmodel-release\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\8fa31348e894cfbbe26a97a311fd5c11\transformed\jetified-lifecycle-runtime-release\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\029af402a960e7cd5060cbae059c98b2\transformed\lifecycle-livedata-2.8.7\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\4ac2992e9ab01dc167140d6d5837b39f\transformed\jetified-lifecycle-viewmodel-ktx-2.8.7\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\77b82dcc67c577303da60c3bdbeeb299\transformed\lifecycle-livedata-core-2.8.7\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\9ffc54afdca19576296143c4867ed0b9\transformed\jetified-lifecycle-runtime-ktx-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\0f23f8e059e64445efdf0284bc8352f2\transformed\jetified-lifecycle-viewmodel-savedstate-2.8.7\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\2dffc2f2bf7e28e6fbe60f5f460231f1\transformed\jetified-core-ktx-1.15.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\81c5dd13fdb512544dde379aa9d18986\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cardview:cardview:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\be644076ada7dd0f160b6fecb1a10954\transformed\cardview-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\89382e04b7d1930c5d29b6c39a685643\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\3324bdfa8cc05560fef1055ead153102\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] D:\GradlerHome\caches\9.0.0\transforms\d1f7c93f3e837f67334c4f1a2c817875\transformed\jetified-tracing-1.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\cf3434ebeb9413dc9a3e19714bcb8fa1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\9f31639d89b0cffcffb35db88097aaf4\transformed\documentfile-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\7434bca100954f1c7d40d18a900e5021\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\76cfe5cdc324148746fa1bf6c9a03aeb\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] D:\GradlerHome\caches\9.0.0\transforms\8a7a83d821d234e98da34fa0fec7ce9a\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] D:\GradlerHome\caches\9.0.0\transforms\2d1342a214ffdb2bf7ce1f675fbc10b6\transformed\jetified-annotation-experimental-1.4.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-viewtree:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\ab7e29154014e1700e2b56f5fd6dea7d\transformed\jetified-core-viewtree-1.0.0\AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:4:5-67
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:4:22-64
+uses-permission#android.permission.health.READ_SLEEP
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:5:5-76
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:5:22-73
+uses-permission#android.permission.health.WRITE_SLEEP
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:6:5-77
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:6:22-74
+queries
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:8:5-10:15
+package#com.google.android.apps.healthdata
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:9:9-70
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:9:18-67
+application
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:12:5-48:19
+INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:12:5-48:19
+MERGED from [com.google.android.material:material:1.12.0] D:\GradlerHome\caches\9.0.0\transforms\90e7a98786a3041981e879f54c0f2103\transformed\material-1.12.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.12.0] D:\GradlerHome\caches\9.0.0\transforms\90e7a98786a3041981e879f54c0f2103\transformed\material-1.12.0\AndroidManifest.xml:22:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] D:\GradlerHome\caches\9.0.0\transforms\c19817810fef1570453fb24e2754ebce\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] D:\GradlerHome\caches\9.0.0\transforms\c19817810fef1570453fb24e2754ebce\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
+MERGED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\3324bdfa8cc05560fef1055ead153102\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\3324bdfa8cc05560fef1055ead153102\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\cf3434ebeb9413dc9a3e19714bcb8fa1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\cf3434ebeb9413dc9a3e19714bcb8fa1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+	android:extractNativeLibs
+		INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:17:9-35
+	android:label
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:15:9-40
+	android:roundIcon
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:16:9-63
+	android:icon
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:14:9-58
+	android:allowBackup
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:13:9-35
+	android:theme
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:19:9-54
+	android:usesCleartextTraffic
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:18:9-44
+activity#com.sleepwatch.mobile.MainActivity
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:20:9-28:20
+	android:exported
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:22:13-36
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:21:13-62
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:23:13-27:29
+action#android.intent.action.MAIN
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:24:17-69
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:24:25-66
+category#android.intent.category.LAUNCHER
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:26:17-77
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:26:27-74
+activity#com.sleepwatch.mobile.HealthPermissionRationaleActivity
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:30:9-36:20
+	android:exported
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:32:13-36
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:31:13-83
+intent-filter#action:name:androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:33:13-35:29
+action#androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:34:17-92
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:34:25-89
+activity-alias#com.sleepwatch.mobile.ViewPermissionUsageActivity
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:38:9-47:26
+	android:exported
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:40:13-36
+	android:targetActivity
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:41:13-93
+	android:permission
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:42:13-80
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:39:13-77
+intent-filter#action:name:android.intent.action.VIEW_PERMISSION_USAGE+category:name:android.intent.category.HEALTH_PERMISSIONS
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:43:13-46:29
+action#android.intent.action.VIEW_PERMISSION_USAGE
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:44:17-86
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:44:25-83
+category#android.intent.category.HEALTH_PERMISSIONS
+ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:45:17-87
+	android:name
+		ADDED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml:45:27-84
+uses-sdk
+INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+MERGED from [com.google.android.material:material:1.12.0] D:\GradlerHome\caches\9.0.0\transforms\90e7a98786a3041981e879f54c0f2103\transformed\material-1.12.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.12.0] D:\GradlerHome\caches\9.0.0\transforms\90e7a98786a3041981e879f54c0f2103\transformed\material-1.12.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.7.0] D:\GradlerHome\caches\9.0.0\transforms\9933ec3dd71096b88485c5450108ae80\transformed\jetified-appcompat-resources-1.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.7.0] D:\GradlerHome\caches\9.0.0\transforms\9933ec3dd71096b88485c5450108ae80\transformed\jetified-appcompat-resources-1.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] D:\GradlerHome\caches\9.0.0\transforms\c19817810fef1570453fb24e2754ebce\transformed\constraintlayout-2.0.1\AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] D:\GradlerHome\caches\9.0.0\transforms\c19817810fef1570453fb24e2754ebce\transformed\constraintlayout-2.0.1\AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.appcompat:appcompat:1.7.0] D:\GradlerHome\caches\9.0.0\transforms\15e9fdf5aacbb553dc55f0d9e512609b\transformed\appcompat-1.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat:1.7.0] D:\GradlerHome\caches\9.0.0\transforms\15e9fdf5aacbb553dc55f0d9e512609b\transformed\appcompat-1.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:21:5-44
+MERGED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\5300a22a5f2820e68fabaa71acb3075a\transformed\jetified-emoji2-views-helper-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\5300a22a5f2820e68fabaa71acb3075a\transformed\jetified-emoji2-views-helper-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\1f48dfaa35b2566d298b69ca830d09fc\transformed\drawerlayout-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\1f48dfaa35b2566d298b69ca830d09fc\transformed\drawerlayout-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\8a3d952bfe2a2ba7023426dfaa28ef70\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\8a3d952bfe2a2ba7023426dfaa28ef70\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.5.0] D:\GradlerHome\caches\9.0.0\transforms\c95e4859e29b01a10b48089994db1c48\transformed\transition-1.5.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.transition:transition:1.5.0] D:\GradlerHome\caches\9.0.0\transforms\c95e4859e29b01a10b48089994db1c48\transformed\transition-1.5.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\bd6e56eeb98a5cdc1c7dd3cd014e313a\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\bd6e56eeb98a5cdc1c7dd3cd014e313a\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\1427fe88261375be8dc3dfe3610ec659\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\1427fe88261375be8dc3dfe3610ec659\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\77b4a69f6c4b93a8a65f8bfe38ba76ca\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\77b4a69f6c4b93a8a65f8bfe38ba76ca\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\f10d22c0205cb27d3773e10c07118812\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\f10d22c0205cb27d3773e10c07118812\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.4] D:\GradlerHome\caches\9.0.0\transforms\4f6f7d9e4849e86b0657ff711234021c\transformed\fragment-1.5.4\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.4] D:\GradlerHome\caches\9.0.0\transforms\4f6f7d9e4849e86b0657ff711234021c\transformed\fragment-1.5.4\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\89ecde81e820d06a4ea0ca770f223b14\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\89ecde81e820d06a4ea0ca770f223b14\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\445e77528cfab33179cca1e1793cdaee\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\445e77528cfab33179cca1e1793cdaee\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\060745f9df012aec9b55375b650644e5\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\060745f9df012aec9b55375b650644e5\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\b95724b807f8554416e07e47b05da6fd\transformed\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\b95724b807f8554416e07e47b05da6fd\transformed\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\a64437697d463b59c94fa734408c6549\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] D:\GradlerHome\caches\9.0.0\transforms\a64437697d463b59c94fa734408c6549\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-ktx:1.10.1] D:\GradlerHome\caches\9.0.0\transforms\8cd4ee62db5cd3bc9c21fd5abf48ab4c\transformed\jetified-activity-ktx-1.10.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.10.1] D:\GradlerHome\caches\9.0.0\transforms\8cd4ee62db5cd3bc9c21fd5abf48ab4c\transformed\jetified-activity-ktx-1.10.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.10.1] D:\GradlerHome\caches\9.0.0\transforms\85631229d0352ef6f885f8bda446f71b\transformed\jetified-activity-1.10.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.10.1] D:\GradlerHome\caches\9.0.0\transforms\85631229d0352ef6f885f8bda446f71b\transformed\jetified-activity-1.10.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] D:\GradlerHome\caches\9.0.0\transforms\c632d86491ee8fc25e5a116f0c1d8c94\transformed\jetified-savedstate-ktx-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] D:\GradlerHome\caches\9.0.0\transforms\c632d86491ee8fc25e5a116f0c1d8c94\transformed\jetified-savedstate-ktx-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] D:\GradlerHome\caches\9.0.0\transforms\f8a990c4cc30cc88cdd886436f7f7cfb\transformed\jetified-savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] D:\GradlerHome\caches\9.0.0\transforms\f8a990c4cc30cc88cdd886436f7f7cfb\transformed\jetified-savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\82db09a7e5ed136a07bb19f3f3ac2d3a\transformed\jetified-lifecycle-livedata-core-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\82db09a7e5ed136a07bb19f3f3ac2d3a\transformed\jetified-lifecycle-livedata-core-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\9400bc81e832a8883074a8bee0f299c5\transformed\lifecycle-viewmodel-2.8.7\AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\9400bc81e832a8883074a8bee0f299c5\transformed\lifecycle-viewmodel-2.8.7\AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\c2340ee9c73eea812a624ef9e348cca2\transformed\jetified-lifecycle-viewmodel-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\c2340ee9c73eea812a624ef9e348cca2\transformed\jetified-lifecycle-viewmodel-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\8fa31348e894cfbbe26a97a311fd5c11\transformed\jetified-lifecycle-runtime-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\8fa31348e894cfbbe26a97a311fd5c11\transformed\jetified-lifecycle-runtime-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\029af402a960e7cd5060cbae059c98b2\transformed\lifecycle-livedata-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\029af402a960e7cd5060cbae059c98b2\transformed\lifecycle-livedata-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\4ac2992e9ab01dc167140d6d5837b39f\transformed\jetified-lifecycle-viewmodel-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\4ac2992e9ab01dc167140d6d5837b39f\transformed\jetified-lifecycle-viewmodel-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\77b82dcc67c577303da60c3bdbeeb299\transformed\lifecycle-livedata-core-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\77b82dcc67c577303da60c3bdbeeb299\transformed\lifecycle-livedata-core-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\9ffc54afdca19576296143c4867ed0b9\transformed\jetified-lifecycle-runtime-ktx-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\9ffc54afdca19576296143c4867ed0b9\transformed\jetified-lifecycle-runtime-ktx-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\0f23f8e059e64445efdf0284bc8352f2\transformed\jetified-lifecycle-viewmodel-savedstate-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\0f23f8e059e64445efdf0284bc8352f2\transformed\jetified-lifecycle-viewmodel-savedstate-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\2dffc2f2bf7e28e6fbe60f5f460231f1\transformed\jetified-core-ktx-1.15.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\2dffc2f2bf7e28e6fbe60f5f460231f1\transformed\jetified-core-ktx-1.15.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\81c5dd13fdb512544dde379aa9d18986\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\81c5dd13fdb512544dde379aa9d18986\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\be644076ada7dd0f160b6fecb1a10954\transformed\cardview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\be644076ada7dd0f160b6fecb1a10954\transformed\cardview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\89382e04b7d1930c5d29b6c39a685643\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\89382e04b7d1930c5d29b6c39a685643\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\3324bdfa8cc05560fef1055ead153102\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\3324bdfa8cc05560fef1055ead153102\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] D:\GradlerHome\caches\9.0.0\transforms\d1f7c93f3e837f67334c4f1a2c817875\transformed\jetified-tracing-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] D:\GradlerHome\caches\9.0.0\transforms\d1f7c93f3e837f67334c4f1a2c817875\transformed\jetified-tracing-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\cf3434ebeb9413dc9a3e19714bcb8fa1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\cf3434ebeb9413dc9a3e19714bcb8fa1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.documentfile:documentfile:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\9f31639d89b0cffcffb35db88097aaf4\transformed\documentfile-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\9f31639d89b0cffcffb35db88097aaf4\transformed\documentfile-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\7434bca100954f1c7d40d18a900e5021\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\7434bca100954f1c7d40d18a900e5021\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\76cfe5cdc324148746fa1bf6c9a03aeb\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\76cfe5cdc324148746fa1bf6c9a03aeb\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] D:\GradlerHome\caches\9.0.0\transforms\8a7a83d821d234e98da34fa0fec7ce9a\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] D:\GradlerHome\caches\9.0.0\transforms\8a7a83d821d234e98da34fa0fec7ce9a\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] D:\GradlerHome\caches\9.0.0\transforms\2d1342a214ffdb2bf7ce1f675fbc10b6\transformed\jetified-annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] D:\GradlerHome\caches\9.0.0\transforms\2d1342a214ffdb2bf7ce1f675fbc10b6\transformed\jetified-annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\ab7e29154014e1700e2b56f5fd6dea7d\transformed\jetified-core-viewtree-1.0.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] D:\GradlerHome\caches\9.0.0\transforms\ab7e29154014e1700e2b56f5fd6dea7d\transformed\jetified-core-viewtree-1.0.0\AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\Aplikacja_SleepWatch\mobile_health_connect_prototype\app\src\main\AndroidManifest.xml
+service#androidx.health.platform.client.impl.sdkservice.HealthDataSdkService
+ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:24:9-32:19
+	android:enabled
+		ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:26:13-35
+	android:exported
+		ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:27:13-36
+	tools:ignore
+		ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:28:13-43
+	android:name
+		ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:25:13-96
+intent-filter#action:name:androidx.health.platform.client.ACTION_BIND_SDK_SERVICE
+ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:29:13-31:29
+action#androidx.health.platform.client.ACTION_BIND_SDK_SERVICE
+ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:30:17-98
+	android:name
+		ADDED from [androidx.health.connect:connect-client:1.1.0-rc02] D:\GradlerHome\caches\9.0.0\transforms\16ceee21db2a5a5e81a216fd5b9eec44\transformed\jetified-connect-client-1.1.0-rc02\AndroidManifest.xml:30:25-95
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\3324bdfa8cc05560fef1055ead153102\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] D:\GradlerHome\caches\9.0.0\transforms\3324bdfa8cc05560fef1055ead153102\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] D:\GradlerHome\caches\9.0.0\transforms\9dd598993b851bb187061257d0ed8478\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:30:17-75
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+permission#com.sleepwatch.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+uses-permission#com.sleepwatch.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] D:\GradlerHome\caches\9.0.0\transforms\ea3d9007dd57c907e57b51b5530cb226\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] D:\GradlerHome\caches\9.0.0\transforms\639755a70ef812f39e07717140c501b9\transformed\jetified-lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] D:\GradlerHome\caches\9.0.0\transforms\bd53ae0b885a0751b991337d91292713\transformed\jetified-profileinstaller-1.4.0\AndroidManifest.xml:50:25-92

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Zrodla danych - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .sources-layout {
+        display: grid;
+        gap: 24px;
+    }
+
+    .sources-card,
+    .source-detail-card {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(250, 246, 255, 0.92));
+        padding: 28px;
+    }
+
+    .sources-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
+    }
+
+    .source-detail-card {
+        display: grid;
+        gap: 14px;
+    }
+
+    .source-chip {
+        display: inline-flex;
+        width: fit-content;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(142, 124, 232, 0.12);
+        color: var(--accent-dark);
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .source-option {
+        border-radius: 22px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.84);
+        padding: 16px;
+    }
+
+    .source-option label {
+        margin: 0;
+    }
+</style>
+
+<div class="sources-layout">
+    <section class="sources-card">
+        <div class="eyebrow">Zrodla danych</div>
+        <h1>Wybierz preferowane zrodlo danych snu</h1>
+        <p>Health Connect zostawiamy jako glowna automatyczna sciezke, a Zepp Life jako zgodna sciezke dla opasek Amazfit i Mi Band.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for radio in form.preferred_sync_source %}
+                <div class="source-option">{{ radio.tag }} {{ radio.choice_label }}</div>
+            {% endfor %}
+            {{ form.preferred_sync_source.errors }}
+            <div class="actions">
+                <button type="submit">Zapisz wybor</button>
+                <a class="button secondary" href="{% url 'profile' %}">Wroc do profilu</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="sources-grid">
+        {% for connection in sync_connections %}
+            <article class="source-detail-card">
+                <span class="source-chip">{{ connection.badge }}{% if connection.is_recommended %} • Polecane{% endif %}</span>
+                <h3>{{ connection.label }}</h3>
+                <p>{{ connection.description }}</p>
+                <div class="meta-list">
+                    <div class="meta-row meta-row-balanced">
+                        <span class="meta-key">Status</span>
+                        <strong>{{ connection.status_label }}</strong>
+                    </div>
+                    <div class="meta-row meta-row-balanced">
+                        <span class="meta-key">Ostatnia synchronizacja</span>
+                        <strong>{% if connection.last_synced_at %}{{ connection.last_synced_at|date:"d.m.Y H:i" }}{% else %}-{% endif %}</strong>
+                    </div>
+                    <div class="meta-row meta-row-balanced">
+                        <span class="meta-key">Tryb pobierania</span>
+                        <strong>{% if connection.supports_realtime %}Automatyczny sync{% else %}Import lub mostek{% endif %}</strong>
+                    </div>
+                </div>
+                <p><strong>Nastepny krok:</strong> {{ connection.next_step }}</p>
+                <div class="actions">
+                    {% if connection.provider == "zepp_life" %}
+                        <a class="button secondary" href="{% url 'sleep_import' %}">Importuj dane Zepp</a>
+                    {% else %}
+                        <a class="button secondary" href="{% url 'profile' %}">Zobacz token i status</a>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

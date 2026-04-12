@@ -7,7 +7,7 @@
     <section class="hero-card">
         <div class="eyebrow">Import danych</div>
         <h1>Wgraj dane snu z pliku CSV</h1>
-        <p>Użyj poniższego formularza, aby zaimportować dane snu z pliku CSV. Upewnij się, że plik jest sformatowany zgodnie z wymaganiami.</p>
+        <p>Użyj poniższego formularza żeby zaimportować dane swojego snu. Format pliku zostanie wykryty automatycznie.</p>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -26,10 +26,48 @@
                 <a class="button secondary" href="{% url 'sleep_add' %}">Dodaj noc ręcznie</a>
             </div>
         </form>
+
+        {% if mapping_form %}
+            <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(145, 124, 232, 0.16);">
+                <h3>Ręczne mapowanie kolumn</h3>
+                <p>Tego pliku nie udało się rozpoznać automatycznie. Wskaż, które kolumny odpowiadają polom snu.</p>
+                {% if mapping_error %}
+                    <ul class="errorlist">
+                        <li>{{ mapping_error }}</li>
+                    </ul>
+                {% endif %}
+                {% if mapping_columns %}
+                    <p>Dostępne kolumny: <code>{{ mapping_columns|join:", " }}</code></p>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="map_columns">
+                    <div class="form-grid">
+                        {% for field in mapping_form %}
+                            <div>
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="actions">
+                        <button type="submit">Zastosuj mapowanie i importuj</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
     </section>
 
     <aside class="soft-card">
-        <h3>Format CSV</h3>
+        <h3>Wspierane formaty</h3>
+        <div class="meta-list" style="margin-bottom: 16px;">
+            {% for format_name in supported_formats %}
+                <div class="meta-row">
+                    <span class="meta-key">{{ format_name }}</span>
+                </div>
+            {% endfor %}
+        </div>
         <p>Wymagane kolumny:</p>
         <div class="meta-list">
             {% for column in required_columns %}
@@ -38,10 +76,7 @@
                 </div>
             {% endfor %}
         </div>
-        <p style="margin-top: 16px;">
-            Dopuszczalne wartości dla <code>movement_level</code>:
-            <code>low</code>, <code>medium</code>, <code>high</code>, <code>unknown</code>.
-        </p>
+        <p style="margin-top: 16px;">Opcjonalnie: <code>avg_heart_rate</code>, <code>min_spo2</code>.</p>
     </aside>
 </div>
 

@@ -12,9 +12,23 @@ if ENV_FILE.exists():
         key, value = line.split("=", 1)
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
+
+def env_bool(name: str, default: bool) -> bool:
+    return os.getenv(name, str(default)).lower() in {"1", "true", "yes", "on"}
+
 SECRET_KEY = 'django-insecure-8!scd=(zi$aaf2t=3sa$lrq3*qu!21g0&5f5mxd&#ap3$bii#9'
-DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+DEBUG = env_bool("DEBUG", True)
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
+extra_allowed_hosts = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS_EXTRA", "").split(",")
+    if host.strip()
+]
+ALLOWED_HOSTS.extend(extra_allowed_hosts)
+
+if DEBUG:
+    # Ulatwia testy lokalne z telefonu w tej samej sieci.
+    ALLOWED_HOSTS.append("*")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,12 +71,37 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sleepwatch_project.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DB_ENGINE = os.getenv("DB_ENGINE", "sqlite").lower()
+
+if DB_ENGINE == "mysql":
+    import pymysql
+
+    # Django 6 checks the MySQLdb version even when PyMySQL is used as a drop-in.
+    # Expose a compatible version so the MySQL backend can initialize on Windows.
+    pymysql.version_info = (2, 2, 1, "final", 0)
+    pymysql.__version__ = "2.2.1"
+    pymysql.install_as_MySQLdb()
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv("DB_NAME", "sleepwatch"),
+            'USER': os.getenv("DB_USER", "root"),
+            'PASSWORD': os.getenv("DB_PASSWORD", ""),
+            'HOST': os.getenv("DB_HOST", "127.0.0.1"),
+            'PORT': os.getenv("DB_PORT", "3306"),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -97,8 +136,8 @@ if EMAIL_DELIVERY_MODE == "gmail":
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.getenv("EMAIL_HOST", 'smtp.gmail.com')
     EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
-    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
-    EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
+    EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", True)
+    EMAIL_USE_SSL = env_bool("EMAIL_USE_SSL", False)
     EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "20"))
     EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
     EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")

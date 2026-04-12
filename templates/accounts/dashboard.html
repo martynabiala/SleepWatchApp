@@ -3,215 +3,851 @@
 {% block title %}Dashboard - SleepWatch{% endblock %}
 
 {% block content %}
-<div class="hero">
-    <section class="hero-card">
-        <div class="eyebrow">Dashboard</div>
-        <h1>Witaj, {{ profile.display_name|default:request.user.username }}</h1>
-        <p>
-            Twoje konto jest aktywne, e-mail <strong>{{ request.user.email }}</strong> został
-            potwierdzony, a profil jest gotowy do analizy snu.
-        </p>
-        <div class="actions">
-            <a class="button" href="{% url 'sleep_import' %}">Importuj dane snu</a>
-            <a class="button secondary" href="{% url 'sleep_list' %}">Historia nocy</a>
-            <a class="button" href="{% url 'profile' %}">Edytuj profil</a>
-            <a class="button secondary" href="{% url 'password_reset' %}">Reset hasła</a>
+<style>
+    .shell {
+        max-width: 1380px;
+    }
+
+    .panel {
+        padding: 36px;
+    }
+
+    .dashboard-page {
+        display: grid;
+        gap: 24px;
+    }
+
+    .dashboard-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+        gap: 22px;
+        align-items: start;
+    }
+
+    .dashboard-hero-card,
+    .dashboard-side-card,
+    .dashboard-section {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background:
+            radial-gradient(circle at top right, rgba(172, 147, 255, 0.08), transparent 28%),
+            radial-gradient(circle at bottom left, rgba(142, 124, 232, 0.06), transparent 30%),
+            linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+    }
+
+    .dashboard-hero-card {
+        padding: 30px;
+        display: grid;
+        gap: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-hero-card::after {
+        content: "";
+        position: absolute;
+        top: -48px;
+        right: -60px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(172, 147, 255, 0.14), rgba(172, 147, 255, 0));
+        pointer-events: none;
+    }
+
+    .dashboard-side-card,
+    .dashboard-section {
+        padding: 26px;
+    }
+
+    .dashboard-intro {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .dashboard-avatar {
+        width: 78px;
+        height: 78px;
+        border-radius: 24px;
+        display: grid;
+        place-items: center;
+        font-size: 2rem;
+        color: #5b345f;
+        box-shadow: 0 18px 34px rgba(3, 7, 16, 0.28);
+        flex-shrink: 0;
+    }
+
+    .avatar-moon { background: linear-gradient(135deg, #8e7ce8 0%, #c18cff 100%); }
+    .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
+    .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
+    .avatar-sun { background: linear-gradient(135deg, #ff8f70 0%, #ffc06a 100%); }
+    .avatar-leaf { background: linear-gradient(135deg, #57b890 0%, #8ed4ac 100%); }
+    .avatar-heart { background: linear-gradient(135deg, #ef6ba8 0%, #f6a4c8 100%); }
+
+    .dashboard-header {
+        display: grid;
+        gap: 16px;
+    }
+
+    .dashboard-header h1,
+    .dashboard-section h3,
+    .dashboard-side-card h3 {
+        margin: 0;
+    }
+
+    .dashboard-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .dashboard-summary-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(142, 124, 232, 0.08);
+        border-radius: 24px;
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+        padding: 18px 20px;
+        display: grid;
+        gap: 8px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    }
+
+    .dashboard-summary-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, rgba(142, 124, 232, 0.88), rgba(193, 140, 255, 0.88));
+    }
+
+    .dashboard-summary-card span {
+        color: var(--muted);
+        font-size: 0.92rem;
+    }
+
+    .dashboard-summary-card strong {
+        font-size: 1.8rem;
+        line-height: 1.05;
+    }
+
+    .dashboard-summary-card p,
+    .dashboard-note,
+    .dashboard-section p {
+        margin: 0;
+    }
+
+    .dashboard-tip {
+        display: grid;
+        gap: 8px;
+        padding: 18px 20px;
+        border-radius: 24px;
+        border: 1px solid rgba(142, 124, 232, 0.08);
+        background: linear-gradient(135deg, rgba(255, 246, 234, 0.94), rgba(244, 239, 255, 0.94));
+    }
+
+    .dashboard-tip-label {
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-dark);
+        font-weight: 800;
+    }
+
+    .dashboard-side-card {
+        display: grid;
+        gap: 18px;
+        background:
+            radial-gradient(circle at top right, rgba(172, 147, 255, 0.12), transparent 26%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(250, 246, 255, 0.94));
+    }
+
+    .dashboard-stars {
+        font-size: 2rem;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        text-align: center;
+        color: var(--accent-dark);
+    }
+
+    .dashboard-two-col,
+    .dashboard-chart-grid,
+    .dashboard-meta-grid {
+        display: grid;
+        gap: 22px;
+    }
+
+    .dashboard-two-col,
+    .dashboard-chart-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-mini-card,
+    .dashboard-chart-card {
+        border-radius: 24px;
+        border: 1px solid rgba(142, 124, 232, 0.08);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 22px;
+    }
+
+    .dashboard-mini-card {
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+    }
+
+    .dashboard-chart-card {
+        background:
+            radial-gradient(circle at top right, rgba(172, 147, 255, 0.08), transparent 32%),
+            radial-gradient(circle at bottom left, rgba(142, 124, 232, 0.06), transparent 32%),
+            linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+    }
+
+    .dashboard-chart-card h3,
+    .dashboard-mini-card h3,
+    .dashboard-mini-card h4,
+    .dashboard-chart-card h4 {
+        margin-top: 0;
+    }
+
+    .dashboard-chart-card p {
+        margin-bottom: 14px;
+    }
+
+    .dashboard-note {
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(255, 249, 241, 0.96), rgba(250, 246, 255, 0.92));
+        border: 1px solid rgba(222, 193, 150, 0.28);
+        color: var(--muted);
+    }
+
+    .meta-list {
+        display: grid;
+        gap: 14px;
+    }
+
+    .meta-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(142, 124, 232, 0.08);
+    }
+
+    .meta-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .meta-key {
+        color: var(--muted);
+    }
+
+    .progress {
+        margin-top: 16px;
+        border-radius: 999px;
+        background: rgba(142, 124, 232, 0.1);
+        height: 14px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+    }
+
+    .comparison-grid,
+    .insight-list {
+        display: grid;
+        gap: 16px;
+        margin-top: 18px;
+    }
+
+    .comparison-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .insight-list {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .comparison-card,
+    .insight-card {
+        border-radius: 22px;
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+        padding: 20px;
+    }
+
+    .insight-positive,
+    .insight-warning,
+    .insight-neutral {
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+    }
+
+    .comparison-value {
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin: 8px 0 4px;
+    }
+
+    .comparison-delta {
+        color: var(--accent-dark);
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+
+    .chart-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .chart-stat {
+        border-radius: 18px;
+        border: 1px solid rgba(142, 124, 232, 0.08);
+        background: rgba(255, 255, 255, 0.82);
+        padding: 12px 14px;
+        display: grid;
+        gap: 4px;
+    }
+
+    .chart-stat span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    .chart-stat strong {
+        color: var(--text);
+        font-size: 1.08rem;
+    }
+
+    .dashboard-canvas-wrap {
+        border-radius: 24px;
+        border: 1px solid rgba(145, 124, 232, 0.14);
+        background: #fff;
+        padding: 18px 18px 12px;
+    }
+
+    .dashboard-canvas-wrap canvas {
+        width: 100%;
+        height: 300px;
+        display: block;
+    }
+
+    .dashboard-empty {
+        border-radius: 24px;
+        border: 1px dashed rgba(145, 124, 232, 0.24);
+        background: rgba(255, 255, 255, 0.75);
+        padding: 24px;
+        color: var(--muted);
+    }
+
+    .sync-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .sync-summary-card {
+        border-radius: 22px;
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+        padding: 20px;
+        display: grid;
+        gap: 8px;
+    }
+
+    .sync-summary-chip {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(142, 124, 232, 0.12);
+        color: var(--accent-dark);
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    @media (max-width: 1080px) {
+        .dashboard-hero,
+        .dashboard-two-col,
+        .dashboard-chart-grid,
+        .dashboard-meta-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .chart-meta {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 720px) {
+        .panel {
+            padding: 24px;
+        }
+
+        .dashboard-hero-card,
+        .dashboard-side-card,
+        .dashboard-section,
+        .dashboard-mini-card,
+        .dashboard-chart-card {
+            padding: 22px;
+        }
+
+        .dashboard-intro {
+            align-items: flex-start;
+        }
+
+        .dashboard-canvas-wrap canvas {
+            height: 240px;
+        }
+    }
+</style>
+
+<div class="dashboard-page">
+    <section class="dashboard-hero">
+        <div class="dashboard-hero-card">
+            <div class="dashboard-header">
+                <div class="eyebrow">Szybki podgląd</div>
+                <div class="dashboard-intro">
+                    <div class="dashboard-avatar avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
+                    <div>
+                        <h1>Witaj, {{ profile.display_name|default:request.user.username }}</h1>
+                        <p>Tutaj zobaczysz podsumowanie snu, własne trendy i najważniejsze wnioski z ostatnich nocy w bardziej czytelnym, spokojnym układzie.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-summary-grid">
+                <article class="dashboard-summary-card">
+                    <span>Ostatnia noc</span>
+                    <strong>{% if last_sleep %}{{ last_sleep.sleep_duration_display }}{% else %}-{% endif %}</strong>
+                    <p>{% if last_sleep %}{{ last_sleep.sleep_date|date:"d.m.Y" }}{% else %}Dodaj pierwszą noc, aby zobaczyć podsumowanie.{% endif %}</p>
+                </article>
+                <article class="dashboard-summary-card">
+                    <span>Ostatnie 7 dni</span>
+                    <strong>{{ stats_7.avg_sleep_display }}</strong>
+                    <p>{{ stats_7.good_nights }} dobrych nocy na {{ stats_7.total }} zapisanych.</p>
+                </article>
+                <article class="dashboard-summary-card">
+                    <span>Profil</span>
+                    <strong>{{ profile_completion }}%</strong>
+                    <p>Uzupełnienie danych potrzebnych do lepszych wskazówek.</p>
+                </article>
+            </div>
+
+            <article class="dashboard-tip">
+                <div class="dashboard-tip-label">Wskazówka dnia</div>
+                <h3>{{ dashboard_tip.title }}</h3>
+                <p>{{ dashboard_tip.body }}</p>
+            </article>
+        </div>
+
+        <aside class="dashboard-side-card">
+            <h3>Ostatnia noc</h3>
+            {% if last_sleep %}
+                <div class="meta-list">
+                    <div class="meta-row">
+                        <span class="meta-key">Data</span>
+                        <strong>{{ last_sleep.sleep_date|date:"d.m.Y" }}</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-key">Czas snu</span>
+                        <strong>{{ last_sleep.sleep_duration_display }}</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-key">Średnie tętno</span>
+                        <strong>{{ last_sleep.avg_heart_rate|default:"-" }}</strong>
+                    </div>
+                </div>
+
+                {% if last_sleep_evaluation %}
+                    {% widthratio last_sleep_evaluation.score 20 1 as dashboard_stars %}
+                    <div class="dashboard-mini-card">
+                        <h4>Ocena aplikacji</h4>
+                        <div class="dashboard-stars">
+                            {% if dashboard_stars == "5" %}★★★★★
+                            {% elif dashboard_stars == "4" %}★★★★☆
+                            {% elif dashboard_stars == "3" %}★★★☆☆
+                            {% elif dashboard_stars == "2" %}★★☆☆☆
+                            {% else %}★☆☆☆☆
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="dashboard-mini-card">
+                    <h4>Twoja ocena</h4>
+                    <div class="meta-list">
+                        <div class="meta-row">
+                            <span class="meta-key">Jakość snu</span>
+                            <strong>{{ last_sleep_note.get_sleep_quality_display|default:"Brak oceny" }}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Stres</span>
+                            <strong>{{ last_sleep_note.stress_level|default:"-" }}/10</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Kofeina</span>
+                            <strong>{% if last_sleep_note and last_sleep_note.caffeine_used %}Tak{% else %}Nie{% endif %}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Drzemka</span>
+                            <strong>{% if last_sleep_note and last_sleep_note.nap_taken %}Tak{% else %}Nie{% endif %}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Alkohol</span>
+                            <strong>{% if last_sleep_note and last_sleep_note.alcohol %}Tak{% else %}Nie{% endif %}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Trening</span>
+                            <strong>{% if last_sleep_note and last_sleep_note.training_done %}Tak{% else %}Nie{% endif %}</strong>
+                        </div>
+                    </div>
+                    {% if last_sleep_note and last_sleep_note.note_text %}
+                        <div class="dashboard-note" style="margin-top: 16px;">"{{ last_sleep_note.note_text }}"</div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>Nie masz jeszcze zaimportowanych danych snu.</p>
+            {% endif %}
+        </aside>
+    </section>
+
+    <section class="dashboard-two-col">
+        <div class="dashboard-mini-card">
+            <h3>Twoja seria snu</h3>
+            <div class="comparison-value">{{ sleep_streak.count }}</div>
+            <div class="comparison-delta">{{ sleep_streak.label }}</div>
+            <p>{{ sleep_streak.body }}</p>
+        </div>
+
+        <div class="dashboard-mini-card">
+            <h3>Cel tygodnia</h3>
+            <div class="comparison-value">{{ weekly_goal.label }}</div>
+            <p>{{ weekly_goal.body }}</p>
+            <div class="progress" aria-hidden="true">
+                <div class="progress-bar" style="width: {{ weekly_goal.percent }}%;"></div>
+            </div>
+            <p style="margin-top: 12px;">{{ weekly_goal.hint }}</p>
         </div>
     </section>
 
-    <aside class="soft-card">
-        <h3>Ostatnia noc</h3>
-        {% if last_sleep %}
+    <section class="dashboard-meta-grid">
+        <div class="dashboard-mini-card">
+            <h3>Profil snu</h3>
             <div class="meta-list">
                 <div class="meta-row">
-                    <span class="meta-key">Data</span>
-                    <strong>{{ last_sleep.sleep_date|date:"d.m.Y" }}</strong>
+                    <span class="meta-key">Docelowy czas snu</span>
+                    <strong>{{ profile.sleep_goal_hours }} h</strong>
                 </div>
                 <div class="meta-row">
-                    <span class="meta-key">Czas snu</span>
-                    <strong>{{ last_sleep.sleep_duration_display }}</strong>
+                    <span class="meta-key">Grupa wiekowa</span>
+                    <strong>{{ profile.get_age_group_display|default:"Nie ustawiono" }}</strong>
                 </div>
                 <div class="meta-row">
-                    <span class="meta-key">Średnie tętno</span>
-                    <strong>{{ last_sleep.avg_heart_rate|default:"-" }}</strong>
+                    <span class="meta-key">Aktywność fizyczna</span>
+                    <strong>{{ profile.get_lifestyle_display|default:"Nie ustawiono" }}</strong>
                 </div>
             </div>
-        {% else %}
-            <p>Nie masz jeszcze zaimportowanych danych snu.</p>
-        {% endif %}
-    </aside>
-</div>
-
-<div class="grid stats">
-    <div class="stat">
-        <span>Status konta</span>
-        <strong>Aktywne</strong>
-    </div>
-    <div class="stat">
-        <span>Docelowy czas snu</span>
-        <strong>{{ profile.sleep_goal_hours }} h</strong>
-    </div>
-    <div class="stat">
-        <span>Grupa wiekowa</span>
-        <strong>{{ profile.get_age_group_display|default:"Nie ustawiono" }}</strong>
-    </div>
-    <div class="stat">
-        <span>Aktywność fizyczna</span>
-        <strong>{{ profile.get_lifestyle_display|default:"Nie ustawiono" }}</strong>
-    </div>
-</div>
-
-<section class="soft-card" style="margin-top: 24px;">
-    <h3>Analiza własnych danych</h3>
-    <p>Porównanie Twoich ostatnich 7 dni z pełniejszym obrazem z ostatnich 30 dni.</p>
-    <div class="comparison-grid">
-        <div class="comparison-card">
-            <h4>Średni czas snu</h4>
-            <div class="comparison-value">{{ self_comparison.last_7.avg_sleep_display }}</div>
-            <div class="comparison-delta">
-                7 dni vs 30 dni: {{ self_comparison.delta_sleep_display }}
-            </div>
         </div>
-        <div class="comparison-card">
-            <h4>Średnie tętno</h4>
-            <div class="comparison-value">{{ self_comparison.last_7.avg_hr_display }}</div>
-            <div class="comparison-delta">
-                7 dni vs 30 dni: {{ self_comparison.delta_hr_display }}
-            </div>
-        </div>
-        <div class="comparison-card">
-            <h4>Udział dobrych nocy</h4>
-            <div class="comparison-value">{{ self_comparison.good_night_share_7 }}%</div>
-            <div class="comparison-delta">
-                7 dni vs 30 dni: {{ self_comparison.delta_good_night_share_display }}
-            </div>
-        </div>
-    </div>
-</section>
 
-<section class="soft-card" style="margin-top: 24px;">
-    <h3>Wnioski z Twoich danych</h3>
-    <div class="insight-list">
-        {% for insight in self_insights %}
-            <article class="insight-card insight-{{ insight.tone }}">
-                <h4>{{ insight.title }}</h4>
-                <p>{{ insight.body }}</p>
-            </article>
-        {% endfor %}
-    </div>
-</section>
-
-<div class="panel-grid">
-    <section class="soft-card">
-        <h3>Trendy 7 dni</h3>
-        <div class="meta-list">
-            <div class="meta-row">
-                <span class="meta-key">Zapisane noce</span>
-                <strong>{{ stats_7.total }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Średni czas snu</span>
-                <strong>{{ stats_7.avg_sleep_display }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Średnie tętno</span>
-                <strong>{{ stats_7.avg_hr }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Dobre / złe noce</span>
-                <strong>{{ stats_7.good_nights }} / {{ stats_7.bad_nights }}</strong>
+        <div class="dashboard-mini-card">
+            <h3>Trendy 7 i 30 dni</h3>
+            <div class="meta-list">
+                <div class="meta-row">
+                    <span class="meta-key">7 dni: średni sen</span>
+                    <strong>{{ stats_7.avg_sleep_display }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">7 dni: dobre / słabe</span>
+                    <strong>{{ stats_7.good_nights }} / {{ stats_7.bad_nights }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">30 dni: średni sen</span>
+                    <strong>{{ stats_30.avg_sleep_display }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">30 dni: średnie SpO2 min</span>
+                    <strong>{{ stats_30.avg_spo2 }}</strong>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="soft-card">
-        <h3>Trendy 30 dni</h3>
-        <div class="meta-list">
-            <div class="meta-row">
-                <span class="meta-key">Zapisane noce</span>
-                <strong>{{ stats_30.total }}</strong>
+    <section class="dashboard-section">
+        <h3>Status synchronizacji</h3>
+        <p>SleepWatch moze obslugiwac wiecej niz jedno zrodlo danych. Health Connect jest glowna sciezka automatyczna, a Zepp Life osobna sciezka dla opasek.</p>
+        <div class="actions" style="margin-top: 12px; margin-bottom: 18px;">
+            <a class="button secondary" href="{% url 'sync_sources' %}">Ustaw zrodlo danych</a>
+            <a class="button secondary" href="{% url 'sleep_import' %}">Import Zepp Life</a>
+        </div>
+        <div class="sync-summary-grid">
+            {% for connection in sync_connections %}
+                <article class="sync-summary-card">
+                    <strong>{{ connection.label }}</strong>
+                    <span class="sync-summary-chip">{{ connection.badge }}</span>
+                    <span>{{ connection.status_label }}</span>
+                    <p>{{ connection.description }}</p>
+                    <p>Ostatnia synchronizacja: {% if connection.last_synced_at %}{{ connection.last_synced_at|date:"d.m.Y H:i" }}{% else %}-{% endif %}</p>
+                    <p>Ostatnio pobrane rekordy: {{ connection.last_imported_count }}</p>
+                    <p><strong>Dalej:</strong> {{ connection.next_step }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <h3>Analiza własnych danych</h3>
+        <p>Porównanie Twoich ostatnich 7 dni z pełniejszym obrazem z ostatnich 30 dni.</p>
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h4>Średni czas snu</h4>
+                <div class="comparison-value">{{ self_comparison.last_7.avg_sleep_display }}</div>
+                <div class="comparison-delta">7 dni vs 30 dni: {{ self_comparison.delta_sleep_display }}</div>
             </div>
-            <div class="meta-row">
-                <span class="meta-key">Średni czas snu</span>
-                <strong>{{ stats_30.avg_sleep_display }}</strong>
+            <div class="comparison-card">
+                <h4>Średnie tętno</h4>
+                <div class="comparison-value">{{ self_comparison.last_7.avg_hr_display }}</div>
+                <div class="comparison-delta">7 dni vs 30 dni: {{ self_comparison.delta_hr_display }}</div>
             </div>
-            <div class="meta-row">
-                <span class="meta-key">Średnie SpO2 min</span>
-                <strong>{{ stats_30.avg_spo2 }}</strong>
+            <div class="comparison-card">
+                <h4>Udział dobrych nocy</h4>
+                <div class="comparison-value">{{ self_comparison.good_night_share_7 }}%</div>
+                <div class="comparison-delta">Ocena aplikacji, 7 dni vs 30 dni: {{ self_comparison.delta_good_night_share_display }}</div>
             </div>
-            <div class="meta-row">
-                <span class="meta-key">Dobre / złe noce</span>
-                <strong>{{ stats_30.good_nights }} / {{ stats_30.bad_nights }}</strong>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <h3>Wnioski z Twoich danych</h3>
+        <div class="insight-list">
+            {% for insight in self_insights %}
+                <article class="insight-card insight-{{ insight.tone }}">
+                    <h4>{{ insight.title }}</h4>
+                    <p>{{ insight.body }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <h3>Ten miesiąc vs poprzedni miesiąc</h3>
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h4>Średni czas snu</h4>
+                <div class="comparison-value">{{ month_comparison.current.avg_sleep_display }}</div>
+                <div class="comparison-delta">{{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}: {{ month_comparison.delta_sleep }}</div>
             </div>
+            <div class="comparison-card">
+                <h4>Średnie tętno</h4>
+                <div class="comparison-value">{{ month_comparison.current.avg_hr_display }}</div>
+                <div class="comparison-delta">{{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}: {{ month_comparison.delta_hr }}</div>
+            </div>
+            <div class="comparison-card">
+                <h4>Dobre noce</h4>
+                <div class="comparison-value">{{ month_comparison.current.good_nights }}</div>
+                <div class="comparison-delta">{{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}: {{ month_comparison.delta_good_nights }}</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-chart-grid">
+        <div class="dashboard-chart-card">
+            <h3>Wykres czasu snu - 7 dni</h3>
+            <p>Krótki trend pokazujący, jak zmieniała się długość snu w ostatnim tygodniu.</p>
+            {% if sleep_chart_7 %}
+                <div class="chart-meta">
+                    <div class="chart-stat">
+                        <span>Najkrótsza noc</span>
+                        <strong>{{ sleep_chart_7.min_value }}</strong>
+                    </div>
+                    <div class="chart-stat">
+                        <span>Średnio</span>
+                        <strong>{{ stats_7.avg_sleep_display }}</strong>
+                    </div>
+                    <div class="chart-stat">
+                        <span>Najdłuższa noc</span>
+                        <strong>{{ sleep_chart_7.max_value }}</strong>
+                    </div>
+                </div>
+                <div class="dashboard-canvas-wrap">
+                    <canvas id="dashboardSleepChart" aria-label="Wykres czasu snu"></canvas>
+                </div>
+            {% else %}
+                <div class="dashboard-empty">Za mało danych, aby pokazać wykres czasu snu.</div>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-chart-card">
+            <h3>Wykres średniego tętna - 7 dni</h3>
+            <p>Podgląd nocnego obciążenia organizmu i spokojniejszych nocy.</p>
+            {% if hr_chart_7 %}
+                <div class="chart-meta">
+                    <div class="chart-stat">
+                        <span>Najniższa wartość</span>
+                        <strong>{{ hr_chart_7.min_value }}</strong>
+                    </div>
+                    <div class="chart-stat">
+                        <span>Średnio</span>
+                        <strong>{{ stats_7.avg_hr }}</strong>
+                    </div>
+                    <div class="chart-stat">
+                        <span>Najwyższa wartość</span>
+                        <strong>{{ hr_chart_7.max_value }}</strong>
+                    </div>
+                </div>
+                <div class="dashboard-canvas-wrap">
+                    <canvas id="dashboardHrChart" aria-label="Wykres średniego tętna"></canvas>
+                </div>
+            {% else %}
+                <div class="dashboard-empty">Za mało danych, aby pokazać wykres średniego tętna.</div>
+            {% endif %}
         </div>
     </section>
 </div>
 
-<section class="soft-card" style="margin-top: 24px;">
-    <h3>Ten miesiąc vs poprzedni miesiąc</h3>
-    <div class="comparison-grid">
-        <div class="comparison-card">
-            <h4>Średni czas snu</h4>
-            <div class="comparison-value">{{ month_comparison.current.avg_sleep_display }}</div>
-            <div class="comparison-delta">
-                {{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}:
-                {{ month_comparison.delta_sleep }}
-            </div>
-        </div>
-        <div class="comparison-card">
-            <h4>Średnie tętno</h4>
-            <div class="comparison-value">{{ month_comparison.current.avg_hr_display }}</div>
-            <div class="comparison-delta">
-                {{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}:
-                {{ month_comparison.delta_hr }}
-            </div>
-        </div>
-        <div class="comparison-card">
-            <h4>Dobre noce</h4>
-            <div class="comparison-value">{{ month_comparison.current.good_nights }}</div>
-            <div class="comparison-delta">
-                {{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}:
-                {{ month_comparison.delta_good_nights }}
-            </div>
-        </div>
-    </div>
-</section>
+{{ sleep_chart_7|json_script:"dashboard-sleep-chart-data" }}
+{{ hr_chart_7|json_script:"dashboard-hr-chart-data" }}
 
-<div class="chart-grid">
-    <section class="soft-card chart-card">
-        <h3>Wykres czasu snu - 7 dni</h3>
-        {% if sleep_chart_7 %}
-            <div class="chart-meta">
-                <span>Min: {{ sleep_chart_7.min_value }}</span>
-                <span>Max: {{ sleep_chart_7.max_value }}</span>
-            </div>
-            <svg class="chart-svg" viewBox="0 0 320 120" aria-label="Wykres czasu snu">
-                <polyline class="chart-line" points="{{ sleep_chart_7.points }}"></polyline>
-                {% for point in sleep_chart_7.labels %}
-                    <circle class="chart-dot" cx="{{ point.x }}" cy="{{ point.y }}" r="4"></circle>
-                {% endfor %}
-            </svg>
-        {% else %}
-            <p>Za mało danych, aby pokazać wykres czasu snu.</p>
-        {% endif %}
-    </section>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+    function readDashboardChartData(id) {
+        const element = document.getElementById(id);
+        return element ? JSON.parse(element.textContent) : null;
+    }
 
-    <section class="soft-card chart-card">
-        <h3>Wykres średniego tętna - 7 dni</h3>
-        {% if hr_chart_7 %}
-            <div class="chart-meta">
-                <span>Min: {{ hr_chart_7.min_value }}</span>
-                <span>Max: {{ hr_chart_7.max_value }}</span>
-            </div>
-            <svg class="chart-svg" viewBox="0 0 320 120" aria-label="Wykres średniego tętna">
-                <polyline class="chart-line" points="{{ hr_chart_7.points }}"></polyline>
-                {% for point in hr_chart_7.labels %}
-                    <circle class="chart-dot" cx="{{ point.x }}" cy="{{ point.y }}" r="4"></circle>
-                {% endfor %}
-            </svg>
-        {% else %}
-            <p>Za mało danych, aby pokazać wykres średniego tętna.</p>
-        {% endif %}
-    </section>
-</div>
+    function createDashboardLineChart(canvasId, chartData, options) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || !chartData || !window.Chart) {
+            return;
+        }
+
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: options.label,
+                    data: chartData.values,
+                    borderColor: options.color,
+                    backgroundColor: options.fill,
+                    pointBackgroundColor: "#ffffff",
+                    pointBorderColor: options.color,
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    borderWidth: 4,
+                    tension: 0.35,
+                    fill: true,
+                    spanGaps: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: "#4b3562",
+                        titleColor: "#ffffff",
+                        bodyColor: "#ffffff",
+                        cornerRadius: 12,
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return chartData.display_values[context.dataIndex];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: "#6f5275",
+                            maxTicksLimit: 6,
+                            font: {
+                                size: 12,
+                                weight: "600"
+                            }
+                        },
+                        border: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            color: "#6f5275",
+                            padding: 10,
+                            font: {
+                                size: 12,
+                                weight: "600"
+                            },
+                            callback: options.tickFormatter
+                        },
+                        grid: {
+                            color: "rgba(145, 124, 232, 0.12)"
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function minutesToHourLabel(value) {
+        const hours = Math.floor(value / 60);
+        const minutes = Math.round(value % 60);
+        return minutes === 0 ? hours + " h" : hours + " h " + String(minutes).padStart(2, "0");
+    }
+
+    const dashboardSleepChartData = readDashboardChartData("dashboard-sleep-chart-data");
+    const dashboardHrChartData = readDashboardChartData("dashboard-hr-chart-data");
+
+    createDashboardLineChart("dashboardSleepChart", dashboardSleepChartData, {
+        label: "Czas snu",
+        color: "#8e7ce8",
+        fill: "rgba(142, 124, 232, 0.14)",
+        tickFormatter: function(value) {
+            return minutesToHourLabel(value);
+        }
+    });
+
+    createDashboardLineChart("dashboardHrChart", dashboardHrChartData, {
+        label: "Średnie tętno",
+        color: "#4fa8df",
+        fill: "rgba(79, 168, 223, 0.14)",
+        tickFormatter: function(value) {
+            return value;
+        }
+    });
+</script>
 {% endblock %}

@@ -31,17 +31,26 @@
 <section class="soft-card" style="margin-top: 24px;">
     <h3>Twoje noce</h3>
     {% if sleep_records %}
-        <div class="meta-list">
-            {% for item in sleep_records %}
-                <div class="meta-row">
-                    <span class="meta-key">
-                        {{ item.sleep_date|date:"d.m.Y" }} | {{ item.sleep_duration_display }} |
-                        HR {{ item.avg_heart_rate|default:"-" }} | SpO2 {{ item.min_spo2|default:"-" }}
-                    </span>
-                    <a class="auth-link" href="{% url 'sleep_detail' item.pk %}">Szczegóły</a>
-                </div>
-            {% endfor %}
-        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="meta-list">
+                {% for item in sleep_records %}
+                    <div class="meta-row" style="align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 12px; margin: 0; font-weight: 600;">
+                            <input type="checkbox" name="selected_records" value="{{ item.pk }}" style="width: auto;">
+                            <span class="meta-key">
+                                {{ item.sleep_date|date:"d.m.Y" }} | {{ item.sleep_duration_display }} |
+                                Wybudzenia {{ item.awakenings_count|default:"-" }} | HR {{ item.avg_heart_rate|default:"-" }}
+                            </span>
+                        </label>
+                        <a class="auth-link" href="{% url 'sleep_detail' item.pk %}">Szczegóły</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="actions">
+                <button type="submit">Usuń zaznaczone</button>
+            </div>
+        </form>
     {% else %}
         <p>Brak zapisanych nocy dla wybranego zakresu.</p>
     {% endif %}

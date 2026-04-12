@@ -38,7 +38,12 @@ Administrator:
 - widzi liste uzytkownikow oraz profili,
 - moze zarzadzac danymi kont i profili z jednego miejsca.
 
-Projekt obsluguje dwa tryby wysylki e-mail:
+Projekt obsluguje dwie bazy danych:
+
+- `sqlite` - domyslna baza lokalna zapisywana w pliku `db.sqlite3`,
+- `mysql` - baza `MySQL` lub `MariaDB`, np. uruchomiona z `XAMPP`.
+
+Projekt obsluguje tez dwa tryby wysylki e-mail:
 
 - `gmail` - prawdziwa wysylka przez Gmail SMTP,
 - `file` - zapis wiadomosci do folderu `sent_emails`.
@@ -57,15 +62,22 @@ cd D:\Aplikacja_SleepWatch
 py -m pip install -r requirements.txt
 ```
 
-3. Skonfiguruj Gmail SMTP:
+3. Skonfiguruj `.env`:
 
 - skopiuj plik `.env.example` do `.env`
-- wpisz swoj adres Gmail
-- wpisz haslo aplikacji Google, nie zwykle haslo do konta
+- wybierz baze danych
+- jesli chcesz Gmail SMTP, wpisz swoj adres Gmail i haslo aplikacji Google
 
 Przykladowy `.env`:
 
 ```text
+DEBUG=true
+DB_ENGINE=sqlite
+DB_NAME=sleepwatch
+DB_USER=root
+DB_PASSWORD=
+DB_HOST=127.0.0.1
+DB_PORT=3306
 EMAIL_DELIVERY_MODE=gmail
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
@@ -76,7 +88,7 @@ EMAIL_HOST_USER=twoj_adres_gmail@gmail.com
 EMAIL_HOST_PASSWORD=abcdefghijklmnop
 ```
 
-Uwaga:
+Uwaga dla Gmail:
 
 - musisz miec wlaczone uwierzytelnianie dwuetapowe na koncie Google,
 - potem w Google generujesz `Haslo do aplikacji`,
@@ -106,6 +118,57 @@ py manage.py runserver
 ```text
 http://127.0.0.1:8000/
 ```
+
+## Jak podlaczyc baze z XAMPP
+
+1. Uruchom w `XAMPP Control Panel` modul `MySQL`.
+
+2. Otworz `phpMyAdmin` i utworz baze, na przyklad:
+
+```text
+sleepwatch
+```
+
+3. Ustaw w `.env`:
+
+```text
+DB_ENGINE=mysql
+DB_NAME=sleepwatch
+DB_USER=root
+DB_PASSWORD=
+DB_HOST=127.0.0.1
+DB_PORT=3306
+```
+
+4. Zainstaluj zaleznosci:
+
+```powershell
+py -m pip install -r requirements.txt
+```
+
+5. Wykonaj migracje:
+
+```powershell
+py manage.py migrate
+```
+
+6. Jesli chcesz przeniesc dane z obecnej `SQLite`, wykonaj eksport:
+
+```powershell
+py manage.py dumpdata --exclude contenttypes --exclude auth.permission > data.json
+```
+
+7. Po przelaczeniu `.env` na `mysql` i po migracjach zaimportuj dane:
+
+```powershell
+py manage.py loaddata data.json
+```
+
+Praktyczna uwaga:
+
+- w typowej lokalnej konfiguracji `XAMPP` uzytkownik `root` nie ma hasla,
+- na produkcje lepiej postawic osobna baze i osobnego uzytkownika,
+- `XAMPP` tutaj jest tylko dostawca bazy danych, aplikacja dalej dziala jako `Django`.
 
 ## Format importu CSV
 

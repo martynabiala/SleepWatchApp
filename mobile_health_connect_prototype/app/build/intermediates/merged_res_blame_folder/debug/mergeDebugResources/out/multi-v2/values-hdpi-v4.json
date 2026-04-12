@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.sleepwatch.mobile.app-mergeDebugResources-2:/values-hdpi-v4/values-hdpi-v4.xml",
+            "map": [
+                {
+                    "source": "D:\\GradlerHome\\caches\\9.0.0\\transforms\\15e9fdf5aacbb553dc55f0d9e512609b\\transformed\\appcompat-1.7.0\\res\\values-hdpi-v4\\values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "13",
+                        "endOffsets": "327"
+                    }
+                }
+            ]
+        }
+    ]
+}
