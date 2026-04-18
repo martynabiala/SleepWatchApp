@@ -1,8 +1,8 @@
 [build]
-  publish = "netlify-site"
+  base = "netlify-site"
+  publish = "."
 
 [[redirects]]
   from = "/app"
   to = "https://sleepwatch-app.onrender.com"
   status = 302
-
