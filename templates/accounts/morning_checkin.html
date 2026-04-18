@@ -1,0 +1,65 @@
+{% extends "accounts/hub_page_base.html" %}
+
+{% block title %}Poranne podsumowanie - SleepWatch{% endblock %}
+
+{% block hub_body %}
+<section class="hub-hero">
+    <div class="hub-kicker">Poranek</div>
+    <h1>Poranne podsumowanie</h1>
+    <p class="hub-copy">Jedno miejsce, w kt&oacute;rym mo&#380;esz szybko sprawdzi&#263;, jak wygl&#261;da&#322;a ostatnia noc i czy warto dopisa&#263; do niej jeszcze kilka swoich obserwacji.</p>
+    <div class="hub-action-row">
+        {% if last_sleep %}
+            <a class="button secondary" href="{% url 'sleep_detail' last_sleep.pk %}">Uzupe&#322;nij notatk&#281; do nocy</a>
+        {% endif %}
+        <a class="button secondary" href="{% url 'sleep_list' %}">Przejd&#378; do historii nocy</a>
+    </div>
+</section>
+
+{% if last_sleep %}
+    <section class="hub-grid">
+        {% for card in morning_cards %}
+            <article class="hub-card">
+                <div class="hub-stat-label">{{ card.label }}</div>
+                <div class="hub-stat-value">{{ card.value }}</div>
+                <p class="hub-note">{{ card.body }}</p>
+            </article>
+        {% endfor %}
+    </section>
+
+    {% if evaluation %}
+        <section class="hub-section">
+            <div class="hub-kicker">Ocena nocy</div>
+            <h2>{{ evaluation.label }}</h2>
+            <div class="hub-pill-row" style="margin-top: 14px;">
+                <span class="hub-pill hub-pill-{{ evaluation.tone }}">{{ evaluation.score }}%</span>
+            </div>
+            <p class="hub-copy" style="margin-top: 14px;">{{ evaluation.summary|capfirst }}</p>
+        </section>
+    {% endif %}
+
+    <section class="hub-section">
+        <div class="hub-kicker">Ostatni zapis</div>
+        <h2>{{ last_sleep.sleep_date|date:"d.m.Y" }}</h2>
+        <div class="hub-grid-3" style="margin-top: 18px;">
+            <article class="hub-card">
+                <div class="hub-item-label">Czas snu</div>
+                <div class="hub-stat-value">{{ last_sleep.sleep_duration_display }}</div>
+            </article>
+            <article class="hub-card">
+                <div class="hub-item-label">&#346;rednie t&#281;tno</div>
+                <div class="hub-stat-value">{{ last_sleep.avg_heart_rate|default:"-" }}</div>
+            </article>
+            <article class="hub-card">
+                <div class="hub-item-label">Wybudzenia</div>
+                <div class="hub-stat-value">{{ last_sleep.awakenings_count|default:"-" }}</div>
+            </article>
+        </div>
+    </section>
+{% else %}
+    <section class="hub-section">
+        <div class="hub-empty">
+            Nie masz jeszcze zapisanej nocy. Dodaj pierwszy wpis, a poranne podsumowanie zacznie pokazywa&#263; ocen&#281; i najwa&#380;niejsze sygna&#322;y.
+        </div>
+    </section>
+{% endif %}
+{% endblock %}

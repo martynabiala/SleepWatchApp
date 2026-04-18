@@ -318,7 +318,7 @@ def sync_sleep_data_api_view(request):
     try:
         payload = json.loads(request.body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
-        return JsonResponse({"detail": "NieprawidÅ‚owy JSON."}, status=400)
+        return JsonResponse({"detail": "Nieprawid\u0142owy JSON."}, status=400)
 
     provider = payload.get("provider") or SleepRecord.SOURCE_HEALTH_CONNECT
     supported_providers = {
@@ -327,11 +327,11 @@ def sync_sleep_data_api_view(request):
         SleepRecord.SOURCE_ZEPP_LIFE,
     }
     if provider not in supported_providers:
-        return JsonResponse({"detail": "NieobsÅ‚ugiwany provider synchronizacji."}, status=400)
+        return JsonResponse({"detail": "Nieobs\u0142ugiwany provider synchronizacji."}, status=400)
 
     records = payload.get("records")
     if not isinstance(records, list) or not records:
-        return JsonResponse({"detail": "Pole records musi zawieraÄ‡ listÄ™ rekordÃ³w."}, status=400)
+        return JsonResponse({"detail": "Pole records musi zawiera\u0107 list\u0119 rekord\u00f3w."}, status=400)
 
     device_name = str(payload.get("device_name") or "").strip()[:120]
 

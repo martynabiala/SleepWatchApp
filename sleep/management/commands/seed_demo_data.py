@@ -11,26 +11,26 @@ from sleep.models import ImportHistory, SleepNote, SleepRecord
 
 
 class Command(BaseCommand):
-    help = "Generuje demo dane uzytkownikow, snu, notatek i historii importu."
+    help = "Generuje demo dane u\u017cytkownik\u00f3w, snu, notatek i historii importu."
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--users",
             type=int,
             default=3,
-            help="Liczba demo uzytkownikow do przygotowania.",
+            help="Liczba demo u\u017cytkownik\u00f3w do przygotowania.",
         )
         parser.add_argument(
             "--days",
             type=int,
             default=45,
-            help="Liczba dni historii snu dla kazdego uzytkownika.",
+            help="Liczba dni historii snu dla ka\u017cdego u\u017cytkownika.",
         )
         parser.add_argument(
             "--password",
             type=str,
             default="SleepWatch123!",
-            help="Haslo ustawiane demo uzytkownikom.",
+            help="Has\u0142o ustawiane demo u\u017cytkownikom.",
         )
         parser.add_argument(
             "--seed",

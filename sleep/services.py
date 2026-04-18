@@ -291,7 +291,7 @@ def parse_optional_int(value):
     if isinstance(value, (int, float)):
         parsed = int(round(float(value)))
         if parsed < 0:
-            raise ValueError("WartoÅ›Ä‡ nie moÅ¼e byÄ‡ ujemna.")
+            raise ValueError("Warto\u015b\u0107 nie mo\u017ce by\u0107 ujemna.")
         return parsed
 
     value = str(value).strip()
@@ -300,7 +300,7 @@ def parse_optional_int(value):
     normalized = value.replace(",", ".")
     parsed = int(round(float(normalized)))
     if parsed < 0:
-        raise ValueError("Wartość nie może być ujemna.")
+        raise ValueError("Warto\u015b\u0107 nie mo\u017ce by\u0107 ujemna.")
     return parsed
 
 
@@ -396,7 +396,7 @@ def find_existing_synced_record(user, provider, external_record_id, sleep_date):
 
 def normalize_sync_record(payload, provider, device_name=""):
     if not isinstance(payload, dict):
-        raise ValueError("KaÅ¼dy rekord synchronizacji musi byÄ‡ obiektem JSON.")
+        raise ValueError("Ka\u017cdy rekord synchronizacji musi by\u0107 obiektem JSON.")
 
     sleep_date = parse_sync_date(payload.get("sleep_date"))
     sleep_duration_minutes = parse_required_int(payload.get("sleep_duration_minutes"))
@@ -420,7 +420,7 @@ def normalize_sync_record(payload, provider, device_name=""):
     normalized["external_record_id"] = str(payload.get("external_id") or payload.get("external_record_id") or "").strip()
 
     if sleep_duration_minutes <= 0:
-        raise ValueError("Pole sleep_duration_minutes musi byÄ‡ dodatnie.")
+        raise ValueError("Pole sleep_duration_minutes musi by\u0107 dodatnie.")
 
     if (
         normalized["light_sleep_minutes"] is not None
@@ -433,7 +433,7 @@ def normalize_sync_record(payload, provider, device_name=""):
             + normalized["rem_minutes"]
         )
         if phase_total > sleep_duration_minutes + 30:
-            raise ValueError("Suma faz snu nie moÅ¼e znaczÄ…co przekraczaÄ‡ caÅ‚kowitego czasu snu.")
+            raise ValueError("Suma faz snu nie mo\u017ce znacz\u0105co przekracza\u0107 ca\u0142kowitego czasu snu.")
 
     return normalized
 
@@ -464,7 +464,7 @@ def parse_sync_time(value):
             return datetime.strptime(str(value).strip(), time_format).time()
         except ValueError:
             continue
-    raise ValueError("NieprawidÅ‚owy format godziny. UÅ¼yj HH:MM lub HH:MM:SS.")
+    raise ValueError("Nieprawid\u0142owy format godziny. U\u017cyj HH:MM lub HH:MM:SS.")
 
 
 def build_sleep_auto_evaluation(sleep_record, sleep_note, profile):

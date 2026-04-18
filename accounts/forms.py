@@ -14,7 +14,7 @@ User = get_user_model()
 
 
 def build_unique_username_from_email(email):
-    base_username = email.split("@", 1)[0].strip() or "uzytkownik"
+    base_username = email.split("@", 1)[0].strip() or "u\u017cytkownik"
     username = base_username[:150]
     counter = 2
 
@@ -56,7 +56,7 @@ class SignupForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data["email"].lower()
         if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError("Konto z takim adresem e-mail już istnieje.")
+            raise forms.ValidationError("Konto z takim adresem e-mail ju\u017c istnieje.")
         return email
 
     def clean_parent_email(self):
@@ -72,7 +72,7 @@ class SignupForm(UserCreationForm):
             if not parent_email:
                 self.add_error("parent_email", "Dla konta dziecka podaj adres e-mail rodzica lub opiekuna.")
             elif parent_email == email:
-                self.add_error("parent_email", "Adres rodzica lub opiekuna musi być inny niż adres dziecka.")
+                self.add_error("parent_email", "Adres rodzica lub opiekuna musi by\u0107 inny ni\u017c adres dziecka.")
 
         return cleaned_data
 
@@ -105,7 +105,7 @@ class SignupForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label="Login lub adres e-mail")
-    password = forms.CharField(label="Hasło", widget=forms.PasswordInput)
+    password = forms.CharField(label="Has\u0142o", widget=forms.PasswordInput)
 
     def clean(self):
         username = self.cleaned_data.get("username")
@@ -135,7 +135,7 @@ class UserUpdateForm(forms.ModelForm):
         username = self.cleaned_data["username"].strip()
         qs = User.objects.filter(username__iexact=username).exclude(pk=self.instance.pk)
         if qs.exists():
-            raise forms.ValidationError("Ten login jest już zajęty.")
+            raise forms.ValidationError("Ten login jest ju\u017c zaj\u0119ty.")
         return username
 
 
@@ -171,11 +171,11 @@ class SleepWatchPasswordResetForm(PasswordResetForm):
 
 class SleepWatchSetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(
-        label="Nowe hasło",
+        label="Nowe has\u0142o",
         widget=forms.PasswordInput,
     )
     new_password2 = forms.CharField(
-        label="Powtórz nowe hasło",
+        label="Powt\u00f3rz nowe has\u0142o",
         widget=forms.PasswordInput,
     )
 
@@ -190,7 +190,7 @@ class SyncSourceSelectionForm(forms.ModelForm):
         model = UserProfile
         fields = ("preferred_sync_source",)
         labels = {
-            "preferred_sync_source": "Preferowane zrodlo danych",
+            "preferred_sync_source": "Preferowane \u017ar\u00f3d\u0142o danych",
         }
         widgets = {
             "preferred_sync_source": forms.RadioSelect,
@@ -199,3 +199,16 @@ class SyncSourceSelectionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["preferred_sync_source"].help_text = ""
+
+
+class MonthlyHypothesisForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ("active_hypothesis",)
+        labels = {
+            "active_hypothesis": "Co chcesz sprawdza\u0107 w tym miesi\u0105cu?",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["active_hypothesis"].help_text = ""

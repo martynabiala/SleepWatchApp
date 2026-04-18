@@ -40,9 +40,9 @@ class SleepRecord(models.Model):
     avg_heart_rate = models.PositiveSmallIntegerField("Średnie tętno", null=True, blank=True)
     min_spo2 = models.PositiveSmallIntegerField("Minimalne SpO2", null=True, blank=True)
     raw_data = models.JSONField("Dane surowe", default=dict, blank=True)
-    external_record_id = models.CharField("ID zewnÄ™trznego rekordu", max_length=120, blank=True)
+    external_record_id = models.CharField("ID zewnętrznego rekordu", max_length=120, blank=True)
     synced_at = models.DateTimeField("Data synchronizacji", null=True, blank=True)
-    device_name = models.CharField("Nazwa urzÄ…dzenia", max_length=120, blank=True)
+    device_name = models.CharField("Nazwa urządzenia", max_length=120, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -181,11 +181,11 @@ class SleepSyncConnection(models.Model):
         related_name="sleep_sync_connections",
     )
     provider = models.CharField("Dostawca synchronizacji", max_length=30, choices=PROVIDER_CHOICES)
-    is_enabled = models.BooleanField("Czy poÅ‚Ä…czenie jest aktywne", default=True)
+    is_enabled = models.BooleanField("Czy połączenie jest aktywne", default=True)
     last_synced_at = models.DateTimeField("Ostatnia synchronizacja", null=True, blank=True)
-    last_imported_count = models.PositiveIntegerField("Liczba ostatnio pobranych rekordÃ³w", default=0)
-    last_error = models.TextField("Ostatni bÅ‚Ä…d", blank=True)
-    last_device_name = models.CharField("Ostatnie urzÄ…dzenie", max_length=120, blank=True)
+    last_imported_count = models.PositiveIntegerField("Liczba ostatnio pobranych rekordów", default=0)
+    last_error = models.TextField("Ostatni błąd", blank=True)
+    last_device_name = models.CharField("Ostatnie urządzenie", max_length=120, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -197,8 +197,8 @@ class SleepSyncConnection(models.Model):
                 name="unique_sleep_sync_connection_per_provider",
             )
         ]
-        verbose_name = "PoÅ‚Ä…czenie synchronizacji snu"
-        verbose_name_plural = "PoÅ‚Ä…czenia synchronizacji snu"
+        verbose_name = "Połączenie synchronizacji snu"
+        verbose_name_plural = "Połączenia synchronizacji snu"
 
     def __str__(self):
         return f"{self.user.username} - {self.get_provider_display()}"
@@ -213,7 +213,7 @@ class SleepApiToken(models.Model):
     key = models.CharField("Klucz API", max_length=80, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    last_used_at = models.DateTimeField("Ostatnie uÅ¼ycie", null=True, blank=True)
+    last_used_at = models.DateTimeField("Ostatnie użycie", null=True, blank=True)
 
     class Meta:
         verbose_name = "Token API synchronizacji"

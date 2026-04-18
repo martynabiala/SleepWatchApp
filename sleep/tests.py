@@ -603,6 +603,62 @@ class SleepModuleTests(TestCase):
         self.assertContains(response, "W ostatnim tygodniu śpisz dłużej")
         self.assertContains(response, "Kofeina po 16:00 może skracać sen")
 
+    def test_dashboard_allows_selecting_monthly_hypothesis(self):
+        response = self.client.post(
+            reverse("dashboard"),
+            {
+                "action": "update_hypothesis",
+                "active_hypothesis": "caffeine",
+            },
+        )
+
+        self.assertRedirects(response, reverse("dashboard"))
+        self.user.profile.refresh_from_db()
+        self.assertEqual(self.user.profile.active_hypothesis, "caffeine")
+        self.assertEqual(self.user.profile.active_hypothesis_started_at, timezone.localdate())
+
+    def test_dashboard_shows_monthly_hypothesis_summary(self):
+        today = timezone.localdate()
+        self.user.profile.active_hypothesis = "caffeine"
+        self.user.profile.active_hypothesis_started_at = today
+        self.user.profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at"])
+
+        for offset in range(2):
+            record = SleepRecord.objects.create(
+                user=self.user,
+                source="manual_csv",
+                sleep_date=today - timedelta(days=offset),
+                sleep_duration_minutes=350,
+            )
+            SleepNote.objects.create(
+                user=self.user,
+                sleep_record=record,
+                sleep_quality="bad",
+                caffeine_used=True,
+                caffeine_last_time="18:30",
+                caffeine_count=2,
+            )
+
+        for offset in range(2, 4):
+            record = SleepRecord.objects.create(
+                user=self.user,
+                source="manual_csv",
+                sleep_date=today - timedelta(days=offset),
+                sleep_duration_minutes=470,
+            )
+            SleepNote.objects.create(
+                user=self.user,
+                sleep_record=record,
+                sleep_quality="good",
+                caffeine_used=False,
+            )
+
+        response = self.client.get(reverse("dashboard"))
+
+        self.assertContains(response, "Eksperyment miesi\u0105ca")
+        self.assertContains(response, "Wp\u0142yw kofeiny")
+        self.assertContains(response, "s\u0105 \u015brednio kr\u00f3tsze")
+
     def test_sleep_detail_requires_caffeine_details_when_caffeine_was_used(self):
         record = SleepRecord.objects.create(
             user=self.user,

@@ -390,7 +390,6 @@
                 <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                 <div>
                     <strong>{{ profile.display_name|default:request.user.username }}</strong>
-                    <p style="margin: 8px 0 0;">Twój awatar będzie widoczny na dashboardzie i w profilu.</p>
                 </div>
             </div>
 
@@ -438,7 +437,7 @@
                 </div>
                 <div class="profile-actions">
                     <button type="submit">Zapisz profil</button>
-                    <a class="button secondary" href="{% url 'profile' %}">Wroc do profilu</a>
+                    <a class="button secondary" href="{% url 'profile' %}">Wróć do profilu</a>
                 </div>
             </form>
         </section>
@@ -450,11 +449,10 @@
                         <div>
                             <div class="eyebrow">Profil</div>
                             <h1>{{ profile.display_name|default:request.user.username }}</h1>
-                            <p style="margin-top: 10px;">Twoje konto, ustawienia i podstawowe informacje potrzebne do lepszej analizy snu.</p>
                         </div>
                         <div class="profile-actions">
                             <a class="button" href="{% url 'profile' %}?edit=1">Edytuj profil</a>
-                            <a class="button secondary" href="{% url 'sync_sources' %}">Wybierz zrodlo danych</a>
+                            <a class="button secondary" href="{% url 'sync_sources' %}">Wybierz źródło danych</a>
                         </div>
                     </div>
 
@@ -518,7 +516,7 @@
                     <div>
                         <div class="eyebrow">Synchronizacja</div>
                         <h3>Integracje mobilne</h3>
-                        <p>Tutaj uzytkownik wybiera zrodlo danych. Health Connect jest sciezka automatyczna, a Zepp Life osobna opcja dla opasek Amazfit i Mi Band.</p>
+                        <p>Tutaj wybierasz źródło danych. Health Connect pozostaje główną ścieżką automatyczną, a Zepp Life osobną opcją dla opasek Amazfit i Mi Band.</p>
                     </div>
 
                     <div class="sync-grid">
@@ -550,47 +548,15 @@
                                         <strong>{% if connection.supports_realtime %}Automatyczny sync{% else %}Import lub mostek{% endif %}</strong>
                                     </div>
                                 </div>
-                                <p><strong>Nastepny krok:</strong> {{ connection.next_step }}</p>
+                                <p><strong>Następny krok:</strong> {{ connection.next_step }}</p>
                                 {% if connection.last_error %}
                                     <p>Ostatni błąd: {{ connection.last_error }}</p>
                                 {% endif %}
                             </article>
                         {% endfor %}
                     </div>
-
-                    {% comment %}
-                    <div class="sync-token-box">
-                        <div>
-                            <strong>Token API dla aplikacji mobilnej</strong>
-                            <p>Ten token posłuży aplikacji Android do bezpiecznego wysyłania danych snu do SleepWatch.</p>
-                        </div>
-                        {% if plain_api_token %}
-                            <div><code>{{ plain_api_token }}</code></div>
-                            <p>To jedyny moment, kiedy pokazujemy pełny token. Zachowaj go po stronie aplikacji mobilnej.</p>
-                        {% elif api_token %}
-                            <div><code>{{ api_token.masked_key }}</code></div>
-                            <p>Token jest aktywny. W razie potrzeby możesz wygenerować nowy lub usunąć obecny.</p>
-                        {% else %}
-                            <p>Token nie został jeszcze wygenerowany.</p>
-                        {% endif %}
-
-                        <div class="sync-token-actions">
-                            <form method="post" style="margin: 0;">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="generate_api_token">
-                                <button type="submit">Generuj token API</button>
-                            </form>
-                            {% if api_token %}
-                                <form method="post" style="margin: 0;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="revoke_api_token">
-                                    <button class="secondary" type="submit">Usuń token</button>
-                                </form>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endcomment %}
                 </article>
+
             </section>
 
             <aside class="profile-badges-card">
@@ -599,7 +565,6 @@
                         <div class="profile-badges-copy">
                             <div class="eyebrow">Osiągnięcia</div>
                             <h3>Odznaki użytkownika</h3>
-                            <p>Twoje osiągnięcia związane z regularnością i obserwacją snu.</p>
                         </div>
                         <a class="button secondary profile-badges-action" href="{% url 'achievements' %}">
                             Zobacz wszystkie{% if badges_total %} ({{ badges_total }}){% endif %}

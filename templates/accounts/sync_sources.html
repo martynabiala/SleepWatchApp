@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Zrodla danych - SleepWatch{% endblock %}
+{% block title %}&#377;r&oacute;d&#322;a danych - SleepWatch{% endblock %}
 
 {% block content %}
 <style>
@@ -53,9 +53,8 @@
 
 <div class="sources-layout">
     <section class="sources-card">
-        <div class="eyebrow">Zrodla danych</div>
-        <h1>Wybierz preferowane zrodlo danych snu</h1>
-        <p>Health Connect zostawiamy jako glowna automatyczna sciezke, a Zepp Life jako zgodna sciezke dla opasek Amazfit i Mi Band.</p>
+        <div class="eyebrow">&#377;r&oacute;d&#322;a danych</div>
+        <h1>Wybierz preferowane &#378;r&oacute;d&#322;o danych snu</h1>
 
         <form method="post">
             {% csrf_token %}
@@ -64,8 +63,8 @@
             {% endfor %}
             {{ form.preferred_sync_source.errors }}
             <div class="actions">
-                <button type="submit">Zapisz wybor</button>
-                <a class="button secondary" href="{% url 'profile' %}">Wroc do profilu</a>
+                <button type="submit">Zapisz wyb&oacute;r</button>
+                <a class="button secondary" href="{% url 'profile' %}">Wr&oacute;&#263; do profilu</a>
             </div>
         </form>
     </section>
@@ -73,7 +72,7 @@
     <section class="sources-grid">
         {% for connection in sync_connections %}
             <article class="source-detail-card">
-                <span class="source-chip">{{ connection.badge }}{% if connection.is_recommended %} • Polecane{% endif %}</span>
+                <span class="source-chip">{{ connection.badge }}{% if connection.is_recommended %} &bull; Polecane{% endif %}</span>
                 <h3>{{ connection.label }}</h3>
                 <p>{{ connection.description }}</p>
                 <div class="meta-list">

@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Profil znajomego - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .shell {
+        max-width: 1240px;
+    }
+
+    .friend-profile-layout {
+        display: grid;
+        gap: 24px;
+    }
+
+    .friend-profile-main,
+    .friend-profile-badges {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background:
+            radial-gradient(circle at top right, rgba(193, 140, 255, 0.14), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 244, 255, 0.96));
+        padding: 28px;
+    }
+
+    .friend-profile-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.95fr);
+        gap: 24px;
+        align-items: start;
+    }
+
+    .friend-profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .friend-profile-header h1,
+    .friend-profile-header p,
+    .friend-profile-badges h3 {
+        margin: 0;
+    }
+
+    .friend-profile-hero {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: minmax(250px, 0.78fr) minmax(0, 1.22fr);
+        gap: 20px;
+    }
+
+    .friend-avatar-card,
+    .friend-summary-card,
+    .friend-info-card,
+    .friend-badge-card {
+        border-radius: 24px;
+        border: 1px solid rgba(142, 124, 232, 0.16);
+        background: rgba(255, 255, 255, 0.84);
+    }
+
+    .friend-avatar-card,
+    .friend-summary-card,
+    .friend-info-card {
+        padding: 24px;
+    }
+
+    .friend-avatar-card {
+        display: grid;
+        justify-items: center;
+        align-content: center;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .avatar-badge {
+        width: 96px;
+        height: 96px;
+        border-radius: 28px;
+        display: grid;
+        place-items: center;
+        font-size: 2.4rem;
+        color: #fff;
+        box-shadow: 0 18px 34px rgba(126, 110, 206, 0.18);
+    }
+
+    .avatar-moon { background: linear-gradient(135deg, #8e7ce8 0%, #c18cff 100%); }
+    .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
+    .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
+    .avatar-sun { background: linear-gradient(135deg, #ff8f70 0%, #ffc06a 100%); }
+    .avatar-leaf { background: linear-gradient(135deg, #57b890 0%, #8ed4ac 100%); }
+    .avatar-heart { background: linear-gradient(135deg, #ef6ba8 0%, #f6a4c8 100%); }
+
+    .meta-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .meta-row {
+        display: grid;
+        grid-template-columns: minmax(132px, 1fr) minmax(0, 1.7fr);
+        align-items: start;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(145, 124, 232, 0.14);
+    }
+
+    .meta-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .meta-key {
+        color: var(--muted);
+    }
+
+    .friend-info-card {
+        margin-top: 18px;
+        display: grid;
+        gap: 6px;
+    }
+
+    .friend-info-card span {
+        color: var(--muted);
+        font-size: 0.88rem;
+    }
+
+    .friend-info-card strong {
+        font-size: 1.25rem;
+    }
+
+    .friend-profile-badges {
+        display: grid;
+        gap: 18px;
+    }
+
+    .friend-badges-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .friend-badge-card {
+        padding: 18px;
+        display: grid;
+        gap: 8px;
+    }
+
+    .friend-badge-earned {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 241, 255, 0.94));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+    }
+
+    .friend-badge-locked {
+        opacity: 0.72;
+    }
+
+    .friend-badge-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+        background: rgba(142, 124, 232, 0.14);
+        color: var(--accent-dark);
+    }
+
+    .friend-badge-status {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--accent-dark);
+    }
+
+    @media (max-width: 1040px) {
+        .friend-profile-grid,
+        .friend-profile-hero,
+        .friend-badges-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="friend-profile-layout">
+    <div class="friend-profile-grid">
+        <section class="friend-profile-main">
+            <div class="friend-profile-header">
+                <div>
+                    <div class="eyebrow">Profil znajomego</div>
+                    <h1>{{ profile.display_name|default:profile_user.username }}</h1>
+                    <p style="margin-top: 10px;">Podgląd podstawowych informacji o profilu i odznakach.</p>
+                </div>
+                <a class="button secondary" href="{% url 'friends' %}">Wróć do znajomych</a>
+            </div>
+
+            <div class="friend-profile-hero">
+                <div class="friend-avatar-card">
+                    <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
+                    <div>
+                        <strong>@{{ profile_user.username }}</strong>
+                        <p style="margin: 8px 0 0;">Znajomi od {{ friendship_since|date:"d.m.Y" }}</p>
+                    </div>
+                </div>
+
+                <div class="friend-summary-card">
+                    <h3>Podsumowanie profilu</h3>
+                    <div class="meta-list">
+                        <div class="meta-row">
+                            <span class="meta-key">Awatar</span>
+                            <strong>{{ profile.get_avatar_display }}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Grupa wiekowa</span>
+                            <strong>{{ profile.get_age_group_display|default:"Brak" }}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Aktywność fizyczna</span>
+                            <strong>{{ profile.get_lifestyle_display|default:"Brak" }}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Docelowy czas snu</span>
+                            <strong>{{ profile.sleep_goal_hours }} h</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="friend-info-card">
+                <span>Historia snu</span>
+                <strong>{{ sleep_records_total }} zapisanych nocy</strong>
+                <p style="margin: 0;">Pokazujemy tylko ogólny licznik wpisów, bez szczegółowych danych o śnie.</p>
+            </div>
+        </section>
+
+        <aside class="friend-profile-badges">
+            <div>
+                <div class="eyebrow">Odznaki</div>
+                <h3>Postępy znajomego</h3>
+                <p style="margin: 8px 0 0;">Łącznie dostępnych odznak: {{ badges_total }}.</p>
+            </div>
+
+            <div class="friend-badges-grid">
+                {% for badge in badges %}
+                    <article class="friend-badge-card {% if badge.earned %}friend-badge-earned{% else %}friend-badge-locked{% endif %}">
+                        <div class="friend-badge-icon">{{ badge.icon }}</div>
+                        <strong>{{ badge.title }}</strong>
+                        <p>{{ badge.description }}</p>
+                        <div class="friend-badge-status">
+                            {% if badge.earned %}Odblokowana{% else %}W trakcie{% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "accounts/hub_page_base.html" %}
+
+{% block title %}Dziennik wniosk&oacute;w - SleepWatch{% endblock %}
+
+{% block hub_body %}
+<style>
+    .journal-meta {
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 700;
+    }
+
+    .journal-entry {
+        gap: 12px;
+    }
+
+    .journal-entry h3 {
+        margin: 0;
+    }
+</style>
+
+<section class="hub-hero">
+    <div class="hub-kicker">Wnioski</div>
+    <h1>Dziennik wniosk&oacute;w</h1>
+    <p class="hub-copy">Najwa&#380;niejsze obserwacje z Twoich danych i notatek.</p>
+</section>
+
+<section class="hub-section">
+    <div class="hub-kicker">Automatyczne wpisy</div>
+    <h2>Najwa&#380;niejsze wnioski</h2>
+    {% if journal_entries %}
+        <div class="hub-timeline" style="margin-top: 18px;">
+            {% for entry in journal_entries %}
+                <article class="hub-timeline-item journal-entry">
+                    <div class="journal-meta">{{ entry.kind }} • {{ entry.date_label }}</div>
+                    <h3>{{ entry.title }}</h3>
+                    <p class="hub-note">{{ entry.body }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="hub-empty" style="margin-top: 18px;">Za ma&#322;o danych, aby zbudowa&#263; jeszcze pierwszy dziennik wniosk&oacute;w.</div>
+    {% endif %}
+</section>
+
+<section class="hub-section">
+    <div class="hub-kicker">Twoje notatki</div>
+    <h2>Ostatnie zapisane obserwacje</h2>
+    {% if note_entries %}
+        <div class="hub-list" style="margin-top: 18px;">
+            {% for note in note_entries %}
+                <article class="hub-list-item journal-entry">
+                    <div class="journal-meta">{{ note.date_label }} • {{ note.sleep_label }}</div>
+                    <p class="hub-note">{{ note.text }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="hub-empty" style="margin-top: 18px;">Nie ma jeszcze w&#322;asnych notatek tekstowych. Gdy dodasz kilka komentarzy do nocy, pojawi&#261; si&#281; tutaj.</div>
+    {% endif %}
+</section>
+{% endblock %}

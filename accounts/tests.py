@@ -6,8 +6,9 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
+from accounts.models import Friendship
 from accounts.views import build_badges
-from sleep.models import SleepRecord
+from sleep.models import SleepNote, SleepRecord
 
 
 User = get_user_model()
@@ -15,6 +16,251 @@ User = get_user_model()
 
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 class AccountsFlowTests(TestCase):
+    def test_user_can_send_friend_request(self):
+        sender = User.objects.create_user(
+            username="martyna",
+            email="martyna@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        target = User.objects.create_user(
+            username="ania",
+            email="ania@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="martyna", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("friends"),
+            {"action": "send_request", "user_id": target.id},
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("friends"))
+        self.assertTrue(
+            Friendship.objects.filter(
+                sender=sender,
+                receiver=target,
+                status=Friendship.STATUS_PENDING,
+            ).exists()
+        )
+
+    def test_user_can_accept_friend_request(self):
+        sender = User.objects.create_user(
+            username="kama",
+            email="kama@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        receiver = User.objects.create_user(
+            username="ola",
+            email="ola@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        friendship = Friendship.objects.create(sender=sender, receiver=receiver)
+        self.client.login(username="ola", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("friends"),
+            {"action": "accept_request", "friendship_id": friendship.id},
+            follow=True,
+        )
+
+        friendship.refresh_from_db()
+        self.assertRedirects(response, reverse("friends"))
+        self.assertEqual(friendship.status, Friendship.STATUS_ACCEPTED)
+        self.assertIsNotNone(friendship.responded_at)
+
+    def test_friends_page_shows_accepted_friend(self):
+        first = User.objects.create_user(
+            username="marta",
+            email="marta@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        second = User.objects.create_user(
+            username="kasia",
+            email="kasia@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        Friendship.objects.create(
+            sender=first,
+            receiver=second,
+            status=Friendship.STATUS_ACCEPTED,
+            responded_at=timezone.now(),
+        )
+        self.client.login(username="marta", password="BardzoMocneHaslo123!")
+
+        response = self.client.get(reverse("friends"))
+
+        self.assertContains(response, "Twoja lista znajomych")
+        self.assertContains(response, "kasia")
+        self.assertContains(response, reverse("friend_profile", args=["kasia"]))
+
+    def test_user_can_open_friend_profile_and_see_badges(self):
+        first = User.objects.create_user(
+            username="ola_friend",
+            email="ola_friend@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        second = User.objects.create_user(
+            username="kasia_friend",
+            email="kasia_friend@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        Friendship.objects.create(
+            sender=first,
+            receiver=second,
+            status=Friendship.STATUS_ACCEPTED,
+            responded_at=timezone.now(),
+        )
+        SleepRecord.objects.create(
+            user=second,
+            source="manual_csv",
+            sleep_date="2026-04-01",
+            sleep_duration_minutes=440,
+        )
+        self.client.login(username="ola_friend", password="BardzoMocneHaslo123!")
+
+        response = self.client.get(reverse("friend_profile", args=["kasia_friend"]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Profil znajomego")
+        self.assertContains(response, "kasia_friend")
+        self.assertContains(response, "Pierwszy krok")
+        self.assertContains(response, "1 zapisanych nocy")
+
+    def test_user_cannot_open_profile_of_person_who_is_not_a_friend(self):
+        viewer = User.objects.create_user(
+            username="viewer_user",
+            email="viewer@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        stranger = User.objects.create_user(
+            username="stranger_user",
+            email="stranger@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="viewer_user", password="BardzoMocneHaslo123!")
+
+        response = self.client.get(reverse("friend_profile", args=["stranger_user"]))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_cannot_add_self_to_friends(self):
+        user = User.objects.create_user(
+            username="selfuser",
+            email="self@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="selfuser", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("friends"),
+            {"action": "send_request", "user_id": user.id},
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("friends"))
+        self.assertFalse(Friendship.objects.exists())
+        self.assertContains(response, "Nie mozna dodac samej siebie do znajomych.")
+
+    def test_user_can_remove_friend(self):
+        first = User.objects.create_user(
+            username="ola_remove",
+            email="ola_remove@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        second = User.objects.create_user(
+            username="zosia_remove",
+            email="zosia_remove@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        friendship = Friendship.objects.create(
+            sender=first,
+            receiver=second,
+            status=Friendship.STATUS_ACCEPTED,
+            responded_at=timezone.now(),
+        )
+        self.client.login(username="ola_remove", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("friends"),
+            {"action": "remove_friend", "friendship_id": friendship.id},
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("friends"))
+        self.assertFalse(Friendship.objects.filter(pk=friendship.id).exists())
+
+    def test_new_sleep_views_are_available_for_logged_user(self):
+        user = User.objects.create_user(
+            username="hub_user",
+            email="hub@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="hub_user", password="BardzoMocneHaslo123!")
+
+        urls = [
+            reverse("evening_checkin"),
+            reverse("morning_checkin"),
+            reverse("habits_center"),
+            reverse("insights_journal"),
+            reverse("sleep_library"),
+        ]
+
+        for url in urls:
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+
+    def test_habits_and_insights_pages_show_note_based_content(self):
+        user = User.objects.create_user(
+            username="habit_user",
+            email="habit@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        sleep_record = SleepRecord.objects.create(
+            user=user,
+            source="manual_csv",
+            sleep_date="2026-04-10",
+            sleep_duration_minutes=430,
+            avg_heart_rate=58,
+        )
+        SleepNote.objects.create(
+            user=user,
+            sleep_record=sleep_record,
+            sleep_quality=SleepNote.QUALITY_GOOD,
+            caffeine_used=True,
+            caffeine_last_time="17:30",
+            caffeine_count=2,
+            training_done=True,
+            training_level=SleepNote.TRAINING_LIGHT,
+            training_time="18:30",
+            stress_level=3,
+            note_text="Wieczorem pomogl spokojny spacer.",
+        )
+        self.client.login(username="habit_user", password="BardzoMocneHaslo123!")
+
+        habits_response = self.client.get(reverse("habits_center"))
+        insights_response = self.client.get(reverse("insights_journal"))
+
+        self.assertContains(habits_response, "Centrum nawyk")
+        self.assertContains(habits_response, "Kofeina")
+        self.assertContains(insights_response, "Dziennik wniosk")
+        self.assertContains(insights_response, "Wieczorem pomogl spokojny spacer.")
+
     def test_signup_sends_activation_email_and_creates_inactive_user(self):
         response = self.client.post(
             reverse("signup"),

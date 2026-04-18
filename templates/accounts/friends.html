@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Znajomi - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .friends-page {
+        display: grid;
+        gap: 24px;
+    }
+
+    .friends-hero {
+        display: grid;
+        gap: 18px;
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at top right, rgba(193, 140, 255, 0.18), transparent 32%),
+            radial-gradient(circle at bottom left, rgba(141, 200, 255, 0.16), transparent 24%),
+            rgba(255, 255, 255, 0.92);
+    }
+
+    .friends-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 8px;
+        background: linear-gradient(90deg, #8e7ce8, #8dc8ff, #c18cff);
+    }
+
+    .friends-search-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: end;
+        margin-top: 0;
+    }
+
+    .friends-section {
+        display: grid;
+        gap: 18px;
+    }
+
+    .friends-list {
+        display: grid;
+        gap: 14px;
+    }
+
+    .friend-card {
+        display: grid;
+        gap: 14px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+        padding: 20px;
+    }
+
+    .friend-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .friend-identity {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    .friend-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        font-size: 1.45rem;
+        color: #fff;
+        box-shadow: 0 14px 28px rgba(126, 110, 206, 0.16);
+        flex-shrink: 0;
+    }
+
+    .friend-copy {
+        min-width: 0;
+        display: grid;
+        gap: 5px;
+    }
+
+    .friend-name {
+        margin: 0;
+        font-size: 1.04rem;
+    }
+
+    .friend-meta {
+        color: var(--muted);
+        font-size: 0.92rem;
+        overflow-wrap: anywhere;
+    }
+
+    .friend-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .friend-actions form {
+        margin: 0;
+    }
+
+    .friend-empty {
+        border-radius: 24px;
+        border: 1px dashed rgba(142, 124, 232, 0.24);
+        background: rgba(255, 255, 255, 0.7);
+        padding: 22px;
+    }
+
+    .avatar-moon { background: linear-gradient(135deg, #8e7ce8 0%, #c18cff 100%); }
+    .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
+    .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
+    .avatar-sun { background: linear-gradient(135deg, #ff8f70 0%, #ffc06a 100%); }
+    .avatar-leaf { background: linear-gradient(135deg, #57b890 0%, #8ed4ac 100%); }
+    .avatar-heart { background: linear-gradient(135deg, #ef6ba8 0%, #f6a4c8 100%); }
+
+    @media (max-width: 860px) {
+        .friends-search-form {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="friends-page">
+    <section class="hero-card friends-hero">
+        <div class="eyebrow">Znajomi</div>
+        <h1>Twoi znajomi w SleepWatch</h1>
+    </section>
+
+    <section class="soft-card friends-section">
+        <div>
+            <h2>Znajd&#378; u&#380;ytkownika</h2>
+            <p>Wpisz nazw&#281; lub adres e-mail u&#380;ytkownika aby znale&#378;&#263; znajomego.</p>
+        </div>
+        <form class="friends-search-form" method="get">
+            <div>
+                <label for="friends-search">Szukaj znajomych</label>
+                <input id="friends-search" type="text" name="q" value="{{ search_query }}">
+            </div>
+            <button type="submit">Szukaj</button>
+        </form>
+
+        {% if search_query %}
+            {% if search_results %}
+                <div class="friends-list">
+                    {% for result in search_results %}
+                        <article class="friend-card">
+                            <div class="friend-head">
+                                <div class="friend-identity">
+                                    <div class="friend-avatar avatar-{{ result.avatar }}">{{ result.avatar_symbol }}</div>
+                                    <div class="friend-copy">
+                                        <h3 class="friend-name">{{ result.display_name }}</h3>
+                                        <div class="friend-meta">@{{ result.username }} &bull; {{ result.meta }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="friend-actions">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="send_request">
+                                    <input type="hidden" name="user_id" value="{{ result.user_id }}">
+                                    <button type="submit">Dodaj do znajomych</button>
+                                </form>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="friend-empty">
+                    <p>Brak pasuj&#261;cych u&#380;ytkownik&oacute;w do dodania. Mo&#380;liwe, &#380;e ta osoba jest ju&#380; w relacji z Tob&#261; albo wpis jest zbyt og&oacute;lny.</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    </section>
+
+    <section class="soft-card friends-section">
+        <div>
+            <h2>Zaproszenia do znajomych</h2>
+        </div>
+        {% if incoming_requests %}
+            <div class="friends-list">
+                {% for request in incoming_requests %}
+                    <article class="friend-card">
+                        <div class="friend-head">
+                            <div class="friend-identity">
+                                <div class="friend-avatar avatar-{{ request.avatar }}">{{ request.avatar_symbol }}</div>
+                                <div class="friend-copy">
+                                    <h3 class="friend-name">{{ request.display_name }}</h3>
+                                    <div class="friend-meta">@{{ request.username }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="friend-actions">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="accept_request">
+                                <input type="hidden" name="friendship_id" value="{{ request.id }}">
+                                <button type="submit">Akceptuj</button>
+                            </form>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="decline_request">
+                                <input type="hidden" name="friendship_id" value="{{ request.id }}">
+                                <button class="secondary" type="submit">Odrzuc</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="friend-empty">
+                <p>Na razie nie masz nowych zaproszen.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="soft-card friends-section">
+        <div>
+            <h2>Twoja lista znajomych</h2>
+        </div>
+        {% if friends %}
+            <div class="friends-list">
+                {% for friend in friends %}
+                    <article class="friend-card">
+                        <div class="friend-head">
+                            <div class="friend-identity">
+                                <div class="friend-avatar avatar-{{ friend.avatar }}">{{ friend.avatar_symbol }}</div>
+                                <div class="friend-copy">
+                                    <h3 class="friend-name">{{ friend.display_name }}</h3>
+                                    <div class="friend-meta">@{{ friend.username }}</div>
+                                </div>
+                            </div>
+                            <div class="friend-meta">
+                                Znajomi od {{ friend.status_since|date:"d.m.Y" }}
+                            </div>
+                        </div>
+                        <div class="friend-actions">
+                            <a class="button secondary" href="{% url 'friend_profile' friend.username %}">Zobacz profil</a>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="remove_friend">
+                                <input type="hidden" name="friendship_id" value="{{ friend.id }}">
+                                <button class="secondary" type="submit">Usun ze znajomych</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="friend-empty">
+                <p>Jeszcze nikogo tu nie ma. Zacznij od wyszukania pierwszej osoby i wyslij zaproszenie.</p>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
