@@ -352,7 +352,7 @@ def sync_sleep_data_api_view(request):
     return JsonResponse(
         {
             "status": "ok",
-            "provider": provider,
+            "provider": result["provider"],
             "received_count": result["received_count"],
             "added_count": result["added_count"],
             "updated_count": result["updated_count"],

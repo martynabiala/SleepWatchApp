@@ -1,37 +1,77 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Rejestracja - SleepWatch{% endblock %}
+{% block title %}Rejestracja – SleepWatch{% endblock %}
 {% block topbar %}{% endblock %}
 
 {% block content %}
-<div class="auth-logo-wrap">
-    <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch">
-    <div class="auth-logo-note">Zacznij dbać o swój sen</div>
-</div>
-<div class="eyebrow">Rejestracja</div>
-<h1>Utwórz konto SleepWatch</h1>
-<form method="post">
-    {% csrf_token %}
-    <div class="form-grid">
-        {% for field in form %}
-            <div
-                {% if field.name == "parent_email" %}id="parent-email-field" style="grid-column: 1 / -1;"{% endif %}
-            >
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.help_text %}
-                    <div class="helptext">{{ field.help_text }}</div>
-                {% endif %}
-                {{ field.errors }}
-            </div>
-        {% endfor %}
+<div class="auth-app-header">
+    <div class="auth-app-brand">
+        <img src="{% static 'sleepwatch-new-logo.png' %}" alt="Logo SleepWatch">
+        <div class="auth-app-brand-copy">
+            <strong>SleepWatch</strong>
+            <span>Aplikacja do monitorowania snu</span>
+        </div>
     </div>
-    <button type="submit">Zarejestruj konto</button>
-</form>
-<div class="actions">
-    <a class="button secondary" href="{% url 'login' %}">Mam już konto</a>
+    <div class="auth-app-subtitle">
+        Monitoruj sen, analizuj nawyki i buduj spokojniejszą rutynę każdego dnia.
+    </div>
 </div>
+
+<section class="auth-shell">
+    <aside class="auth-showcase">
+        <div class="auth-showcase-content">
+            <div class="eyebrow">Nowy początek</div>
+            <div>
+                <h2>Dołącz do SleepWatch</h2>
+                <p>Zacznij budować swoją historię snu i obserwuj, jak z czasem zmieniają się Twoje nawyki.</p>
+            </div>
+        </div>
+    </aside>
+
+    <article class="auth-card">
+        <nav class="auth-tabs" aria-label="Nawigacja logowania i rejestracji">
+            <a class="auth-tab" href="{% url 'login' %}">Logowanie</a>
+            <a class="auth-tab is-active" href="{% url 'signup' %}">Rejestracja</a>
+        </nav>
+
+        <div style="margin-bottom: 22px;">
+            <h1>Załóż konto</h1>
+            <p>Uzupełnij dane, aby rozpocząć korzystanie z aplikacji.</p>
+        </div>
+
+        <form class="auth-form" method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <div class="form-grid">
+                {% for field in form %}
+                    <div {% if field.name == "parent_email" %}id="parent-email-field" style="grid-column: 1 / -1;"{% endif %}>
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="helptext">{{ field.help_text }}</div>
+                        {% endif %}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="auth-links">
+                <a class="auth-link subtle" href="{% url 'login' %}">Masz już konto? Zaloguj się</a>
+            </div>
+
+            <button type="submit">Zarejestruj konto</button>
+        </form>
+    </article>
+</section>
 
 <script>
     (function () {
@@ -47,6 +87,7 @@
             }
 
             parentEmailField.style.display = isChildAccount ? "block" : "none";
+
             if (parentEmailInput) {
                 parentEmailInput.required = isChildAccount;
                 if (!isChildAccount) {
@@ -57,6 +98,6 @@
 
         ageGroupInput?.addEventListener("change", toggleParentEmailField);
         toggleParentEmailField();
-    })();
+    }());
 </script>
 {% endblock %}

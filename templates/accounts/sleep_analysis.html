@@ -33,7 +33,7 @@
     }
 
     .analysis-range .button.active {
-        background: linear-gradient(135deg, var(--accent) 0%, #c18cff 100%);
+        background: linear-gradient(135deg, var(--accent) 0%, #2f7eb2 100%);
         color: #fff;
     }
 
@@ -66,7 +66,7 @@
 
     .analysis-insight-card {
         background:
-            radial-gradient(circle at top right, rgba(193, 140, 255, 0.14), transparent 34%),
+            radial-gradient(circle at top right, rgba(83, 160, 194, 0.14), transparent 34%),
             rgba(255, 255, 255, 0.92);
     }
 
@@ -85,7 +85,7 @@
         gap: 16px;
         padding: 26px;
         background:
-            radial-gradient(circle at top right, rgba(193, 140, 255, 0.1), transparent 28%),
+            radial-gradient(circle at top right, rgba(83, 160, 194, 0.1), transparent 28%),
             linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 244, 255, 0.97));
     }
 
@@ -123,7 +123,7 @@
     }
 
     .dot-sleep {
-        background: #8e7ce8;
+        background: #1d5d90;
     }
 
     .dot-heart {
@@ -492,8 +492,8 @@
 
     createLineChart("sleepChart", sleepChartData, {
         label: "Czas snu",
-        color: "#8e7ce8",
-        fill: "rgba(142, 124, 232, 0.14)",
+        color: "#1d5d90",
+        fill: "rgba(29, 93, 144, 0.14)",
         tickFormatter: function(value) {
             return minutesToHourLabel(value);
         }

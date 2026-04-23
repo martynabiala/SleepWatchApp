@@ -217,7 +217,6 @@ class AccountsFlowTests(TestCase):
             reverse("morning_checkin"),
             reverse("habits_center"),
             reverse("insights_journal"),
-            reverse("sleep_library"),
         ]
 
         for url in urls:

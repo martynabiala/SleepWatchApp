@@ -1,6 +1,7 @@
-from django.contrib import messages
+from datetime import date, timedelta
 import json
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (
@@ -16,13 +17,12 @@ from django.db.models import Avg, Q
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from datetime import date, timedelta
 
 from sleep.models import ImportHistory, SleepApiToken, SleepNote, SleepRecord, SleepSyncConnection
 from sleep.services import build_sleep_auto_evaluation, get_sleep_api_token
@@ -32,9 +32,9 @@ from .forms import (
     MonthlyHypothesisForm,
     ProfileForm,
     SignupForm,
-    SyncSourceSelectionForm,
     SleepWatchPasswordResetForm,
     SleepWatchSetPasswordForm,
+    SyncSourceSelectionForm,
     UserUpdateForm,
 )
 from .models import Friendship, UserProfile
@@ -78,7 +78,7 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 def home_view(request: HttpRequest) -> HttpResponse:
     if request.user.is_authenticated:
         return redirect("dashboard")
-    return redirect("login")
+    return render(request, "home.html")
 
 
 def signup_view(request: HttpRequest) -> HttpResponse:
@@ -105,9 +105,7 @@ def signup_done_view(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/signup_done.html", {"signup_flow": flow})
 
 
-def activate_account_view(
-    request: HttpRequest, uidb64: str, token: str
-) -> HttpResponse:
+def activate_account_view(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -124,9 +122,7 @@ def activate_account_view(
     return render(request, "accounts/activation_invalid.html", status=400)
 
 
-def activate_child_account_view(
-    request: HttpRequest, uidb64: str, token: str
-) -> HttpResponse:
+def activate_child_account_view(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -156,6 +152,7 @@ def activate_child_account_view(
 @login_required
 def dashboard_view(request: HttpRequest) -> HttpResponse:
     profile = request.user.profile
+
     if request.method == "POST" and request.POST.get("action") == "update_hypothesis":
         previous_hypothesis = profile.active_hypothesis
         hypothesis_form = MonthlyHypothesisForm(request.POST, instance=profile)
@@ -165,16 +162,18 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
             if new_hypothesis != previous_hypothesis:
                 profile.active_hypothesis_started_at = timezone.localdate() if new_hypothesis else None
             profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at", "updated_at"])
+
             if profile.active_hypothesis:
-                messages.success(request, "Zapisali\u015bmy aktywn\u0105 hipotez\u0119 miesi\u0105ca.")
+                messages.success(request, "Zapisałyśmy aktywną hipotezę miesiąca.")
             else:
-                messages.success(request, "Aktywna hipoteza zosta\u0142a wy\u0142\u0105czona.")
+                messages.success(request, "Aktywna hipoteza została wyłączona.")
             return redirect("dashboard")
     else:
         hypothesis_form = MonthlyHypothesisForm(instance=profile)
 
     sleep_records = SleepRecord.objects.filter(user=request.user).select_related("user", "note")
     last_sleep = sleep_records.order_by("-sleep_date").first()
+
     last_sleep_note = None
     last_sleep_evaluation = None
     if last_sleep:
@@ -183,13 +182,15 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
         except SleepNote.DoesNotExist:
             last_sleep_note = None
         last_sleep_evaluation = build_sleep_auto_evaluation(last_sleep, last_sleep_note, profile)
-    profile_completion = calculate_profile_completion(profile)
+
+    profile_completion = calculate_profile_completion(profile, request.user)
     stats_7 = build_sleep_stats(sleep_records, 7)
     stats_30 = build_sleep_stats(sleep_records, 30)
     month_comparison = build_month_comparison(sleep_records)
     self_comparison = build_self_comparison(sleep_records)
     weekly_goal = build_weekly_goal(sleep_records)
     self_insights = build_self_insights(sleep_records, profile, self_comparison)
+
     context = {
         "profile": profile,
         "profile_completion": profile_completion,
@@ -229,6 +230,7 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
 def analysis_view(request: HttpRequest) -> HttpResponse:
     profile = request.user.profile
     sleep_records = SleepRecord.objects.filter(user=request.user).select_related("user", "note")
+
     range_options = {
         "30": {"days": 30, "label": "30 dni"},
         "90": {"days": 90, "label": "90 dni"},
@@ -271,6 +273,56 @@ def get_last_sleep_note(last_sleep):
         return None
 
 
+def is_sleep_note_effectively_empty(note):
+    if note is None:
+        return True
+
+    return (
+        note.sleep_quality == SleepNote.QUALITY_NEUTRAL
+        and not note.caffeine_used
+        and note.caffeine_last_time is None
+        and note.caffeine_count is None
+        and not note.nap_taken
+        and note.nap_time is None
+        and not note.alcohol
+        and not note.training_done
+        and note.training_level == SleepNote.TRAINING_NONE
+        and note.training_time is None
+        and note.stress_level is None
+        and not (note.note_text or "").strip()
+    )
+
+
+def build_filled_note_query(prefix: str = "note__"):
+    return (
+        ~Q(**{f"{prefix}sleep_quality": SleepNote.QUALITY_NEUTRAL})
+        | Q(**{f"{prefix}caffeine_used": True})
+        | Q(**{f"{prefix}caffeine_last_time__isnull": False})
+        | Q(**{f"{prefix}caffeine_count__isnull": False})
+        | Q(**{f"{prefix}nap_taken": True})
+        | Q(**{f"{prefix}nap_time__isnull": False})
+        | Q(**{f"{prefix}alcohol": True})
+        | Q(**{f"{prefix}training_done": True})
+        | ~Q(**{f"{prefix}training_level": SleepNote.TRAINING_NONE})
+        | Q(**{f"{prefix}training_time__isnull": False})
+        | Q(**{f"{prefix}stress_level__isnull": False})
+        | ~Q(**{f"{prefix}note_text": ""})
+    )
+
+
+def get_latest_sleep_record_needing_note(queryset):
+    for sleep_record in queryset.order_by("-sleep_date"):
+        try:
+            sleep_note = sleep_record.note
+        except SleepNote.DoesNotExist:
+            return sleep_record
+
+        if is_sleep_note_effectively_empty(sleep_note):
+            return sleep_record
+
+    return queryset.order_by("-sleep_date").first()
+
+
 def build_evening_plan_cards(profile, stats_7, active_hypothesis_summary, last_sleep_note):
     note_summary = (
         last_sleep_note.get_sleep_quality_display()
@@ -286,12 +338,12 @@ def build_evening_plan_cards(profile, stats_7, active_hypothesis_summary, last_s
         {
             "label": "Cel na noc",
             "value": f"{profile.sleep_goal_hours} h",
-            "body": "To Tw\u00f3j aktualny punkt odniesienia przed snem.",
+            "body": "To Twój aktualny punkt odniesienia przed snem.",
         },
         {
             "label": "Rytm z 7 dni",
             "value": stats_7["avg_sleep_display"],
-            "body": "Szybkie przypomnienie, ile snu wychodzi Ci ostatnio \u015brednio.",
+            "body": "Szybkie przypomnienie, ile snu wychodzi Ci ostatnio średnio.",
         },
         {
             "label": "Eksperyment",
@@ -301,33 +353,33 @@ def build_evening_plan_cards(profile, stats_7, active_hypothesis_summary, last_s
         {
             "label": "Ostatnia samoocena",
             "value": note_summary,
-            "body": "Mo\u017cesz do niej wr\u00f3ci\u0107, je\u015bli chcesz zauwa\u017cy\u0107 powtarzaj\u0105cy si\u0119 wzorzec.",
+            "body": "Możesz do niej wrócić, jeśli chcesz zauważyć powtarzający się wzorzec.",
         },
     ]
 
 
 def build_evening_checklist(last_sleep_note):
     caffeine_hint = (
-        "Ostatnio pojawi\u0142a si\u0119 kofeina, wi\u0119c dzi\u015b warto zako\u0144czy\u0107 j\u0105 wcze\u015bniej."
+        "Ostatnio pojawiła się kofeina, więc dziś warto zakończyć ją wcześniej."
         if last_sleep_note is not None and last_sleep_note.caffeine_used
-        else "Je\u015bli si\u0119gasz po kofein\u0119, dobrze zamkn\u0105\u0107 j\u0105 odpowiednio wcze\u015bnie."
+        else "Jeśli sięgasz po kofeinę, dobrze zamknąć ją odpowiednio wcześnie."
     )
     stress_hint = (
-        f"Ostatni zapis stresu to {last_sleep_note.stress_level}/10, wi\u0119c przyda si\u0119 spokojniejsze zej\u015bcie z dnia."
+        f"Ostatni zapis stresu to {last_sleep_note.stress_level}/10, więc przyda się spokojniejsze zejście z dnia."
         if last_sleep_note is not None and last_sleep_note.stress_level is not None
-        else "Dwie minuty spokojnego wyciszenia potrafi\u0105 zrobi\u0107 r\u00f3\u017cnic\u0119."
+        else "Dwie minuty spokojnego wyciszenia potrafią zrobić różnicę."
     )
     return [
         {
-            "title": "Domknij wiecz\u00f3r spokojnie",
-            "body": "Od\u0142\u00f3\u017c najmocniejsze bod\u017ace i daj sobie chwil\u0119 na l\u017cejszy rytm przed snem.",
+            "title": "Domknij wieczór spokojnie",
+            "body": "Odłóż najmocniejsze bodźce i daj sobie chwilę na lżejszy rytm przed snem.",
         },
         {
-            "title": "Pomy\u015bl o kofeinie i ekranach",
+            "title": "Pomyśl o kofeinie i ekranach",
             "body": caffeine_hint,
         },
         {
-            "title": "Zaznacz, jak min\u0105\u0142 dzie\u0144",
+            "title": "Zaznacz, jak minął dzień",
             "body": stress_hint,
         },
     ]
@@ -338,12 +390,12 @@ def build_morning_cards(last_sleep, last_sleep_note, evaluation):
         {
             "label": "Ostatnia noc",
             "value": last_sleep.sleep_duration_display if last_sleep else "-",
-            "body": "D\u0142ugo\u015b\u0107 snu z ostatniego zapisu.",
+            "body": "Długość snu z ostatniego zapisu.",
         },
         {
             "label": "Ocena aplikacji",
             "value": f"{evaluation['score']}%" if evaluation else "Brak",
-            "body": evaluation["label"] if evaluation else "Dodaj dane, aby dosta\u0107 podsumowanie nocy.",
+            "body": evaluation["label"] if evaluation else "Dodaj dane, aby dostać podsumowanie nocy.",
         },
         {
             "label": "Twoja samoocena",
@@ -352,7 +404,7 @@ def build_morning_cards(last_sleep, last_sleep_note, evaluation):
                 if last_sleep_note is not None
                 else "Brak notatki"
             ),
-            "body": "Kr\u00f3tka subiektywna ocena, do kt\u00f3rej mo\u017cesz wr\u00f3ci\u0107 p\u00f3\u017aniej.",
+            "body": "Krótka subiektywna ocena, do której możesz wrócić później.",
         },
         {
             "label": "Stres poprzedniego dnia",
@@ -361,14 +413,16 @@ def build_morning_cards(last_sleep, last_sleep_note, evaluation):
                 if last_sleep_note is not None and last_sleep_note.stress_level is not None
                 else "-"
             ),
-            "body": "Ta liczba pomaga \u0142apa\u0107 zwi\u0105zek mi\u0119dzy napi\u0119ciem a jako\u015bci\u0105 snu.",
+            "body": "Ta liczba pomaga łapać związek między napięciem a jakością snu.",
         },
     ]
 
 
 def build_habit_cards(queryset):
     today = timezone.localdate()
-    note_records = queryset.filter(sleep_date__gte=today - timedelta(days=29), note__isnull=False)
+    note_records = queryset.filter(
+        sleep_date__gte=today - timedelta(days=29)
+    ).filter(build_filled_note_query())
     cards = [
         {
             "name": "Kofeina",
@@ -376,11 +430,11 @@ def build_habit_cards(queryset):
             "summary": analyze_boolean_hypothesis(
                 note_records,
                 field_name="note__caffeine_used",
-                title="Wp\u0142yw kofeiny",
-                factor_label="z kofein\u0105",
+                title="Wpływ kofeiny",
+                factor_label="z kofeiną",
                 without_label="bez kofeiny",
             ),
-            "body": "Por\u00f3wnanie nocy z kofein\u0105 i bez niej w ostatnich 30 dniach.",
+            "body": "Porównanie nocy z kofeiną i bez niej w ostatnich 30 dniach.",
         },
         {
             "name": "Drzemki",
@@ -388,11 +442,11 @@ def build_habit_cards(queryset):
             "summary": analyze_boolean_hypothesis(
                 note_records,
                 field_name="note__nap_taken",
-                title="Wp\u0142yw drzemek",
-                factor_label="z drzemk\u0105",
+                title="Wpływ drzemek",
+                factor_label="z drzemką",
                 without_label="bez drzemki",
             ),
-            "body": "Czy drzemki dok\u0142adaj\u0105 regeneracji czy rozbijaj\u0105 nocny sen.",
+            "body": "Czy drzemki dokładają regeneracji czy rozbijają nocny sen.",
         },
         {
             "name": "Alkohol",
@@ -400,11 +454,11 @@ def build_habit_cards(queryset):
             "summary": analyze_boolean_hypothesis(
                 note_records,
                 field_name="note__alcohol",
-                title="Wp\u0142yw alkoholu",
+                title="Wpływ alkoholu",
                 factor_label="z alkoholem",
                 without_label="bez alkoholu",
             ),
-            "body": "Sygna\u0142, czy po alkoholu noc robi si\u0119 kr\u00f3tsza lub mniej stabilna.",
+            "body": "Sygnał, czy po alkoholu noc robi się krótsza lub mniej stabilna.",
         },
         {
             "name": "Trening",
@@ -412,17 +466,17 @@ def build_habit_cards(queryset):
             "summary": analyze_boolean_hypothesis(
                 note_records,
                 field_name="note__training_done",
-                title="Wp\u0142yw treningu",
+                title="Wpływ treningu",
                 factor_label="po treningu",
                 without_label="bez treningu",
             ),
-            "body": "Zale\u017cno\u015b\u0107 mi\u0119dzy aktywno\u015bci\u0105 fizyczn\u0105 a snem.",
+            "body": "Zależność między aktywnością fizyczną a snem.",
         },
         {
             "name": "Stres",
             "slug": "stress",
             "summary": analyze_stress_hypothesis(note_records),
-            "body": "Por\u00f3wnanie spokojniejszych i trudniejszych dni.",
+            "body": "Porównanie spokojniejszych i trudniejszych dni.",
         },
     ]
     return {
@@ -433,7 +487,6 @@ def build_habit_cards(queryset):
 
 
 def build_insight_journal_entries(queryset, profile):
-    today = timezone.localdate()
     self_comparison = build_self_comparison(queryset)
     insights = build_self_insights(queryset, profile, self_comparison)
     entries = [
@@ -452,7 +505,7 @@ def build_insight_journal_entries(queryset, profile):
         entries.insert(
             0,
             {
-                "kind": "Eksperyment miesi\u0105ca",
+                "kind": "Eksperyment miesiąca",
                 "date_label": "Aktywny teraz",
                 "tone": hypothesis_summary["tone"],
                 "title": hypothesis_summary["title"],
@@ -470,62 +523,6 @@ def build_insight_journal_entries(queryset, profile):
         for record in recent_notes
     ]
     return entries, note_entries
-
-
-def build_sleep_library_sections():
-    return [
-        {
-            "name": "Podstawy",
-            "articles": [
-                {
-                    "title": "Dlaczego regularna godzina snu pomaga bardziej ni\u017c pojedyncza d\u0142uga noc",
-                    "read_time": "4 min",
-                    "level": "Podstawy",
-                    "summary": "Kr\u00f3tko o tym, dlaczego rytm bywa wa\u017cniejszy ni\u017c jednorazowe odsypianie.",
-                },
-                {
-                    "title": "Wieczorne nawyki, kt\u00f3re wyciszaj\u0105 zamiast pobudza\u0107",
-                    "read_time": "5 min",
-                    "level": "Praktyka",
-                    "summary": "Proste rzeczy, kt\u00f3re mo\u017cna zrobi\u0107 przed snem bez przebudowy ca\u0142ego dnia.",
-                },
-            ],
-        },
-        {
-            "name": "Nawyki",
-            "articles": [
-                {
-                    "title": "Kofeina, stres i trening: co najcz\u0119\u015bciej miesza w nocnej regeneracji",
-                    "read_time": "6 min",
-                    "level": "Praktyka",
-                    "summary": "Trzy najcz\u0119stsze czynniki, kt\u00f3re warto obserwowa\u0107 w swoich notatkach.",
-                },
-                {
-                    "title": "Drzemka w dzie\u0144: kiedy pomaga, a kiedy odbiera sen w nocy",
-                    "read_time": "4 min",
-                    "level": "Podstawy",
-                    "summary": "Jak patrze\u0107 na drzemki bez popadania w zasad\u0119 wszystko albo nic.",
-                },
-            ],
-        },
-        {
-            "name": "Regeneracja",
-            "articles": [
-                {
-                    "title": "Po czym pozna\u0107, \u017ce sen by\u0142 naprawd\u0119 regeneruj\u0105cy",
-                    "read_time": "5 min",
-                    "level": "Dla ciekawych",
-                    "summary": "Nie tylko d\u0142ugo\u015b\u0107 snu: co jeszcze warto bra\u0107 pod uwag\u0119 rano.",
-                },
-                {
-                    "title": "Jak czyta\u0107 swoje dane, \u017ceby nie wyci\u0105ga\u0107 zbyt szybkich wniosk\u00f3w",
-                    "read_time": "5 min",
-                    "level": "Dla ciekawych",
-                    "summary": "Kilka zasad, dzi\u0119ki kt\u00f3rym analiza snu pozostaje spokojna i uczciwa.",
-                },
-            ],
-        },
-    ]
 
 
 @login_required
@@ -560,6 +557,7 @@ def morning_checkin_view(request: HttpRequest) -> HttpResponse:
     sleep_records = get_user_sleep_records(request.user)
     last_sleep = sleep_records.order_by("-sleep_date").first()
     last_sleep_note = get_last_sleep_note(last_sleep)
+    sleep_record_needing_note = get_latest_sleep_record_needing_note(sleep_records)
     evaluation = (
         build_sleep_auto_evaluation(last_sleep, last_sleep_note, profile)
         if last_sleep is not None
@@ -569,6 +567,7 @@ def morning_checkin_view(request: HttpRequest) -> HttpResponse:
         "profile": profile,
         "last_sleep": last_sleep,
         "last_sleep_note": last_sleep_note,
+        "sleep_record_needing_note": sleep_record_needing_note,
         "evaluation": evaluation,
         "morning_cards": build_morning_cards(last_sleep, last_sleep_note, evaluation),
     }
@@ -603,15 +602,6 @@ def insights_journal_view(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/insights_journal.html", context)
 
 
-@login_required
-def sleep_library_view(request: HttpRequest) -> HttpResponse:
-    context = {
-        "profile": request.user.profile,
-        "library_sections": build_sleep_library_sections(),
-    }
-    return render(request, "accounts/sleep_library.html", context)
-
-
 def get_friendship_for_users(user, other_user):
     return Friendship.objects.filter(
         Q(sender=user, receiver=other_user) | Q(sender=other_user, receiver=user),
@@ -634,6 +624,9 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
 
         sleep_records = SleepRecord.objects.filter(user=profile_user).select_related("note")
         badges = build_badges(sleep_records)
+
+        messages.success(request, "TO JEST NOWY PROFILE VIEW")
+
         return render(
             request,
             "accounts/friend_profile.html",
@@ -649,7 +642,13 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
 
     profile = request.user.profile
     is_edit_mode = request.method == "POST" or request.GET.get("edit") == "1"
-    badges = build_badges(SleepRecord.objects.filter(user=request.user).select_related("note"))
+
+    user_sleep_records = SleepRecord.objects.filter(user=request.user).select_related("note")
+    badges = build_badges(user_sleep_records)
+    badges_total = len(badges)
+    badges_earned_count = sum(1 for badge in badges if badge["earned"])
+    sleep_entries_count = user_sleep_records.count()
+    profile_completion = calculate_profile_completion(profile, request.user)
     sync_connections = build_sync_connections(request.user)
 
     if request.method == "POST":
@@ -658,7 +657,7 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, "Profil zostal zaktualizowany.")
+            messages.success(request, "Profil został zaktualizowany.")
             return redirect("profile")
     else:
         user_form = UserUpdateForm(instance=request.user)
@@ -673,7 +672,10 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
             "profile": profile,
             "is_edit_mode": is_edit_mode,
             "badges": badges[:4],
-            "badges_total": len(badges),
+            "badges_total": badges_total,
+            "badges_earned_count": badges_earned_count,
+            "sleep_entries_count": sleep_entries_count,
+            "profile_completion": profile_completion,
             "sync_connections": sync_connections,
         },
     )
@@ -688,7 +690,7 @@ def sync_sources_view(request: HttpRequest) -> HttpResponse:
         form = SyncSourceSelectionForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, "Zrodlo danych zostalo zapisane.")
+            messages.success(request, "Źródło danych zostało zapisane.")
             return redirect("sync_sources")
     else:
         form = SyncSourceSelectionForm(instance=profile)
@@ -717,13 +719,13 @@ def mobile_login_api_view(request: HttpRequest) -> HttpResponse:
     try:
         payload = json.loads(request.body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
-        return JsonResponse({"detail": "Nieprawid\u0142owy JSON."}, status=400)
+        return JsonResponse({"detail": "Nieprawidłowy JSON."}, status=400)
 
     login_value = str(payload.get("login") or "").strip()
     password = str(payload.get("password") or "")
 
     if not login_value or not password:
-        return JsonResponse({"detail": "Podaj login i has\u0142o."}, status=400)
+        return JsonResponse({"detail": "Podaj login i hasło."}, status=400)
 
     username = login_value
     if "@" in login_value:
@@ -733,7 +735,7 @@ def mobile_login_api_view(request: HttpRequest) -> HttpResponse:
 
     user = authenticate(request, username=username, password=password)
     if user is None:
-        return JsonResponse({"detail": "Niepoprawny login lub has\u0142o."}, status=401)
+        return JsonResponse({"detail": "Niepoprawny login lub hasło."}, status=401)
     if not user.is_active:
         return JsonResponse({"detail": "Konto nie jest jeszcze aktywne."}, status=403)
 
@@ -761,7 +763,7 @@ def mobile_signup_api_view(request: HttpRequest) -> HttpResponse:
     try:
         payload = json.loads(request.body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
-        return JsonResponse({"detail": "Nieprawid\u0142owy JSON."}, status=400)
+        return JsonResponse({"detail": "Nieprawidłowy JSON."}, status=400)
 
     form = SignupForm(
         {
@@ -776,7 +778,7 @@ def mobile_signup_api_view(request: HttpRequest) -> HttpResponse:
     if not form.is_valid():
         return JsonResponse(
             {
-                "detail": "Nie udalo sie zalozyc konta.",
+                "detail": "Nie udało się założyć konta.",
                 "errors": form.errors,
             },
             status=400,
@@ -789,7 +791,7 @@ def mobile_signup_api_view(request: HttpRequest) -> HttpResponse:
             {
                 "status": "ok",
                 "flow": "child",
-                "message": "Konto dziecka utworzone. Rodzic lub opiekun musi potwierdzic zgode przez e-mail.",
+                "message": "Konto dziecka utworzone. Rodzic lub opiekun musi potwierdzić zgodę przez e-mail.",
             }
         )
 
@@ -798,7 +800,7 @@ def mobile_signup_api_view(request: HttpRequest) -> HttpResponse:
         {
             "status": "ok",
             "flow": "adult",
-            "message": "Konto utworzone. Sprawdz e-mail i aktywuj konto przed logowaniem.",
+            "message": "Konto utworzone. Sprawdź e-mail i aktywuj konto przed logowaniem.",
         }
     )
 
@@ -846,7 +848,7 @@ def mobile_preferences_api_view(request: HttpRequest) -> HttpResponse:
     try:
         payload = json.loads(request.body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
-        return JsonResponse({"detail": "Nieprawid\u0142owy JSON."}, status=400)
+        return JsonResponse({"detail": "Nieprawidłowy JSON."}, status=400)
 
     preferred_sync_source = str(payload.get("preferred_sync_source") or "").strip()
     allowed_sources = {
@@ -854,7 +856,7 @@ def mobile_preferences_api_view(request: HttpRequest) -> HttpResponse:
         UserProfile.SYNC_SOURCE_ZEPP_LIFE,
     }
     if preferred_sync_source not in allowed_sources:
-        return JsonResponse({"detail": "Nieobs\u0142ugiwane \u017ar\u00f3d\u0142o danych."}, status=400)
+        return JsonResponse({"detail": "Nieobsługiwane źródło danych."}, status=400)
 
     profile = token.user.profile
     profile.preferred_sync_source = preferred_sync_source
@@ -881,28 +883,30 @@ def build_sync_connections(user):
         user=user,
         source=SleepRecord.SOURCE_ZEPP_LIFE,
     ).first()
-
     connections = [
         {
             "provider": SleepRecord.SOURCE_HEALTH_CONNECT,
             "label": "Health Connect",
             "badge": "Automatyczne",
-            "description": "Najlepsza opcja dla Androida. Aplikacja mobilna pobiera dane snu bezpo\u015brednio z Health Connect i wysy\u0142a je do SleepWatch.",
+            "description": "Najlepsza opcja dla Androida. Aplikacja mobilna pobiera dane snu z Health Connect i wysyła je do SleepWatch po każdej synchronizacji telefonu.",
             "is_connected": bool(health_connection and health_connection.last_synced_at),
-            "status_label": "Po\u0142\u0105czono" if health_connection and health_connection.last_synced_at else "Gotowe do pod\u0142\u0105czenia",
+            "status_label": "Połączono" if health_connection and health_connection.last_synced_at else "Gotowe do podłączenia",
             "last_synced_at": health_connection.last_synced_at if health_connection else None,
             "last_imported_count": health_connection.last_imported_count if health_connection else 0,
             "last_error": health_connection.last_error if health_connection else "",
             "last_device_name": health_connection.last_device_name if health_connection else "",
-            "next_step": "Wybierz te \u017ar\u00f3d\u0142o, je\u015bli masz aplikacj\u0119 lub urz\u0105dzenie zapisuj\u0105ce sen do Health Connect.",
+            "next_step": "Wybierz to źródło, jeśli Twoje urządzenie zapisuje sen w Health Connect.",
             "is_recommended": True,
             "supports_realtime": True,
+            "sync_mode_label": "Automatycznie po synchronizacji telefonu",
+            "action_label": "",
+            "action_url": "",
         },
         {
             "provider": SleepRecord.SOURCE_ZEPP_LIFE,
             "label": "Zepp Life",
-            "badge": "Import / mostek",
-            "description": "Dla opasek Amazfit i Mi Band zapisuj\u0105cych dane w Zepp Life. Na teraz traktujemy to jako osobn\u0105 \u015bcie\u017ck\u0119 poza Health Connect.",
+            "badge": "Automatyczne / CSV",
+            "description": "Dla opasek Amazfit i Mi Band. Dane mogą trafić do SleepWatch przez aplikację mobilną albo przez import pliku CSV.",
             "is_connected": bool(
                 (zepp_connection and zepp_connection.last_synced_at)
                 or latest_zepp_import
@@ -919,9 +923,12 @@ def build_sync_connections(user):
             ),
             "last_error": zepp_connection.last_error if zepp_connection else "",
             "last_device_name": zepp_connection.last_device_name if zepp_connection else "Zepp Life",
-            "next_step": "To najlepsza opcja dla Twojej obecnej opaski. Na teraz warto zostawi\u0107 import Zepp Life, a p\u00f3\u017aniej dorobi\u0107 osobny mostek synchronizacji.",
+            "next_step": "Jeśli używasz aplikacji mobilnej SleepWatch, wybierz Zepp Life jako źródło. Jeśli nie, wgraj plik CSV ręcznie.",
             "is_recommended": False,
-            "supports_realtime": False,
+            "supports_realtime": True,
+            "sync_mode_label": "Aplikacja mobilna albo import CSV",
+            "action_label": "Importuj dane Zepp",
+            "action_url": reverse("sleep_import"),
         },
     ]
 
@@ -1035,16 +1042,16 @@ def friends_view(request: HttpRequest) -> HttpResponse:
 
         if action == "send_request":
             if not target_user_id.isdigit():
-                messages.error(request, "Nie udalo sie wyslac zaproszenia.")
+                messages.error(request, "Nie udało się wysłać zaproszenia.")
                 return redirect("friends")
 
             if int(target_user_id) == request.user.id:
-                messages.error(request, "Nie mozna dodac samej siebie do znajomych.")
+                messages.error(request, "Nie można dodać samej siebie do znajomych.")
                 return redirect("friends")
 
             target_user = User.objects.filter(pk=target_user_id).first()
             if target_user is None:
-                messages.error(request, "Nie znaleziono tego u\u017cytkownika.")
+                messages.error(request, "Nie znaleziono tego użytkownika.")
                 return redirect("friends")
 
             existing = Friendship.objects.filter(
@@ -1053,16 +1060,16 @@ def friends_view(request: HttpRequest) -> HttpResponse:
             ).first()
             if existing:
                 if existing.status == Friendship.STATUS_ACCEPTED:
-                    messages.info(request, "Ta osoba jest juz w Twoich znajomych.")
+                    messages.info(request, "Ta osoba jest już w Twoich znajomych.")
                 elif existing.status == Friendship.STATUS_PENDING:
-                    messages.info(request, "Zaproszenie jest juz w toku.")
+                    messages.info(request, "Zaproszenie jest już w toku.")
                 else:
                     existing.sender = request.user
                     existing.receiver = target_user
                     existing.status = Friendship.STATUS_PENDING
                     existing.responded_at = None
                     existing.save(update_fields=["sender", "receiver", "status", "responded_at", "updated_at"])
-                    messages.success(request, "Wyslalysmy nowe zaproszenie do znajomych.")
+                    messages.success(request, "Wysłałyśmy nowe zaproszenie do znajomych.")
                 return redirect("friends")
 
             Friendship.objects.create(
@@ -1070,7 +1077,7 @@ def friends_view(request: HttpRequest) -> HttpResponse:
                 receiver=target_user,
                 status=Friendship.STATUS_PENDING,
             )
-            messages.success(request, "Zaproszenie do znajomych zostalo wyslane.")
+            messages.success(request, "Zaproszenie do znajomych zostało wysłane.")
             return redirect("friends")
 
         if not friendship_id.isdigit():
@@ -1086,19 +1093,19 @@ def friends_view(request: HttpRequest) -> HttpResponse:
             friendship.status = Friendship.STATUS_ACCEPTED
             friendship.responded_at = timezone.now()
             friendship.save(update_fields=["status", "responded_at", "updated_at"])
-            messages.success(request, "Zaproszenie zostalo zaakceptowane.")
+            messages.success(request, "Zaproszenie zostało zaakceptowane.")
             return redirect("friends")
 
         if action == "decline_request" and friendship.receiver_id == request.user.id:
             friendship.status = Friendship.STATUS_DECLINED
             friendship.responded_at = timezone.now()
             friendship.save(update_fields=["status", "responded_at", "updated_at"])
-            messages.success(request, "Zaproszenie zostalo odrzucone.")
+            messages.success(request, "Zaproszenie zostało odrzucone.")
             return redirect("friends")
 
         if action == "cancel_request" and friendship.sender_id == request.user.id:
             friendship.delete()
-            messages.success(request, "Zaproszenie zostalo anulowane.")
+            messages.success(request, "Zaproszenie zostało anulowane.")
             return redirect("friends")
 
         if (
@@ -1107,10 +1114,10 @@ def friends_view(request: HttpRequest) -> HttpResponse:
             and request.user.id in {friendship.sender_id, friendship.receiver_id}
         ):
             friendship.delete()
-            messages.success(request, "Znajomy zostal usuniety z listy.")
+            messages.success(request, "Znajomy został usunięty z listy.")
             return redirect("friends")
 
-        messages.error(request, "Ta akcja nie jest dostepna.")
+        messages.error(request, "Ta akcja nie jest dostępna.")
         return redirect("friends")
 
     context = {
@@ -1191,12 +1198,14 @@ def send_parental_consent_email(request: HttpRequest, user: User) -> None:
     )
 
 
-def calculate_profile_completion(profile) -> int:
+def calculate_profile_completion(profile, user=None) -> int:
     fields = [
-        bool(profile.display_name),
-        bool(profile.age_group),
-        bool(profile.lifestyle),
-        bool(profile.sleep_goal_hours),
+        bool(getattr(profile, "display_name", "")),
+        bool(getattr(user, "email", "") if user else False),
+        bool(getattr(profile, "avatar", "")),
+        bool(getattr(profile, "age_group", "")),
+        bool(getattr(profile, "lifestyle", "")),
+        bool(getattr(profile, "sleep_goal_hours", None)),
     ]
     return int((sum(fields) / len(fields)) * 100)
 
@@ -1412,22 +1421,21 @@ def build_active_hypothesis_summary(queryset, profile):
         }
 
     note_records = queryset.filter(
-        sleep_date__gte=timezone.localdate() - timedelta(days=29),
-        note__isnull=False,
-    )
+        sleep_date__gte=timezone.localdate() - timedelta(days=29)
+    ).filter(build_filled_note_query())
     analyzers = {
         UserProfile.HYPOTHESIS_CAFFEINE: lambda records: analyze_boolean_hypothesis(
             records,
             field_name="note__caffeine_used",
             title="Wpływ kofeiny",
-            factor_label="z kofeina",
+            factor_label="z kofeiną",
             without_label="bez kofeiny",
         ),
         UserProfile.HYPOTHESIS_NAP: lambda records: analyze_boolean_hypothesis(
             records,
             field_name="note__nap_taken",
             title="Wpływ drzemek",
-            factor_label="z drzemka",
+            factor_label="z drzemką",
             without_label="bez drzemki",
         ),
         UserProfile.HYPOTHESIS_ALCOHOL: lambda records: analyze_boolean_hypothesis(
@@ -1472,8 +1480,8 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "not_enough_notes",
             "tone": "neutral",
             "title": title,
-            "body": "To dobry start, ale potrzeba jeszcze kilku notatek, żeby zacząć widzieć pierwszy sensowny wzorzec.",
-            "meta": f"Na razie mamy {with_count + without_count} nocy z notatkami do tego eksperymentu.",
+            "body": "Uzupełnij więcej notatek. Na razie jest za mało danych, żeby pokazać sensowną analizę.",
+            "meta": "Wróć tu po kilku kolejnych nocach.",
         }
 
     if with_count < 2 or without_count < 2:
@@ -1481,8 +1489,8 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "insufficient_split",
             "tone": "neutral",
             "title": title,
-            "body": f"Żeby porównanie miało sens, potrzebujemy i nocy {factor_label}, i nocy {without_label}.",
-            "meta": f"Na razie rozkład wygląda tak: {with_count} vs {without_count}.",
+            "body": "Za mało zróżnicowanych danych do analizy. Uzupełnij kolejne notatki, żebyśmy mogli porównać ten nawyk.",
+            "meta": "Najlepiej, gdy w notatkach pojawiają się różne sytuacje, a nie tylko jeden wariant.",
         }
 
     avg_with = with_factor.aggregate(avg=Avg("sleep_duration_minutes"))["avg"] or 0
@@ -1527,8 +1535,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "not_enough_notes",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Dodaj jeszcze kilka ocen stresu, a SleepWatch zacznie łapać pierwsze różnice między spokojniejszymi i trudniejszymi dniami.",
-            "meta": f"Na razie mamy {high_count + low_count} nocy z oceną stresu.",
+            "body": "Uzupełnij więcej ocen stresu. Na razie jest za mało danych, żeby pokazać sensowną analizę.",
+            "meta": "Wróć tu po kilku kolejnych nocach.",
         }
 
     if high_count < 2 or low_count < 2:
@@ -1536,8 +1544,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "insufficient_split",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Żeby porównanie miało sens, potrzebujemy zarówno nocy z wysokim, jak i z niskim stresem.",
-            "meta": f"Na razie rozkład wygląda tak: {high_count} vs {low_count}.",
+            "body": "Za mało zróżnicowanych danych do analizy. Uzupełnij kolejne notatki, żebyśmy mogli porównać wpływ stresu.",
+            "meta": "Najlepiej, gdy w ocenach pojawiają się zarówno spokojniejsze, jak i trudniejsze dni.",
         }
 
     avg_high = high_stress.aggregate(avg=Avg("sleep_duration_minutes"))["avg"] or 0
@@ -1633,24 +1641,19 @@ def build_dashboard_alerts(queryset, profile, profile_completion, weekly_goal):
 
 def build_badges(queryset):
     total_records = queryset.count()
-    note_count = queryset.filter(
-        Q(note__stress_level__isnull=False)
-        | Q(note__caffeine_used=True)
-        | Q(note__caffeine_last_time__isnull=False)
-        | Q(note__caffeine_count__isnull=False)
-        | Q(note__nap_taken=True)
-        | Q(note__nap_time__isnull=False)
-        | Q(note__alcohol=True)
-        | Q(note__training_done=True)
-        | ~Q(note__note_text="")
-    ).count()
+    note_count = queryset.filter(build_filled_note_query()).count()
+
     streak = build_sleep_streak(queryset)["count"]
     good_nights = summarize_auto_nights(queryset)["good_nights"] if total_records else 0
     user = queryset.first().user if total_records else None
     profile = getattr(user, "profile", None) if user else None
+
     profile_complete = bool(
         profile
         and profile.display_name
+        and user
+        and user.email
+        and profile.avatar
         and profile.age_group
         and profile.lifestyle
         and profile.sleep_goal_hours
@@ -1684,7 +1687,7 @@ def build_badges(queryset):
         {
             "icon": "✓",
             "title": "Pełny profil",
-            "description": "Uzupełnij nazwę, grupę wiekową, aktywność i cel snu.",
+            "description": "Uzupełnij nazwę, e-mail, grupę wiekową, aktywność i cel snu.",
             "earned": profile_complete,
         },
         {
@@ -1725,6 +1728,7 @@ def build_sleep_stats(queryset, days):
     return {
         "days": days,
         "total": total,
+        "avg_sleep_minutes": round(avg_sleep, 1) if total else 0,
         "avg_sleep_display": f"{hours}h {minutes:02d}m" if total else "-",
         "avg_hr": round(aggregates["avg_hr"], 1) if aggregates["avg_hr"] is not None else "-",
         "avg_spo2": round(aggregates["avg_spo2"], 1) if aggregates["avg_spo2"] is not None else "-",
@@ -1751,6 +1755,7 @@ def build_chart_series(queryset, days, field_name):
     for record_date, value in records:
         labels.append(record_date.strftime("%d.%m"))
         values.append(value)
+
         if value is None:
             display_values.append("-")
             continue
@@ -1766,12 +1771,15 @@ def build_chart_series(queryset, days, field_name):
     if not numeric_values:
         return None
 
+    min_numeric = min(numeric_values)
+    max_numeric = max(numeric_values)
+
     return {
         "labels": labels,
         "values": values,
         "display_values": display_values,
-        "min_value": format_decimal(min(numeric_values)),
-        "max_value": format_decimal(max(numeric_values)),
+        "min_value": minutes_to_display(min_numeric) if field_name == "sleep_duration_minutes" else format_decimal(min_numeric),
+        "max_value": minutes_to_display(max_numeric) if field_name == "sleep_duration_minutes" else format_decimal(max_numeric),
         "total_points": len(numeric_values),
     }
 
@@ -1798,6 +1806,7 @@ def build_line_chart(queryset, days, field_name):
     min_value = actual_min_value - padding_value
     max_value = actual_max_value + padding_value
     span = max(max_value - min_value, 1)
+
     width = 360
     height = 190
     padding_left = 34
@@ -1813,14 +1822,17 @@ def build_line_chart(queryset, days, field_name):
     labels = []
     x_ticks = []
     tick_indexes = set()
+
     if records:
         tick_indexes.add(0)
         tick_indexes.add(len(records) - 1)
         if len(records) > 2:
             tick_indexes.add(len(records) // 2)
+
     for index, (record_date, value) in enumerate(records):
         x = padding_left + index * step
         y = height - padding_bottom
+
         if value is not None:
             y = height - padding_bottom - ((value - min_value) / span) * chart_height
             points.append(f"{x:.2f},{y:.2f}")
@@ -1833,12 +1845,9 @@ def build_line_chart(queryset, days, field_name):
                     "date": record_date.strftime("%d.%m"),
                 }
             )
+
         if index in tick_indexes:
-            x_ticks.append(
-                {
-                    "label": record_date.strftime("%d.%m"),
-                }
-            )
+            x_ticks.append({"label": record_date.strftime("%d.%m")})
 
     if not points:
         return None
@@ -1991,12 +2000,12 @@ def build_self_insights(queryset, profile, self_comparison):
                 }
             )
 
-    note_records = records_30.filter(note__isnull=False)
+    note_records = records_30.filter(build_filled_note_query())
     caffeine_insight = build_boolean_factor_insight(
         note_records,
         "note__caffeine_used",
-        "Kofeina po 16:00 może skracać sen",
-        "Noce po kofeinie po 16:00 są średnio krótsze o {delta}.",
+        "Kofeina może skracać sen",
+        "Noce po kofeinie są średnio krótsze o {delta}.",
     )
     if caffeine_insight:
         insights.append(caffeine_insight)
@@ -2118,6 +2127,7 @@ def summarize_auto_nights(records):
             note = record.note
         except SleepNote.DoesNotExist:
             note = None
+
         evaluation = build_sleep_auto_evaluation(record, note, record.user.profile)
         if evaluation["label"] == "Dobra noc":
             good_nights += 1
@@ -2167,7 +2177,7 @@ def format_decimal(value):
     if value is None:
         return "-"
     rounded = round(value, 1)
-    if rounded.is_integer():
+    if float(rounded).is_integer():
         return str(int(rounded))
     return str(rounded).replace(".", ",")
 

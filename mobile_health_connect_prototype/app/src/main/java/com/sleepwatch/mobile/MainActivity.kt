@@ -10,14 +10,14 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.health.connect.client.PermissionController
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private enum class AuthMode {
         LOGIN,
@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_API_TOKEN = "api_token"
         private const val KEY_SYNC_SOURCE = "sync_source"
         private const val KEY_LOGIN = "login"
+        private const val DEFAULT_BACKEND_URL = "https://sleepwatch.onrender.com"
     }
 
     private val ageGroupValues = listOf(
@@ -303,18 +304,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAvailability() {
-        if (getSelectedSource() == SyncSource.ZEPP_LIFE) {
-            updateStatus("Zepp Life nie ma jeszcze bezposredniego sync w aplikacji mobilnej. Uzyj importu Zepp Life w wersji webowej SleepWatch.")
-            return
-        }
         updateStatus(healthConnectManager.getAvailabilityMessage())
     }
 
     private fun requestHealthPermissions() {
-        if (getSelectedSource() == SyncSource.ZEPP_LIFE) {
-            updateStatus("Dla Zepp Life uprawnienia Health Connect nie sa potrzebne. Na teraz wybierz import danych Zepp Life w aplikacji webowej.")
-            return
-        }
         if (!healthConnectManager.isAvailable()) {
             updateStatus("Health Connect nie jest dostepny na tym urzadzeniu.")
             return
@@ -327,11 +320,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun syncSleep() {
-        if (getSelectedSource() == SyncSource.ZEPP_LIFE) {
-            updateStatus("Zepp Life w mobilce jest jeszcze w trybie mostka planowanego. Na ten moment testuj Zepp Life przez import CSV w aplikacji webowej.")
-            return
-        }
-
         val backendUrl = backendUrlInput.text.toString().trim()
         val apiToken = preferences.getString(KEY_API_TOKEN, "").orEmpty()
         if (backendUrl.isBlank() || apiToken.isBlank()) {
@@ -341,10 +329,12 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             runCatching {
-                updateStatus("Pobieranie danych z Health Connect...")
+                val selectedSource = getSelectedSource()
+                val sourceLabel = selectedSource.label
+                updateStatus("Pobieranie danych snu dla zrodla: $sourceLabel...")
                 val sleepRecords = healthConnectManager.readLast30DaysSleep()
                 if (sleepRecords.isEmpty()) {
-                    updateStatus("Nie znaleziono danych snu w Health Connect z ostatnich 30 dni.")
+                    updateStatus("Nie znaleziono danych snu z ostatnich 30 dni. Sprawdz, czy wybrane zrodlo zapisuje sen w Health Connect.")
                     return@launch
                 }
                 updateStatus("Pobrano ${sleepRecords.size} rekordow. Wysylanie do SleepWatch...")
@@ -352,7 +342,11 @@ class MainActivity : AppCompatActivity() {
                     SleepSyncApiClient(
                         baseUrl = backendUrl,
                         apiToken = apiToken,
-                    ).syncSleepRecords(sleepRecords)
+                    ).syncSleepRecords(
+                        records = sleepRecords,
+                        provider = selectedSource.provider,
+                        deviceName = if (selectedSource == SyncSource.ZEPP_LIFE) "Zepp Life / Android" else "Android Health Connect",
+                    )
                 }
             }.onSuccess { result ->
                 updateStatus(
@@ -391,7 +385,7 @@ class MainActivity : AppCompatActivity() {
             SyncSource.HEALTH_CONNECT ->
                 "W aplikacji webowej i mobilnej to glowna automatyczna sciezka. Po zalogowaniu mozesz polaczyc ja z Health Connect."
             SyncSource.ZEPP_LIFE ->
-                "Ta sciezka jest przeznaczona dla opasek zapisujacych sen do Zepp Life. Na teraz prowadzi do importu danych w wersji webowej."
+                "Jesli Zepp Life udostepnia sen w Health Connect, aplikacja wysle te dane do SleepWatch jako zrodlo Zepp Life. W innym przypadku uzyj importu CSV w webowej wersji."
         }
     }
 
@@ -404,7 +398,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restoreSavedConfiguration() {
-        backendUrlInput.setText(preferences.getString(KEY_BACKEND_URL, ""))
+        backendUrlInput.setText(preferences.getString(KEY_BACKEND_URL, DEFAULT_BACKEND_URL))
         loginInput.setText(preferences.getString(KEY_LOGIN, ""))
         apiTokenInput.text = if (preferences.getString(KEY_API_TOKEN, "").isNullOrBlank()) {
             "Zaloguj sie, aby aplikacja zapisala token automatycznie."

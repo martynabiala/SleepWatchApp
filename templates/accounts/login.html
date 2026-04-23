@@ -1,30 +1,74 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Logowanie - SleepWatch{% endblock %}
+{% block title %}Logowanie – SleepWatch{% endblock %}
 {% block topbar %}{% endblock %}
 
 {% block content %}
-<div class="auth-logo-wrap">
-    <img class="auth-logo" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch">
-</div>
-<div class="eyebrow">Logowanie</div>
-<form method="post">
-    {% csrf_token %}
-    {% for field in form %}
-        <div>
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-            {{ field.errors }}
+<div class="auth-app-header">
+    <div class="auth-app-brand">
+        <img src="{% static 'sleepwatch-new-logo.png' %}" alt="Logo SleepWatch">
+        <div class="auth-app-brand-copy">
+            <strong>SleepWatch</strong>
+            <span>Aplikacja do monitorowania snu</span>
         </div>
-    {% endfor %}
-    {% if form.non_field_errors %}
-        {{ form.non_field_errors }}
-    {% endif %}
-    <button type="submit">Zaloguj</button>
-</form>
-<div class="auth-links">
-    <a class="auth-link" href="{% url 'password_reset' %}">Nie pamiętasz hasła?</a>
-    <a class="auth-link subtle" href="{% url 'signup' %}">Nie masz konta? Utwórz konto</a>
+    </div>
+    <div class="auth-app-subtitle">
+        Monitoruj sen, analizuj nawyki i buduj spokojniejszą rutynę każdego dnia.
+    </div>
 </div>
+
+<section class="auth-shell">
+    <aside class="auth-showcase">
+        <div class="auth-showcase-content">
+            <div class="eyebrow">Dobry wieczór</div>
+            <div>
+                <h2>Wróć do swojego rytmu snu</h2>
+                <p>Sprawdź postępy, zapisuj noce i obserwuj, jak zmienia się jakość Twojego wypoczynku.</p>
+            </div>
+        </div>
+    </aside>
+
+    <article class="auth-card">
+        <nav class="auth-tabs" aria-label="Nawigacja logowania i rejestracji">
+            <a class="auth-tab is-active" href="{% url 'login' %}">Logowanie</a>
+            <a class="auth-tab" href="{% url 'signup' %}">Rejestracja</a>
+        </nav>
+
+        <div style="margin-bottom: 22px;">
+            <h1>Miło Cię znowu widzieć</h1>
+            <p>Zaloguj się, aby przejść do swojego panelu snu.</p>
+        </div>
+
+        <form class="auth-form" method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="helptext">{{ field.help_text }}</div>
+                    {% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <div class="auth-links">
+                <a class="auth-link" href="{% url 'password_reset' %}">Zapomniałaś hasła?</a>
+                <a class="auth-link subtle" href="{% url 'signup' %}">Nie masz konta? Załóż je</a>
+            </div>
+
+            <button type="submit">Zaloguj się</button>
+        </form>
+    </article>
+</section>
 {% endblock %}

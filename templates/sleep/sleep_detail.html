@@ -3,235 +3,304 @@
 {% block title %}Szczegóły nocy - SleepWatch{% endblock %}
 
 {% block content %}
-<div class="hero">
-    <section class="hero-card">
-        <div class="eyebrow">Szczegóły nocy</div>
-        <h1>{{ sleep_record.sleep_date|date:"d.m.Y" }}</h1>
-        <p>Podstawowe dane zapisane dla wybranej nocy.</p>
-
-        <div class="grid stats">
-            <div class="stat">
-                <span>Czas snu</span>
-                <strong>{{ sleep_record.sleep_duration_display }}</strong>
-            </div>
-            <div class="stat">
-                <span>Liczba wybudzeń</span>
-                <strong>{{ sleep_record.awakenings_count|default:"-" }}</strong>
-            </div>
-            <div class="stat">
-                <span>Minimalne SpO2</span>
-                <strong>{{ sleep_record.min_spo2|default:"-" }}</strong>
-            </div>
-            <div class="stat">
-                <span>Sen głęboki</span>
-                <strong>{{ sleep_record.deep_sleep_minutes|default:"-" }}</strong>
-            </div>
-        </div>
-    </section>
-
-    <aside class="soft-card">
-        <h3>Dodatkowe dane</h3>
-        <div class="meta-list">
-            <div class="meta-row">
-                <span class="meta-key">Źródło</span>
-                <strong>{{ sleep_record.get_source_display }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Godzina zaśnięcia</span>
-                <strong>{{ sleep_record.bedtime|time:"H:i"|default:"-" }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Godzina pobudki</span>
-                <strong>{{ sleep_record.wake_time|time:"H:i"|default:"-" }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Czas czuwania</span>
-                <strong>{{ sleep_record.awake_minutes|default:"-" }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Liczba wybudzeń</span>
-                <strong>{{ sleep_record.awakenings_count|default:"-" }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Sen lekki</span>
-                <strong>{{ sleep_record.light_sleep_minutes|default:"-" }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Sen głęboki</span>
-                <strong>{{ sleep_record.deep_sleep_minutes|default:"-" }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">REM</span>
-                <strong>{{ sleep_record.rem_minutes|default:"-" }}</strong>
-            </div>
-            <div class="meta-row">
-                <span class="meta-key">Dodano</span>
-                <strong>{{ sleep_record.created_at|date:"d.m.Y H:i" }}</strong>
-            </div>
-        </div>
-    </aside>
-</div>
-
-<section class="soft-card" style="margin-top: 24px;">
-    <h3>Ocena nocy</h3>
-    <div class="score-grid">
-        <article class="score-card score-card-{{ auto_evaluation.tone }}">
-            <h4>Ocena aplikacji</h4>
-            <div class="score-head">
-                <div>
-                    {% widthratio auto_evaluation.score 20 1 as auto_stars %}
-                    <div class="score-value">
-                        {% if auto_stars == "5" %}★★★★★
-                        {% elif auto_stars == "4" %}★★★★☆
-                        {% elif auto_stars == "3" %}★★★☆☆
-                        {% elif auto_stars == "2" %}★★☆☆☆
-                        {% else %}★☆☆☆☆
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="score-label">{{ auto_evaluation.label }}</div>
-            </div>
-            <div class="score-bar" aria-hidden="true">
-                <div class="score-bar-fill" style="width: {{ auto_evaluation.score }}%;"></div>
-            </div>
-            <p class="score-summary">{{ auto_evaluation.summary|capfirst }}</p>
-            <div class="score-insights">
-                <div class="score-insight">
-                    <span>Czas snu</span>
-                    <strong>{{ sleep_record.sleep_duration_display }}</strong>
-                </div>
-                <div class="score-insight">
-                    <span>Wybudzenia</span>
-                    <strong>{{ sleep_record.awakenings_count|default:"-" }}</strong>
-                </div>
-                <div class="score-insight">
-                    <span>Sen głęboki</span>
-                    <strong>{% if sleep_record.deep_sleep_minutes %}{{ sleep_record.deep_sleep_minutes }} min{% else %}-{% endif %}</strong>
-                </div>
-            </div>
-        </article>
-        <article class="score-card score-card-neutral">
-            <h4>Twoja ocena</h4>
-            <div class="score-empty">
-                <div class="score-label" style="width: fit-content;">{{ sleep_note.get_sleep_quality_display }}</div>
-                <div class="score-meta">
-                    <div class="score-meta-row">
-                        <span>◔ Stres</span>
-                        <strong>{{ sleep_note.stress_level|default:"-" }}/10</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>☕ Kofeina</span>
-                        <strong>{% if sleep_note.caffeine_used %}Tak{% else %}Nie{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>🕒 Ostatni napój z kofeiną</span>
-                        <strong>{% if sleep_note.caffeine_used and sleep_note.caffeine_last_time %}{{ sleep_note.caffeine_last_time|time:"H:i" }}{% else %}-{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>🥤 Napoje z kofeiną</span>
-                        <strong>{% if sleep_note.caffeine_used and sleep_note.caffeine_count %}{{ sleep_note.caffeine_count }}{% else %}-{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>💤 Drzemka</span>
-                        <strong>{% if sleep_note.nap_taken %}Tak{% else %}Nie{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>🕒 Godzina drzemki</span>
-                        <strong>{% if sleep_note.nap_taken and sleep_note.nap_time %}{{ sleep_note.nap_time|time:"H:i" }}{% else %}-{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>🍷 Alkohol</span>
-                        <strong>{% if sleep_note.alcohol %}Tak{% else %}Nie{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>🏃 Trening</span>
-                        <strong>{% if sleep_note.training_done %}Tak{% else %}Nie{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>🏋 Intensywność treningu</span>
-                        <strong>{% if sleep_note.training_done %}{{ sleep_note.get_training_level_display }}{% else %}-{% endif %}</strong>
-                    </div>
-                    <div class="score-meta-row">
-                        <span>🕒 Godzina treningu</span>
-                        <strong>{% if sleep_note.training_done and sleep_note.training_time %}{{ sleep_note.training_time|time:"H:i" }}{% else %}-{% endif %}</strong>
-                    </div>
-                </div>
-                {% if sleep_note.note_text %}
-                    <div class="score-note">"{{ sleep_note.note_text }}"</div>
-                {% endif %}
-            </div>
-        </article>
-    </div>
-</section>
-
 <style>
-    .note-form-grid {
+    .sleep-detail-layout {
+        display: grid;
+        gap: 24px;
+    }
+
+    .sleep-detail-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+        gap: 22px;
+        align-items: start;
+    }
+
+    .sleep-detail-card,
+    .sleep-detail-side,
+    .sleep-detail-form {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background:
+            radial-gradient(circle at top right, rgba(83, 160, 194, 0.08), transparent 30%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.94));
+    }
+
+    .sleep-detail-card,
+    .sleep-detail-side,
+    .sleep-detail-form {
+        padding: 28px;
+        box-shadow: 0 14px 34px rgba(20, 58, 92, 0.08);
+    }
+
+    .sleep-detail-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: flex-start;
+        margin-bottom: 24px;
+    }
+
+    .sleep-detail-date {
+        display: grid;
+        gap: 8px;
+    }
+
+    .sleep-detail-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent-dark), #2f7eb2);
+        color: #ffffff;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .sleep-detail-date h1 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 2.6rem);
+    }
+
+    .sleep-detail-date p {
+        margin: 0;
+        max-width: 56ch;
+    }
+
+    .sleep-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+    }
+
+    .sleep-detail-stat {
+        border-radius: 22px;
+        border: 1px solid rgba(34, 94, 139, 0.08);
+        background: rgba(255, 255, 255, 0.84);
+        padding: 18px 20px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    }
+
+    .sleep-detail-stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.92rem;
+    }
+
+    .sleep-detail-stat strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 1.6rem;
+        line-height: 1.1;
+    }
+
+    .sleep-detail-side h3,
+    .sleep-detail-form h3 {
+        margin-top: 0;
+        margin-bottom: 18px;
+    }
+
+    .sleep-detail-note-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px 18px;
         align-items: start;
     }
 
-    .note-form-field {
+    .sleep-detail-note-field {
         display: grid;
-        align-content: start;
         gap: 6px;
+        align-content: start;
     }
 
-    .note-form-field label {
-        min-height: 2.5rem;
-        margin-bottom: 0;
-    }
-
-    .note-form-field.field-stress {
-        grid-column: 1 / -1;
-        max-width: 360px;
-    }
-
-    .note-form-field.field-full {
+    .sleep-detail-note-field.full {
         grid-column: 1 / -1;
     }
 
-    @media (max-width: 820px) {
-        .note-form-grid {
+    .sleep-detail-evaluation {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .sleep-detail-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 980px) {
+        .sleep-detail-hero,
+        .sleep-detail-evaluation {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .sleep-detail-note-grid {
             grid-template-columns: 1fr;
         }
 
-        .note-form-field label {
-            min-height: auto;
-        }
-
-        .note-form-field.field-stress,
-        .note-form-field.field-full {
+        .sleep-detail-note-field.full {
             grid-column: auto;
-            max-width: none;
         }
     }
 </style>
 
-<section class="soft-card" style="margin-top: 24px;">
-    <h3>Notatka</h3>
-    <form method="post">
-        {% csrf_token %}
-        <div class="note-form-grid">
-            {% for field in note_form %}
-                <div
-                    class="note-form-field{% if field.name == 'note_text' %} field-full{% endif %}{% if field.name == 'stress_level' %} field-stress{% endif %}"
-                >
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.help_text %}
-                        <div class="helptext">{{ field.help_text }}</div>
-                    {% endif %}
-                    {{ field.errors }}
+<div class="sleep-detail-layout">
+    <section class="sleep-detail-hero">
+        <article class="sleep-detail-card">
+            <div class="sleep-detail-header">
+                <div class="sleep-detail-date">
+                    <span class="sleep-detail-badge">Szczegóły nocy</span>
+                    <h1>{{ sleep_record.sleep_date|date:"d.m.Y" }}</h1>
+                    <p>Pełny widok metryk snu dla wybranego zapisu wraz z formularzem samooceny.</p>
                 </div>
-            {% endfor %}
-        </div>
-        <button type="submit">Zapisz notatkę</button>
-    </form>
-</section>
+            </div>
 
-<div class="actions">
-    <a class="button secondary" href="{% url 'sleep_list' %}">Wróć do listy nocy</a>
+            <div class="sleep-detail-grid">
+                <div class="sleep-detail-stat">
+                    <span>Czas snu</span>
+                    <strong>{{ sleep_record.sleep_duration_display }}</strong>
+                </div>
+                <div class="sleep-detail-stat">
+                    <span>Liczba wybudzeń</span>
+                    <strong>{{ sleep_record.awakenings_count|default:"-" }}</strong>
+                </div>
+                <div class="sleep-detail-stat">
+                    <span>Minimalne SpO2</span>
+                    <strong>{{ sleep_record.min_spo2|default:"-" }}</strong>
+                </div>
+                <div class="sleep-detail-stat">
+                    <span>Średnie tętno</span>
+                    <strong>{{ sleep_record.avg_heart_rate|default:"-" }}</strong>
+                </div>
+                <div class="sleep-detail-stat">
+                    <span>Sen głęboki</span>
+                    <strong>{% if sleep_record.deep_sleep_minutes %}{{ sleep_record.deep_sleep_minutes }} min{% else %}-{% endif %}</strong>
+                </div>
+                <div class="sleep-detail-stat">
+                    <span>REM</span>
+                    <strong>{% if sleep_record.rem_minutes %}{{ sleep_record.rem_minutes }} min{% else %}-{% endif %}</strong>
+                </div>
+            </div>
+        </article>
+
+        <aside class="sleep-detail-side">
+            <h3>Dodatkowe dane</h3>
+            <div class="meta-list">
+                <div class="meta-row">
+                    <span class="meta-key">Źródło</span>
+                    <strong>{{ sleep_record.get_source_display }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Godzina zaśnięcia</span>
+                    <strong>{{ sleep_record.bedtime|time:"H:i"|default:"-" }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Godzina pobudki</span>
+                    <strong>{{ sleep_record.wake_time|time:"H:i"|default:"-" }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Czas czuwania</span>
+                    <strong>{% if sleep_record.awake_minutes %}{{ sleep_record.awake_minutes }} min{% else %}-{% endif %}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Sen lekki</span>
+                    <strong>{% if sleep_record.light_sleep_minutes %}{{ sleep_record.light_sleep_minutes }} min{% else %}-{% endif %}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Dodano</span>
+                    <strong>{{ sleep_record.created_at|date:"d.m.Y H:i" }}</strong>
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="sleep-detail-evaluation">
+        <article class="soft-card">
+            <h3>Ocena aplikacji</h3>
+            <div class="score-card score-card-{{ auto_evaluation.tone }}">
+                <div class="score-head">
+                    <div>
+                        {% widthratio auto_evaluation.score 20 1 as auto_stars %}
+                        <div class="score-value">
+                            {% if auto_stars == "5" %}★★★★★
+                            {% elif auto_stars == "4" %}★★★★☆
+                            {% elif auto_stars == "3" %}★★★☆☆
+                            {% elif auto_stars == "2" %}★★☆☆☆
+                            {% else %}★☆☆☆☆
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="score-label">{{ auto_evaluation.label }}</div>
+                </div>
+                <div class="score-bar" aria-hidden="true">
+                    <div class="score-bar-fill" style="width: {{ auto_evaluation.score }}%;"></div>
+                </div>
+                <p class="score-summary">{{ auto_evaluation.summary|capfirst }}</p>
+            </div>
+        </article>
+
+        <article class="soft-card">
+            <h3>Twoja notatka</h3>
+            <div class="meta-list">
+                <div class="meta-row">
+                    <span class="meta-key">Jakość snu</span>
+                    <strong>{{ sleep_note.get_sleep_quality_display }}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Stres</span>
+                    <strong>{{ sleep_note.stress_level|default:"-" }}/10</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Kofeina</span>
+                    <strong>{% if sleep_note.caffeine_used %}Tak{% else %}Nie{% endif %}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Drzemka</span>
+                    <strong>{% if sleep_note.nap_taken %}Tak{% else %}Nie{% endif %}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Alkohol</span>
+                    <strong>{% if sleep_note.alcohol %}Tak{% else %}Nie{% endif %}</strong>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-key">Trening</span>
+                    <strong>{% if sleep_note.training_done %}{{ sleep_note.get_training_level_display }}{% else %}Brak{% endif %}</strong>
+                </div>
+            </div>
+            {% if sleep_note.note_text %}
+                <div class="score-note">"{{ sleep_note.note_text }}"</div>
+            {% endif %}
+        </article>
+    </section>
+
+    <section class="sleep-detail-form">
+        <h3>Edytuj notatkę do nocy</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="sleep-detail-note-grid">
+                {% for field in note_form %}
+                    <div class="sleep-detail-note-field{% if field.name == 'note_text' %} full{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="helptext">{{ field.help_text }}</div>
+                        {% endif %}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit">Zapisz notatkę</button>
+        </form>
+    </section>
+
+    <div class="sleep-detail-actions">
+        <a class="button secondary" href="{% url 'sleep_list' %}">Wróć do listy nocy</a>
+    </div>
 </div>
 {% endblock %}

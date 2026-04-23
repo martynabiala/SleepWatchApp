@@ -30,7 +30,7 @@ class SignupForm(UserCreationForm):
     email = forms.EmailField(label="Adres e-mail", max_length=254)
     age_group = forms.ChoiceField(
         label="Grupa wiekowa",
-        choices=UserProfile.AGE_GROUP_CHOICES,
+        choices=[("", "Wybierz")] + UserProfile.AGE_GROUP_CHOICES,
     )
     parent_email = forms.EmailField(
         label="Adres e-mail rodzica lub opiekuna",

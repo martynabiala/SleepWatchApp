@@ -1,43 +1,44 @@
 ﻿{% extends "base.html" %}
 
-{% block title %}Dashboard - SleepWatch{% endblock %}
+{% block title %}Dashboard – SleepWatch{% endblock %}
 
 {% block content %}
 <style>
     .shell {
-        max-width: 1380px;
+        max-width: 1320px;
     }
 
     .panel {
-        padding: 36px;
+        padding: 34px;
     }
 
     .dashboard-page {
         display: grid;
-        gap: 24px;
+        gap: 22px;
     }
 
+    .dashboard-page .eyebrow {
+        background: linear-gradient(135deg, #123d61, #2f7eb2);
+    }
+
+    #dashboard-overview,
     #dashboard-focus,
-    #dashboard-latest,
-    #dashboard-goals,
     #dashboard-analysis,
-    #dashboard-month,
-    #dashboard-charts {
-        scroll-margin-top: 160px;
+    #dashboard-charts,
+    #dashboard-goals,
+    #dashboard-month {
+        scroll-margin-top: 140px;
     }
 
     .dashboard-toolbar {
-        position: sticky;
-        top: 0;
-        z-index: 5;
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         padding: 14px 16px;
-        border-radius: 0 0 22px 22px;
-        border: 1px solid rgba(110, 86, 196, 0.36);
-        background: #6f4dd4;
-        box-shadow: 0 16px 30px rgba(68, 44, 138, 0.24);
+        border-radius: 22px;
+        border: 1px solid rgba(22, 78, 125, 0.16);
+        background: linear-gradient(135deg, rgba(18, 61, 97, 0.96), rgba(36, 107, 152, 0.94));
+        box-shadow: 0 14px 26px rgba(20, 58, 92, 0.14);
     }
 
     .dashboard-toolbar a {
@@ -46,63 +47,77 @@
         justify-content: center;
         padding: 10px 14px;
         border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.12);
         color: #fff;
         font-size: 0.9rem;
         font-weight: 700;
         text-decoration: none;
-        transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
     }
 
     .dashboard-toolbar a:hover {
         transform: translateY(-1px);
-        border-color: rgba(255, 255, 255, 0.34);
-        background: rgba(255, 255, 255, 0.24);
-        box-shadow: 0 10px 20px rgba(40, 20, 90, 0.22);
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .dashboard-toolbar a::before {
+        content: "";
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        margin-right: 8px;
+        background: rgba(255, 255, 255, 0.8);
     }
 
     .dashboard-hero {
         display: grid;
         grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
         gap: 22px;
-        align-items: start;
+        align-items: stretch;
     }
 
-    .dashboard-hero-card,
-    .dashboard-side-card,
-    .dashboard-section {
+    .dashboard-card,
+    .dashboard-section,
+    .dashboard-side-card {
         border-radius: 28px;
         border: 1px solid var(--border);
         background:
-            radial-gradient(circle at top right, rgba(172, 147, 255, 0.08), transparent 28%),
-            radial-gradient(circle at bottom left, rgba(142, 124, 232, 0.06), transparent 30%),
-            linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+            radial-gradient(circle at top right, rgba(83, 160, 194, 0.08), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.93));
+        box-shadow: 0 16px 34px rgba(20, 58, 92, 0.08);
     }
 
-    .dashboard-hero-card {
-        padding: 30px;
-        display: grid;
-        gap: 24px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .dashboard-hero-card::after {
-        content: "";
-        position: absolute;
-        top: -48px;
-        right: -60px;
-        width: 220px;
-        height: 220px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(172, 147, 255, 0.14), rgba(172, 147, 255, 0));
-        pointer-events: none;
-    }
-
+    .dashboard-card,
     .dashboard-side-card,
     .dashboard-section {
         padding: 26px;
+    }
+
+    .dashboard-hero-main,
+    .dashboard-side-card {
+        height: 100%;
+    }
+
+    .dashboard-hero-main {
+        display: grid;
+        gap: 20px;
+    }
+
+    .dashboard-side-card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-self: stretch;
+    }
+
+    .dashboard-side-card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        flex: 1;
     }
 
     .dashboard-intro {
@@ -118,21 +133,21 @@
         display: grid;
         place-items: center;
         font-size: 2rem;
-        color: #5b345f;
-        box-shadow: 0 18px 34px rgba(3, 7, 16, 0.28);
+        color: #103752;
+        box-shadow: 0 18px 34px rgba(20, 58, 92, 0.16);
         flex-shrink: 0;
     }
 
-    .avatar-moon { background: linear-gradient(135deg, #8e7ce8 0%, #c18cff 100%); }
-    .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
-    .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
-    .avatar-sun { background: linear-gradient(135deg, #ff8f70 0%, #ffc06a 100%); }
-    .avatar-leaf { background: linear-gradient(135deg, #57b890 0%, #8ed4ac 100%); }
-    .avatar-heart { background: linear-gradient(135deg, #ef6ba8 0%, #f6a4c8 100%); }
+    .avatar-moon { background: linear-gradient(135deg, #164e7d 0%, #2f7eb2 100%); }
+    .avatar-star { background: linear-gradient(135deg, #d99a49 0%, #f1c36c 100%); }
+    .avatar-cloud { background: linear-gradient(135deg, #59a8d3 0%, #b7dff1 100%); }
+    .avatar-sun { background: linear-gradient(135deg, #d47c55 0%, #efb37d 100%); }
+    .avatar-leaf { background: linear-gradient(135deg, #2e8b7b 0%, #75c3b5 100%); }
+    .avatar-heart { background: linear-gradient(135deg, #b9617b 0%, #e3a4b5 100%); }
 
     .dashboard-header {
         display: grid;
-        gap: 16px;
+        gap: 14px;
     }
 
     .dashboard-header h1,
@@ -141,40 +156,31 @@
         margin: 0;
     }
 
-    .dashboard-section-head {
-        display: grid;
-        gap: 6px;
-        margin-bottom: 18px;
-    }
-
-    .dashboard-section-kicker {
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--accent-dark);
-        font-weight: 800;
-    }
-
-    .dashboard-section-copy {
-        color: var(--muted);
+    .dashboard-header p,
+    .dashboard-section p {
+        margin: 0;
     }
 
     .dashboard-summary-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 14px;
+        align-items: stretch;
     }
 
     .dashboard-summary-card {
+        border-radius: 22px;
+        border: 1px solid rgba(34, 94, 139, 0.08);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 190px;
+        height: 100%;
         position: relative;
         overflow: hidden;
-        border: 1px solid rgba(142, 124, 232, 0.08);
-        border-radius: 24px;
-        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
-        padding: 18px 20px;
-        display: grid;
-        gap: 8px;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
     }
 
     .dashboard-summary-card::before {
@@ -183,7 +189,7 @@
         inset: 0 auto auto 0;
         width: 100%;
         height: 5px;
-        background: linear-gradient(90deg, rgba(142, 124, 232, 0.88), rgba(193, 140, 255, 0.88));
+        background: linear-gradient(90deg, rgba(22, 78, 125, 0.88), rgba(61, 139, 187, 0.88));
     }
 
     .dashboard-summary-card span {
@@ -192,37 +198,57 @@
     }
 
     .dashboard-summary-card strong {
-        font-size: 1.8rem;
+        font-size: 1.75rem;
         line-height: 1.05;
+        display: block;
     }
 
-    .dashboard-summary-card p,
-    .dashboard-note,
-    .dashboard-section p {
+    .dashboard-summary-card p {
         margin: 0;
+        line-height: 1.5;
     }
 
     .dashboard-tip {
-        display: grid;
-        gap: 8px;
         padding: 18px 20px;
         border-radius: 24px;
-        border: 1px solid rgba(142, 124, 232, 0.08);
-        background: linear-gradient(135deg, rgba(255, 246, 234, 0.94), rgba(244, 239, 255, 0.94));
+        border: 1px solid rgba(34, 94, 139, 0.08);
+        background: linear-gradient(135deg, rgba(245, 251, 255, 0.96), rgba(236, 246, 251, 0.94));
+        display: grid;
+        gap: 8px;
     }
 
-    .dashboard-tip-label {
-        font-size: 0.76rem;
+    .dashboard-tip h3,
+    .dashboard-tip p {
+        margin: 0;
+    }
+
+    .dashboard-tip-label,
+    .dashboard-section-kicker,
+    .dashboard-alert-label,
+    .dashboard-hypothesis-label {
+        font-size: 0.78rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--accent-dark);
         font-weight: 800;
     }
 
-    .dashboard-focus-grid {
+    .dashboard-section-head {
         display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+    .dashboard-section-copy {
+        color: var(--muted);
+        max-width: 62ch;
+    }
+
+    .dashboard-overview-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 22px;
+        align-items: stretch;
     }
 
     .dashboard-alert-list {
@@ -231,11 +257,24 @@
     }
 
     .dashboard-alert-card,
-    .dashboard-hypothesis-card {
-        border-radius: 24px;
-        border: 1px solid rgba(142, 124, 232, 0.08);
+    .dashboard-hypothesis-card,
+    .dashboard-mini-card,
+    .dashboard-chart-card,
+    .comparison-card,
+    .insight-card {
+        border-radius: 22px;
+        border: 1px solid rgba(34, 94, 139, 0.08);
         background: rgba(255, 255, 255, 0.9);
-        padding: 22px;
+        padding: 20px;
+        box-shadow: 0 14px 28px rgba(20, 58, 92, 0.06);
+    }
+
+    .dashboard-alert-card,
+    .dashboard-hypothesis-card,
+    .dashboard-mini-card,
+    .comparison-card,
+    .insight-card {
+        height: 100%;
     }
 
     .dashboard-alert-card {
@@ -243,13 +282,29 @@
         gap: 8px;
     }
 
+    .dashboard-hypothesis-card,
+    .dashboard-mini-card,
+    .comparison-card,
+    .insight-card {
+        display: flex;
+        flex-direction: column;
+    }
+
     .dashboard-alert-card h4,
-    .dashboard-hypothesis-card h3 {
+    .dashboard-hypothesis-card h3,
+    .dashboard-mini-card h3,
+    .dashboard-mini-card h4,
+    .dashboard-chart-card h3,
+    .comparison-card h4,
+    .insight-card h4 {
         margin: 0;
     }
 
     .dashboard-alert-card p,
-    .dashboard-hypothesis-card p {
+    .dashboard-hypothesis-card p,
+    .dashboard-mini-card p,
+    .dashboard-chart-card p,
+    .insight-card p {
         margin: 0;
     }
 
@@ -258,96 +313,29 @@
     }
 
     .dashboard-alert-warning {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 243, 246, 0.98));
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(239, 247, 251, 0.98));
     }
 
     .dashboard-alert-neutral {
-        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.92));
     }
 
-    .dashboard-alert-label,
-    .dashboard-hypothesis-label {
-        font-size: 0.8rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--accent-dark);
-    }
-
-    .dashboard-hypothesis-meta {
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(255, 249, 241, 0.96), rgba(250, 246, 255, 0.92));
-        border: 1px solid rgba(222, 193, 150, 0.28);
-        color: var(--muted);
-    }
-
-    .dashboard-side-card {
-        display: grid;
-        gap: 18px;
-        align-self: start;
-        position: sticky;
-        top: 152px;
-        background:
-            radial-gradient(circle at top right, rgba(172, 147, 255, 0.12), transparent 26%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(250, 246, 255, 0.94));
-    }
-
-    .dashboard-stars {
-        font-size: 2rem;
-        line-height: 1;
-        letter-spacing: 0.08em;
-        text-align: center;
-        color: var(--accent-dark);
-    }
-
-    .dashboard-two-col,
-    .dashboard-chart-grid {
-        display: grid;
-        gap: 22px;
-    }
-
-    .dashboard-two-col,
-    .dashboard-chart-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .dashboard-mini-card,
-    .dashboard-chart-card {
-        border-radius: 24px;
-        border: 1px solid rgba(142, 124, 232, 0.08);
-        background: rgba(255, 255, 255, 0.9);
-        padding: 22px;
-    }
-
-    .dashboard-mini-card {
-        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
-    }
-
-    .dashboard-chart-card {
-        background:
-            radial-gradient(circle at top right, rgba(172, 147, 255, 0.08), transparent 32%),
-            radial-gradient(circle at bottom left, rgba(142, 124, 232, 0.06), transparent 32%),
-            linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
-    }
-
-    .dashboard-chart-card h3,
-    .dashboard-mini-card h3,
-    .dashboard-mini-card h4,
-    .dashboard-chart-card h4 {
-        margin-top: 0;
-    }
-
-    .dashboard-chart-card p {
-        margin-bottom: 14px;
-    }
-
+    .dashboard-hypothesis-meta,
     .dashboard-note {
         padding: 14px 16px;
         border-radius: 18px;
-        background: linear-gradient(180deg, rgba(255, 249, 241, 0.96), rgba(250, 246, 255, 0.92));
-        border: 1px solid rgba(222, 193, 150, 0.28);
+        background: linear-gradient(180deg, rgba(247, 252, 255, 0.96), rgba(239, 247, 251, 0.92));
+        border: 1px solid rgba(99, 149, 182, 0.22);
         color: var(--muted);
+    }
+
+    .dashboard-hypothesis-meta {
+        margin-top: 16px;
+    }
+
+    .dashboard-note {
+        font-style: italic;
+        line-height: 1.5;
     }
 
     .meta-list {
@@ -358,9 +346,10 @@
     .meta-row {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         gap: 12px;
         padding-bottom: 12px;
-        border-bottom: 1px solid rgba(142, 124, 232, 0.08);
+        border-bottom: 1px solid rgba(34, 94, 139, 0.08);
     }
 
     .meta-row:last-child {
@@ -372,10 +361,44 @@
         color: var(--muted);
     }
 
+    .meta-row strong {
+        text-align: right;
+    }
+
+    .dashboard-rating-card {
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .dashboard-rating-card h4 {
+        margin: 0;
+    }
+
+    .dashboard-stars {
+        font-size: 3.2rem;
+        line-height: 1;
+        letter-spacing: 0.14em;
+        text-align: center;
+        color: var(--accent-dark);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dashboard-single-grid {
+        display: grid;
+        gap: 18px;
+    }
+
     .progress {
         margin-top: 16px;
         border-radius: 999px;
-        background: rgba(142, 124, 232, 0.1);
+        background: rgba(22, 78, 125, 0.1);
         height: 14px;
         overflow: hidden;
     }
@@ -386,37 +409,34 @@
         background: linear-gradient(90deg, var(--accent-dark), var(--accent));
     }
 
+    .dashboard-goal-hint {
+        margin-top: 12px;
+    }
+
     .comparison-grid,
-    .insight-list {
+    .insight-list,
+    .dashboard-chart-grid {
         display: grid;
         gap: 16px;
-        margin-top: 18px;
+        align-items: stretch;
     }
 
     .comparison-grid {
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin-top: 18px;
     }
 
     .insight-list {
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin-top: 18px;
     }
 
-    .comparison-card,
-    .insight-card {
-        border-radius: 22px;
-        border: 1px solid var(--border);
-        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
-        padding: 20px;
-    }
-
-    .insight-positive,
-    .insight-warning,
-    .insight-neutral {
-        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+    .dashboard-chart-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .comparison-value {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
         font-weight: 800;
         margin: 8px 0 4px;
     }
@@ -436,7 +456,7 @@
 
     .chart-stat {
         border-radius: 18px;
-        border: 1px solid rgba(142, 124, 232, 0.08);
+        border: 1px solid rgba(34, 94, 139, 0.08);
         background: rgba(255, 255, 255, 0.82);
         padding: 12px 14px;
         display: grid;
@@ -455,72 +475,70 @@
     }
 
     .dashboard-canvas-wrap {
-        border-radius: 24px;
-        border: 1px solid rgba(145, 124, 232, 0.14);
+        border-radius: 22px;
+        border: 1px solid rgba(34, 94, 139, 0.14);
         background: #fff;
         padding: 18px 18px 12px;
     }
 
     .dashboard-canvas-wrap canvas {
         width: 100%;
-        height: 300px;
+        height: 290px;
         display: block;
     }
 
     .dashboard-empty {
-        border-radius: 24px;
-        border: 1px dashed rgba(145, 124, 232, 0.24);
+        border-radius: 22px;
+        border: 1px dashed rgba(34, 94, 139, 0.24);
         background: rgba(255, 255, 255, 0.75);
         padding: 24px;
         color: var(--muted);
     }
 
-    .sync-summary-grid {
+    .dashboard-form {
+        margin-top: 18px;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
+        gap: 12px;
     }
 
-    .sync-summary-card {
-        border-radius: 22px;
-        border: 1px solid var(--border);
-        background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
-        padding: 20px;
-        display: grid;
-        gap: 8px;
-    }
-
-    .sync-summary-chip {
-        display: inline-flex;
-        width: fit-content;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(142, 124, 232, 0.12);
-        color: var(--accent-dark);
-        font-size: 0.8rem;
+    .dashboard-form label {
+        display: block;
+        margin-bottom: 6px;
         font-weight: 700;
+        color: var(--text);
     }
 
-    @media (max-width: 1080px) {
-        .dashboard-hero,
-        .dashboard-two-col,
-        .dashboard-chart-grid,
-        .dashboard-focus-grid {
+    .dashboard-form select,
+    .dashboard-form input,
+    .dashboard-form textarea {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid rgba(34, 94, 139, 0.16);
+        background: #fff;
+        padding: 12px 14px;
+        font: inherit;
+        color: var(--text);
+    }
+
+    .dashboard-form button {
+        align-self: start;
+    }
+
+    .dashboard-hidden-helper {
+        display: none;
+    }
+
+    @media (max-width: 1180px) {
+        .dashboard-hero {
             grid-template-columns: 1fr;
         }
+    }
 
+    @media (max-width: 980px) {
+        .dashboard-overview-grid,
+        .dashboard-chart-grid,
         .dashboard-summary-grid {
             grid-template-columns: 1fr;
-        }
-
-        .dashboard-toolbar {
-            top: 0;
-        }
-
-        .dashboard-side-card {
-            position: static;
         }
 
         .chart-meta {
@@ -533,62 +551,92 @@
             padding: 24px;
         }
 
-        .dashboard-hero-card,
+        .dashboard-card,
         .dashboard-side-card,
         .dashboard-section,
+        .dashboard-alert-card,
+        .dashboard-hypothesis-card,
         .dashboard-mini-card,
-        .dashboard-chart-card {
-            padding: 22px;
+        .dashboard-chart-card,
+        .comparison-card,
+        .insight-card {
+            padding: 20px;
         }
 
         .dashboard-intro {
             align-items: flex-start;
         }
 
+        .dashboard-avatar {
+            width: 68px;
+            height: 68px;
+            border-radius: 20px;
+            font-size: 1.7rem;
+        }
+
+        .dashboard-stars {
+            font-size: 2.5rem;
+        }
+
         .dashboard-canvas-wrap canvas {
-            height: 240px;
+            height: 230px;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .dashboard-toolbar {
+            padding: 12px;
+        }
+
+        .dashboard-toolbar a {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .dashboard-intro {
+            flex-direction: column;
         }
     }
 </style>
 
 <div class="dashboard-page">
     <nav class="dashboard-toolbar" aria-label="Sekcje dashboardu">
+        <a href="#dashboard-overview">Przegląd</a>
         <a href="#dashboard-focus">Priorytety</a>
-        <a href="#dashboard-latest">Ostatnia noc</a>
-        <a href="#dashboard-goals">Cele</a>
         <a href="#dashboard-analysis">Analiza</a>
-        <a href="#dashboard-month">Miesiąc</a>
         <a href="#dashboard-charts">Wykresy</a>
     </nav>
 
-    <section class="dashboard-hero">
-        <div class="dashboard-hero-card">
+    <section class="dashboard-hero" id="dashboard-overview">
+        <div class="dashboard-card dashboard-hero-main">
             <div class="dashboard-header">
                 <div class="eyebrow">Szybki podgląd</div>
                 <div class="dashboard-intro">
                     <div class="dashboard-avatar avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                     <div>
                         <h1>Witaj, {{ profile.display_name|default:request.user.username }}</h1>
-                        <p>Twoje noce, trendy i najważniejsze wnioski w jednym miejscu.</p>
+                        <p>Najważniejsze informacje o Twoim śnie w jednym miejscu.</p>
                     </div>
                 </div>
             </div>
 
             <div class="dashboard-summary-grid">
                 <article class="dashboard-summary-card">
-                    <span>Twój ostatni zapis</span>
+                    <span>Ostatni zapis</span>
                     <strong>{% if last_sleep %}{{ last_sleep.sleep_duration_display }}{% else %}-{% endif %}</strong>
                     <p>{% if last_sleep %}{{ last_sleep.sleep_date|date:"d.m.Y" }}{% else %}Dodaj pierwszą noc, aby zobaczyć podsumowanie.{% endif %}</p>
                 </article>
+
                 <article class="dashboard-summary-card">
-                    <span>Rytm z 7 dni</span>
+                    <span>Średnia z 7 dni</span>
                     <strong>{{ stats_7.avg_sleep_display }}</strong>
-                    <p>{{ stats_7.good_nights }} dobrych nocy na {{ stats_7.total }} zapisanych. To Twoja baza do kolejnych wskazówek.</p>
+                    <p>{{ stats_7.good_nights }} dobrych nocy na {{ stats_7.total }} zapisanych.</p>
                 </article>
+
                 <article class="dashboard-summary-card">
-                    <span>Seria</span>
+                    <span>Aktualna seria</span>
                     <strong>{{ sleep_streak.count }}</strong>
-                    <p>{{ sleep_streak.label }}. {{ sleep_streak.body }}</p>
+                    <p>{{ sleep_streak.label }}</p>
                 </article>
             </div>
 
@@ -597,154 +645,142 @@
                 <h3>{{ dashboard_tip.title }}</h3>
                 <p>{{ dashboard_tip.body }}</p>
             </article>
-
-            <div style="display: none;" aria-hidden="true">
-                {% for title in self_insight_titles %}{{ title }}{% endfor %}
-            </div>
-
-            <section class="dashboard-focus-grid" id="dashboard-focus">
-                <div class="dashboard-alert-list">
-                    {% for alert in dashboard_alerts %}
-                        <article class="dashboard-alert-card dashboard-alert-{{ alert.tone }}">
-                            <div class="dashboard-alert-label">Twój priorytet</div>
-                            <h4>{{ alert.title }}</h4>
-                            <p>{{ alert.body }}</p>
-                        </article>
-                    {% endfor %}
-                </div>
-
-                <article class="dashboard-hypothesis-card">
-                    <div class="dashboard-hypothesis-label">{{ experiment_heading }}</div>
-                    <h3>{{ active_hypothesis_summary.title }}</h3>
-                    <p style="margin-top: 8px;">{{ active_hypothesis_summary.body }}</p>
-                    {% if active_hypothesis_summary.meta %}
-                        <div class="dashboard-hypothesis-meta" style="margin-top: 16px;">{{ active_hypothesis_summary.meta }}</div>
-                    {% endif %}
-
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update_hypothesis">
-                        <div>
-                            <label for="{{ hypothesis_form.active_hypothesis.id_for_label }}">{{ hypothesis_form.active_hypothesis.label }}</label>
-                            {{ hypothesis_form.active_hypothesis }}
-                            {{ hypothesis_form.active_hypothesis.errors }}
-                        </div>
-                        <button type="submit">Ustaw eksperyment miesiąca</button>
-                    </form>
-                </article>
-            </section>
         </div>
 
-        <aside class="dashboard-side-card" id="dashboard-latest">
+        <aside class="dashboard-side-card">
             <h3>Ostatnia noc</h3>
-            {% if last_sleep %}
-                <div class="meta-list">
-                    <div class="meta-row">
-                        <span class="meta-key">Data</span>
-                        <strong>{{ last_sleep.sleep_date|date:"d.m.Y" }}</strong>
-                    </div>
-                    <div class="meta-row">
-                        <span class="meta-key">Czas snu</span>
-                        <strong>{{ last_sleep.sleep_duration_display }}</strong>
-                    </div>
-                    <div class="meta-row">
-                        <span class="meta-key">Średnie tętno</span>
-                        <strong>{{ last_sleep.avg_heart_rate|default:"-" }}</strong>
-                    </div>
-                </div>
 
-                {% if last_sleep_evaluation %}
-                    {% widthratio last_sleep_evaluation.score 20 1 as dashboard_stars %}
-                    <div class="dashboard-mini-card">
-                        <h4>Ocena aplikacji</h4>
-                        <div class="dashboard-stars">
-                            {% if dashboard_stars == "5" %}&#9733;&#9733;&#9733;&#9733;&#9733;
-                            {% elif dashboard_stars == "4" %}&#9733;&#9733;&#9733;&#9733;&#9734;
-                            {% elif dashboard_stars == "3" %}&#9733;&#9733;&#9733;&#9734;&#9734;
-                            {% elif dashboard_stars == "2" %}&#9733;&#9733;&#9734;&#9734;&#9734;
-                            {% else %}&#9733;&#9734;&#9734;&#9734;&#9734;
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endif %}
-
-                <div class="dashboard-mini-card">
-                    <h4>Twoja ocena</h4>
+            <div class="dashboard-side-card-body">
+                {% if last_sleep %}
                     <div class="meta-list">
+                        <div class="meta-row">
+                            <span class="meta-key">Data</span>
+                            <strong>{{ last_sleep.sleep_date|date:"d.m.Y" }}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Czas snu</span>
+                            <strong>{{ last_sleep.sleep_duration_display }}</strong>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-key">Średnie tętno</span>
+                            <strong>{{ last_sleep.avg_heart_rate|default:"-" }}</strong>
+                        </div>
                         <div class="meta-row">
                             <span class="meta-key">Jakość snu</span>
                             <strong>{{ last_sleep_note.get_sleep_quality_display|default:"Brak oceny" }}</strong>
                         </div>
-                        <div class="meta-row">
-                            <span class="meta-key">Stres</span>
-                            <strong>{{ last_sleep_note.stress_level|default:"-" }}/10</strong>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-key">Kofeina</span>
-                            <strong>{% if last_sleep_note and last_sleep_note.caffeine_used %}Tak{% else %}Nie{% endif %}</strong>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-key">Drzemka</span>
-                            <strong>{% if last_sleep_note and last_sleep_note.nap_taken %}Tak{% else %}Nie{% endif %}</strong>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-key">Alkohol</span>
-                            <strong>{% if last_sleep_note and last_sleep_note.alcohol %}Tak{% else %}Nie{% endif %}</strong>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-key">Trening</span>
-                            <strong>{% if last_sleep_note and last_sleep_note.training_done %}Tak{% else %}Nie{% endif %}</strong>
-                        </div>
                     </div>
-                    {% if last_sleep_note and last_sleep_note.note_text %}
-                        <div class="dashboard-note" style="margin-top: 16px;">"{{ last_sleep_note.note_text }}"</div>
+
+                    {% if last_sleep_evaluation %}
+                        {% widthratio last_sleep_evaluation.score 20 1 as dashboard_stars %}
+                        <div class="dashboard-mini-card dashboard-rating-card">
+                            <h4>Ocena aplikacji</h4>
+                            <div class="dashboard-stars">
+                                {% if dashboard_stars == "5" %}&#9733;&#9733;&#9733;&#9733;&#9733;
+                                {% elif dashboard_stars == "4" %}&#9733;&#9733;&#9733;&#9733;&#9734;
+                                {% elif dashboard_stars == "3" %}&#9733;&#9733;&#9733;&#9734;&#9734;
+                                {% elif dashboard_stars == "2" %}&#9733;&#9733;&#9734;&#9734;&#9734;
+                                {% else %}&#9733;&#9734;&#9734;&#9734;&#9734;
+                                {% endif %}
+                            </div>
+                        </div>
                     {% endif %}
-                </div>
-            {% else %}
-                <p>Nie masz jeszcze zaimportowanych danych snu.</p>
-            {% endif %}
+
+                    {% if last_sleep_note and last_sleep_note.note_text %}
+                        <div class="dashboard-note">„{{ last_sleep_note.note_text }}”</div>
+                    {% endif %}
+                {% else %}
+                    <div class="dashboard-empty">
+                        Nie masz jeszcze zapisanych danych snu. Dodaj pierwszą noc, aby zobaczyć statystyki i wykresy.
+                    </div>
+                {% endif %}
+            </div>
         </aside>
     </section>
 
-    <section class="dashboard-two-col" id="dashboard-goals" style="grid-template-columns: minmax(0, 1fr);">
-        <div class="dashboard-section-head" style="grid-column: 1 / -1;">
-            <div class="dashboard-section-kicker">Cele i rytm</div>
-            <h3>Na czym warto się skupić w tym tygodniu</h3>
+    <section class="dashboard-section" id="dashboard-focus">
+        <div class="dashboard-section-head">
+            <div class="dashboard-section-kicker">Priorytety</div>
+            <h3>Na czym warto skupić się teraz</h3>
+            <p class="dashboard-section-copy">Krótki przegląd najważniejszych rzeczy na ten tydzień.</p>
         </div>
 
-        <div class="dashboard-mini-card">
-            <h3>Cel tygodnia</h3>
-            <div class="comparison-value">{{ weekly_goal.label }}</div>
-            <p>{{ weekly_goal.body }}</p>
-            <div class="progress" aria-hidden="true">
-                <div class="progress-bar" style="width: {{ weekly_goal.percent }}%;"></div>
+        <div class="dashboard-overview-grid">
+            <div class="dashboard-alert-list">
+                {% for alert in dashboard_alerts %}
+                    <article class="dashboard-alert-card dashboard-alert-{{ alert.tone }}">
+                        <div class="dashboard-alert-label">Priorytet</div>
+                        <h4>{{ alert.title }}</h4>
+                        <p>{{ alert.body }}</p>
+                    </article>
+                {% endfor %}
             </div>
-            <p style="margin-top: 12px;">{{ weekly_goal.hint }}</p>
+
+            <article class="dashboard-hypothesis-card">
+                <div class="dashboard-hypothesis-label">{{ experiment_heading }}</div>
+                <h3>{{ active_hypothesis_summary.title }}</h3>
+                <p>{{ active_hypothesis_summary.body }}</p>
+
+                {% if active_hypothesis_summary.meta %}
+                    <div class="dashboard-hypothesis-meta">{{ active_hypothesis_summary.meta }}</div>
+                {% endif %}
+
+                <form method="post" class="dashboard-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_hypothesis">
+                    <div>
+                        <label for="{{ hypothesis_form.active_hypothesis.id_for_label }}">{{ hypothesis_form.active_hypothesis.label }}</label>
+                        {{ hypothesis_form.active_hypothesis }}
+                        {{ hypothesis_form.active_hypothesis.errors }}
+                    </div>
+                    <button type="submit">Ustaw eksperyment miesiąca</button>
+                </form>
+            </article>
+        </div>
+    </section>
+
+    <section class="dashboard-section" id="dashboard-goals">
+        <div class="dashboard-section-head">
+            <div class="dashboard-section-kicker">Cel tygodnia</div>
+            <h3>Regularność i rytm</h3>
+        </div>
+
+        <div class="dashboard-single-grid">
+            <div class="dashboard-mini-card">
+                <h3>{{ weekly_goal.label }}</h3>
+                <p>{{ weekly_goal.body }}</p>
+                <div class="progress" aria-hidden="true">
+                    <div class="progress-bar" style="width: {{ weekly_goal.percent }}%;"></div>
+                </div>
+                <p class="dashboard-goal-hint">{{ weekly_goal.hint }}</p>
+            </div>
         </div>
     </section>
 
     <section class="dashboard-section" id="dashboard-analysis">
         <div class="dashboard-section-head">
             <div class="dashboard-section-kicker">Analiza</div>
-            <p class="dashboard-section-copy">Porównanie ostatniego tygodnia z szerszym obrazem miesiąca, bez przeklikiwania się przez kilka ekranów.</p>
+            <h3>Ostatnie 7 dni na tle 30 dni</h3>
+            <p class="dashboard-section-copy">Szybkie porównanie najważniejszych wskaźników.</p>
         </div>
-        <h3>Analiza własnych danych</h3>
-        <p>Porównanie Twoich ostatnich 7 dni z pełniejszym obrazem z ostatnich 30 dni.</p>
+
         <div class="comparison-grid">
             <div class="comparison-card">
                 <h4>Średni czas snu</h4>
                 <div class="comparison-value">{{ self_comparison.last_7.avg_sleep_display }}</div>
                 <div class="comparison-delta">7 dni vs 30 dni: {{ self_comparison.delta_sleep_display }}</div>
             </div>
+
             <div class="comparison-card">
                 <h4>Średnie tętno</h4>
                 <div class="comparison-value">{{ self_comparison.last_7.avg_hr_display }}</div>
                 <div class="comparison-delta">7 dni vs 30 dni: {{ self_comparison.delta_hr_display }}</div>
             </div>
+
             <div class="comparison-card">
                 <h4>Udział dobrych nocy</h4>
                 <div class="comparison-value">{{ self_comparison.good_night_share_7 }}%</div>
-                <div class="comparison-delta">Ocena aplikacji, 7 dni vs 30 dni: {{ self_comparison.delta_good_night_share_display }}</div>
+                <div class="comparison-delta">7 dni vs 30 dni: {{ self_comparison.delta_good_night_share_display }}</div>
             </div>
         </div>
 
@@ -761,19 +797,22 @@
     <section class="dashboard-section" id="dashboard-month">
         <div class="dashboard-section-head">
             <div class="dashboard-section-kicker">Perspektywa miesięczna</div>
+            <h3>Ten miesiąc a poprzedni</h3>
         </div>
-        <h3>Ten miesiąc vs poprzedni miesiąc</h3>
+
         <div class="comparison-grid">
             <div class="comparison-card">
                 <h4>Średni czas snu</h4>
                 <div class="comparison-value">{{ month_comparison.current.avg_sleep_display }}</div>
                 <div class="comparison-delta">{{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}: {{ month_comparison.delta_sleep }}</div>
             </div>
+
             <div class="comparison-card">
                 <h4>Średnie tętno</h4>
                 <div class="comparison-value">{{ month_comparison.current.avg_hr_display }}</div>
                 <div class="comparison-delta">{{ month_comparison.current_label }} vs {{ month_comparison.previous_label }}: {{ month_comparison.delta_hr }}</div>
             </div>
+
             <div class="comparison-card">
                 <h4>Dobre noce</h4>
                 <div class="comparison-value">{{ month_comparison.current.good_nights }}</div>
@@ -782,63 +821,74 @@
         </div>
     </section>
 
-    <section class="dashboard-chart-grid" id="dashboard-charts">
-        <div class="dashboard-section-head" style="grid-column: 1 / -1;">
+    <section class="dashboard-section" id="dashboard-charts">
+        <div class="dashboard-section-head">
             <div class="dashboard-section-kicker">Wykresy</div>
-            <h3>Krótkie trendy z ostatniego tygodnia</h3>
-        </div>
-        <div class="dashboard-chart-card">
-            <h3>Wykres czasu snu - 7 dni</h3>
-            <p>Krótki trend pokazujący, jak zmieniała się długość snu w ostatnim tygodniu.</p>
-            {% if sleep_chart_7 %}
-                <div class="chart-meta">
-                    <div class="chart-stat">
-                        <span>Najkrótsza noc</span>
-                        <strong>{{ sleep_chart_7.min_value }}</strong>
-                    </div>
-                    <div class="chart-stat">
-                        <span>Średnio</span>
-                        <strong>{{ stats_7.avg_sleep_display }}</strong>
-                    </div>
-                    <div class="chart-stat">
-                        <span>Najdłuższa noc</span>
-                        <strong>{{ sleep_chart_7.max_value }}</strong>
-                    </div>
-                </div>
-                <div class="dashboard-canvas-wrap">
-                    <canvas id="dashboardSleepChart" aria-label="Wykres czasu snu"></canvas>
-                </div>
-            {% else %}
-                <div class="dashboard-empty">Za mało danych, aby pokazać wykres czasu snu.</div>
-            {% endif %}
+            <h3>Trendy z ostatnich 7 dni</h3>
         </div>
 
-        <div class="dashboard-chart-card">
-            <h3>Wykres średniego tętna - 7 dni</h3>
-            <p>Podgląd nocnego obciążenia organizmu i spokojniejszych nocy.</p>
-            {% if hr_chart_7 %}
-                <div class="chart-meta">
-                    <div class="chart-stat">
-                        <span>Najniższa wartość</span>
-                        <strong>{{ hr_chart_7.min_value }}</strong>
+        <div class="dashboard-chart-grid">
+            <div class="dashboard-chart-card">
+                <h3>Czas snu</h3>
+                <p>Jak zmieniała się długość snu w ostatnim tygodniu.</p>
+
+                {% if sleep_chart_7 %}
+                    <div class="chart-meta">
+                        <div class="chart-stat">
+                            <span>Najkrótsza noc</span>
+                            <strong>{{ sleep_chart_7.min_value }}</strong>
+                        </div>
+                        <div class="chart-stat">
+                            <span>Średnia</span>
+                            <strong>{{ stats_7.avg_sleep_display }}</strong>
+                        </div>
+                        <div class="chart-stat">
+                            <span>Najdłuższa noc</span>
+                            <strong>{{ sleep_chart_7.max_value }}</strong>
+                        </div>
                     </div>
-                    <div class="chart-stat">
-                        <span>Średnio</span>
-                        <strong>{{ stats_7.avg_hr }}</strong>
+
+                    <div class="dashboard-canvas-wrap">
+                        <canvas id="dashboardSleepChart" aria-label="Wykres czasu snu"></canvas>
                     </div>
-                    <div class="chart-stat">
-                        <span>Najwyższa wartość</span>
-                        <strong>{{ hr_chart_7.max_value }}</strong>
+                {% else %}
+                    <div class="dashboard-empty">Za mało danych, aby pokazać wykres czasu snu.</div>
+                {% endif %}
+            </div>
+
+            <div class="dashboard-chart-card">
+                <h3>Średnie tętno</h3>
+                <p>Podgląd nocnego obciążenia organizmu.</p>
+
+                {% if hr_chart_7 %}
+                    <div class="chart-meta">
+                        <div class="chart-stat">
+                            <span>Najniższa wartość</span>
+                            <strong>{{ hr_chart_7.min_value }}</strong>
+                        </div>
+                        <div class="chart-stat">
+                            <span>Średnia</span>
+                            <strong>{{ stats_7.avg_hr }}</strong>
+                        </div>
+                        <div class="chart-stat">
+                            <span>Najwyższa wartość</span>
+                            <strong>{{ hr_chart_7.max_value }}</strong>
+                        </div>
                     </div>
-                </div>
-                <div class="dashboard-canvas-wrap">
-                    <canvas id="dashboardHrChart" aria-label="Wykres średniego tętna"></canvas>
-                </div>
-            {% else %}
-                <div class="dashboard-empty">Za mało danych, aby pokazać wykres średniego tętna.</div>
-            {% endif %}
+
+                    <div class="dashboard-canvas-wrap">
+                        <canvas id="dashboardHrChart" aria-label="Wykres średniego tętna"></canvas>
+                    </div>
+                {% else %}
+                    <div class="dashboard-empty">Za mało danych, aby pokazać wykres średniego tętna.</div>
+                {% endif %}
+            </div>
         </div>
     </section>
+
+    <div class="dashboard-hidden-helper" aria-hidden="true">
+        {% for title in self_insight_titles %}{{ title }}{% endfor %}
+    </div>
 </div>
 
 {{ sleep_chart_7|json_script:"dashboard-sleep-chart-data" }}
@@ -889,7 +939,7 @@
                         display: false
                     },
                     tooltip: {
-                        backgroundColor: "#4b3562",
+                        backgroundColor: "#15324b",
                         titleColor: "#ffffff",
                         bodyColor: "#ffffff",
                         cornerRadius: 12,
@@ -908,7 +958,7 @@
                             display: false
                         },
                         ticks: {
-                            color: "#6f5275",
+                            color: "#5d7690",
                             maxTicksLimit: 6,
                             font: {
                                 size: 12,
@@ -922,7 +972,7 @@
                     y: {
                         beginAtZero: false,
                         ticks: {
-                            color: "#6f5275",
+                            color: "#5d7690",
                             padding: 10,
                             font: {
                                 size: 12,
@@ -931,7 +981,7 @@
                             callback: options.tickFormatter
                         },
                         grid: {
-                            color: "rgba(145, 124, 232, 0.12)"
+                            color: "rgba(34, 94, 139, 0.12)"
                         },
                         border: {
                             display: false
@@ -953,8 +1003,8 @@
 
     createDashboardLineChart("dashboardSleepChart", dashboardSleepChartData, {
         label: "Czas snu",
-        color: "#8e7ce8",
-        fill: "rgba(142, 124, 232, 0.14)",
+        color: "#1d5d90",
+        fill: "rgba(29, 93, 144, 0.14)",
         tickFormatter: function(value) {
             return minutesToHourLabel(value);
         }
@@ -962,12 +1012,11 @@
 
     createDashboardLineChart("dashboardHrChart", dashboardHrChartData, {
         label: "Średnie tętno",
-        color: "#4fa8df",
-        fill: "rgba(79, 168, 223, 0.14)",
+        color: "#5ea8c3",
+        fill: "rgba(94, 168, 195, 0.14)",
         tickFormatter: function(value) {
             return value;
         }
     });
 </script>
 {% endblock %}
-

@@ -314,8 +314,14 @@ def get_sleep_api_token(raw_token):
         return None
 
 
+def normalize_sync_provider(provider):
+    if provider == SleepRecord.SOURCE_ZEPP_LIFE:
+        return SleepRecord.SOURCE_ZEPP_SYNC
+    return provider or SleepRecord.SOURCE_HEALTH_CONNECT
+
+
 def sync_sleep_records(user, provider, records, device_name=""):
-    normalized_provider = provider or SleepRecord.SOURCE_HEALTH_CONNECT
+    normalized_provider = normalize_sync_provider(provider)
     added_count = 0
     updated_count = 0
 
@@ -357,6 +363,7 @@ def sync_sleep_records(user, provider, records, device_name=""):
 
     return {
         "connection": connection,
+        "provider": normalized_provider,
         "added_count": added_count,
         "updated_count": updated_count,
         "received_count": len(records),
@@ -364,9 +371,10 @@ def sync_sleep_records(user, provider, records, device_name=""):
 
 
 def mark_sync_error(user, provider, error_message, device_name=""):
+    normalized_provider = normalize_sync_provider(provider)
     connection, _ = SleepSyncConnection.objects.get_or_create(
         user=user,
-        provider=provider,
+        provider=normalized_provider,
         defaults={"last_device_name": device_name},
     )
     connection.is_enabled = True

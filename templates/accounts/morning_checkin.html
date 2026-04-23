@@ -8,8 +8,9 @@
     <h1>Poranne podsumowanie</h1>
     <p class="hub-copy">Jedno miejsce, w kt&oacute;rym mo&#380;esz szybko sprawdzi&#263;, jak wygl&#261;da&#322;a ostatnia noc i czy warto dopisa&#263; do niej jeszcze kilka swoich obserwacji.</p>
     <div class="hub-action-row">
-        {% if last_sleep %}
-            <a class="button secondary" href="{% url 'sleep_detail' last_sleep.pk %}">Uzupe&#322;nij notatk&#281; do nocy</a>
+        <a class="button secondary" href="{% url 'sleep_add' %}">Dodaj noc</a>
+        {% if sleep_record_needing_note %}
+            <a class="button secondary" href="{% url 'sleep_detail' sleep_record_needing_note.pk %}">Uzupe&#322;nij notatk&#281;</a>
         {% endif %}
         <a class="button secondary" href="{% url 'sleep_list' %}">Przejd&#378; do historii nocy</a>
     </div>

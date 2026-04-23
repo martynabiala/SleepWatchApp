@@ -11,3 +11,8 @@ env/
 .mypy_cache/
 runserver.out.log
 runserver.err.log
+
+# Android local/build files
+mobile_health_connect_prototype/.gradle/
+mobile_health_connect_prototype/.idea/
+mobile_health_connect_prototype/app/build/

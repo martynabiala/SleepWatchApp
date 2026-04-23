@@ -834,6 +834,42 @@ class SleepModuleTests(TestCase):
         self.assertEqual(record.sleep_duration_minutes, 470)
         self.assertEqual(record.awake_minutes, 15)
 
+    def test_sync_api_accepts_zepp_life_provider_as_mobile_sync(self):
+        token = SleepApiToken.objects.create(user=self.user)
+
+        response = self.client.post(
+            reverse("sleep_sync_api"),
+            data={
+                "provider": SleepRecord.SOURCE_ZEPP_LIFE,
+                "device_name": "Mi Band 8",
+                "records": [
+                    {
+                        "external_id": "zepp-001",
+                        "sleep_date": "2026-04-12",
+                        "sleep_duration_minutes": 440,
+                        "awake_minutes": 20,
+                    }
+                ],
+            },
+            content_type="application/json",
+            headers={"Authorization": f"Bearer {token.key}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["provider"], SleepRecord.SOURCE_ZEPP_SYNC)
+
+        record = SleepRecord.objects.get(source=SleepRecord.SOURCE_ZEPP_SYNC)
+        self.assertEqual(record.external_record_id, "zepp-001")
+        self.assertEqual(record.device_name, "Mi Band 8")
+
+        connection = SleepSyncConnection.objects.get(
+            user=self.user,
+            provider=SleepRecord.SOURCE_ZEPP_SYNC,
+        )
+        self.assertEqual(connection.last_imported_count, 1)
+        self.assertEqual(connection.last_device_name, "Mi Band 8")
+
     def test_sync_api_rejects_invalid_token(self):
         response = self.client.post(
             reverse("sleep_sync_api"),

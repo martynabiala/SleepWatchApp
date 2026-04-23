@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}&#377;r&oacute;d&#322;a danych - SleepWatch{% endblock %}
+{% block title %}Źródła danych - SleepWatch{% endblock %}
 
 {% block content %}
 <style>
@@ -13,7 +13,7 @@
     .source-detail-card {
         border-radius: 28px;
         border: 1px solid var(--border);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(250, 246, 255, 0.92));
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.92));
         padding: 28px;
     }
 
@@ -33,7 +33,7 @@
         width: fit-content;
         padding: 7px 12px;
         border-radius: 999px;
-        background: rgba(142, 124, 232, 0.12);
+        background: rgba(22, 78, 125, 0.12);
         color: var(--accent-dark);
         font-size: 0.82rem;
         font-weight: 700;
@@ -49,12 +49,25 @@
     .source-option label {
         margin: 0;
     }
+
+    .sync-explainer {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+        color: var(--muted);
+        max-width: 78ch;
+    }
+
 </style>
 
 <div class="sources-layout">
     <section class="sources-card">
-        <div class="eyebrow">&#377;r&oacute;d&#322;a danych</div>
-        <h1>Wybierz preferowane &#378;r&oacute;d&#322;o danych snu</h1>
+        <div class="eyebrow">Źródła danych</div>
+        <h1>Wybierz preferowane źródło danych snu</h1>
+        <div class="sync-explainer">
+            <p>SleepWatch może dodać dane snu automatycznie przez aplikację mobilną albo przez ręczny import pliku CSV.</p>
+            <p>Strona WWW nie czyta danych bezpośrednio z zegarka. Dane pojawią się w aplikacji po synchronizacji telefonu albo po wgraniu pliku.</p>
+        </div>
 
         <form method="post">
             {% csrf_token %}
@@ -63,8 +76,8 @@
             {% endfor %}
             {{ form.preferred_sync_source.errors }}
             <div class="actions">
-                <button type="submit">Zapisz wyb&oacute;r</button>
-                <a class="button secondary" href="{% url 'profile' %}">Wr&oacute;&#263; do profilu</a>
+                <button type="submit">Zapisz wybór</button>
+                <a class="button secondary" href="{% url 'profile' %}">Wróć do profilu</a>
             </div>
         </form>
     </section>
@@ -86,17 +99,15 @@
                     </div>
                     <div class="meta-row meta-row-balanced">
                         <span class="meta-key">Tryb pobierania</span>
-                        <strong>{% if connection.supports_realtime %}Automatyczny sync{% else %}Import lub mostek{% endif %}</strong>
+                        <strong>{{ connection.sync_mode_label }}</strong>
                     </div>
                 </div>
-                <p><strong>Nastepny krok:</strong> {{ connection.next_step }}</p>
-                <div class="actions">
-                    {% if connection.provider == "zepp_life" %}
-                        <a class="button secondary" href="{% url 'sleep_import' %}">Importuj dane Zepp</a>
-                    {% else %}
-                        <a class="button secondary" href="{% url 'profile' %}">Zobacz status integracji</a>
-                    {% endif %}
-                </div>
+                <p><strong>Następny krok:</strong> {{ connection.next_step }}</p>
+                {% if connection.action_url %}
+                    <div class="actions">
+                        <a class="button secondary" href="{{ connection.action_url }}">{{ connection.action_label }}</a>
+                    </div>
+                {% endif %}
             </article>
         {% endfor %}
     </section>

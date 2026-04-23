@@ -6,6 +6,7 @@ import java.io.BufferedReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.SSLHandshakeException
 
 data class MobileLoginResult(
     val token: String,
@@ -115,7 +116,7 @@ class MobileSessionApiClient(
         apiToken: String? = null,
     ): String {
         try {
-            val url = URL(baseUrl.trimEnd('/') + path)
+            val url = URL(normalizeBaseUrl(baseUrl) + path)
             val connection = (url.openConnection() as HttpURLConnection).apply {
                 requestMethod = method
                 doInput = true
@@ -147,8 +148,19 @@ class MobileSessionApiClient(
             }
             return responseBody
         } catch (error: Exception) {
-            val detail = error.message ?: error.javaClass.simpleName
+            val detail = if (error is SSLHandshakeException || error.cause is SSLHandshakeException) {
+                "blad bezpiecznego polaczenia HTTPS. Sprawdz, czy w Backend URL jest https://sleepwatch.onrender.com, czy telefon ma poprawna date i czy strona otwiera sie w przegladarce telefonu."
+            } else {
+                error.message ?: error.javaClass.simpleName
+            }
             throw IllegalStateException("Nie mozna polaczyc z kontem: $detail", error)
         }
+    }
+
+    private fun normalizeBaseUrl(rawBaseUrl: String): String {
+        return rawBaseUrl.trim()
+            .removeSuffix("/")
+            .removeSuffix("/dashboard")
+            .removeSuffix("/dashboard/")
     }
 }

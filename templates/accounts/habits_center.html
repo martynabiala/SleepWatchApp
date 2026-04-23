@@ -6,9 +6,8 @@
 <section class="hub-hero">
     <div class="hub-kicker">Nawyki</div>
     <h1>Centrum nawyk&oacute;w</h1>
-    <p class="hub-copy">Tutaj SleepWatch zbiera najwa&#380;niejsze zale&#380;no&#347;ci z Twoich notatek. Zamiast surowych liczb dostajesz prosty sygna&#322;, czy dany nawyk wygl&#261;da neutralnie, obiecuj&#261;co albo wymaga jeszcze wi&#281;cej danych.</p>
+    <p class="hub-copy">Tutaj SleepWatch zbiera najwa&#380;niejsze zale&#380;no&#347;ci z Twoich notatek. Szybko poka&#380;e, czy dany nawyk wygl&#261;da neutralnie, obiecuj&#261;co albo czy brakuje jeszcze danych.</p>
     <div class="hub-pill-row">
-        <span class="hub-pill">{{ habit_notes_total }} nocy z notatkami</span>
         <span class="hub-pill">{{ habit_window_label }}</span>
     </div>
 </section>
@@ -18,9 +17,12 @@
         <article class="hub-card">
             <div class="hub-pill hub-pill-{{ habit.summary.tone }}" style="width: fit-content;">{{ habit.name }}</div>
             <h3>{{ habit.summary.title }}</h3>
-            <p class="hub-note">{{ habit.body }}</p>
             <p class="hub-note">{{ habit.summary.body }}</p>
-            {% if habit.summary.meta %}
+            {% if habit.summary.state == "not_enough_notes" or habit.summary.state == "insufficient_split" %}
+                <div class="hub-pill-row">
+                    <a class="button secondary" href="{% url 'sleep_list' %}">Uzupełnij notatki</a>
+                </div>
+            {% elif habit.summary.meta %}
                 <p class="hub-note">{{ habit.summary.meta }}</p>
             {% endif %}
         </article>

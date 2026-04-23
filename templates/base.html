@@ -6,31 +6,31 @@
     <title>{% block title %}SleepWatch{% endblock %}</title>
     {% load static %}
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-new-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-new-16x16.png' %}">
+    <link rel="icon" href="{% static 'favicon-new.ico' %}">
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <style>
         :root {
-            --page-top: #fcfaff;
-            --page-mid: #f4efff;
-            --page-bottom: #fbeaf3;
-            --aurora-gold: rgba(172, 147, 255, 0.18);
-            --aurora-blue: rgba(142, 124, 232, 0.16);
+            --page-top: #f3f8fe;
+            --page-mid: #edf4fb;
+            --page-bottom: #e7f0f8;
+            --aurora-gold: rgba(86, 166, 194, 0.14);
+            --aurora-blue: rgba(19, 72, 117, 0.18);
             --card: rgba(255, 255, 255, 0.88);
-            --card-strong: rgba(255, 255, 255, 0.95);
-            --text: #442947;
-            --muted: #7a6686;
-            --accent: #8e7ce8;
-            --accent-dark: #9f8cf5;
-            --accent-soft: rgba(142, 124, 232, 0.1);
-            --vanilla: #fff6ea;
-            --vanilla-strong: #fdf0dd;
-            --vanilla-border: rgba(222, 193, 150, 0.28);
-            --border: rgba(142, 124, 232, 0.14);
-            --success-bg: rgba(142, 124, 232, 0.08);
-            --success-text: #5d4c89;
-            --shadow: 0 26px 70px rgba(126, 110, 206, 0.14);
+            --card-strong: rgba(255, 255, 255, 0.96);
+            --text: #15324b;
+            --muted: #5d7690;
+            --accent: #164e7d;
+            --accent-dark: #0e3d63;
+            --accent-soft: rgba(22, 78, 125, 0.1);
+            --vanilla: #f3f9fc;
+            --vanilla-strong: #ebf4fa;
+            --vanilla-border: rgba(99, 149, 182, 0.22);
+            --border: rgba(34, 94, 139, 0.12);
+            --success-bg: rgba(28, 126, 105, 0.1);
+            --success-text: #1c5f55;
+            --shadow: 0 28px 72px rgba(24, 60, 93, 0.12);
         }
 
         * {
@@ -41,12 +41,12 @@
             position: relative;
             margin: 0;
             min-height: 100vh;
-            font-family: "Trebuchet MS", "Aptos", "Segoe UI", sans-serif;
+            font-family: "Aptos", "Segoe UI Variable", "Segoe UI", sans-serif;
             color: var(--text);
             background:
-                radial-gradient(circle at top left, rgba(172, 147, 255, 0.14), transparent 24%),
-                radial-gradient(circle at top right, rgba(142, 124, 232, 0.14), transparent 28%),
-                radial-gradient(circle at bottom left, rgba(193, 140, 255, 0.1), transparent 22%),
+                radial-gradient(circle at top left, rgba(103, 169, 201, 0.18), transparent 24%),
+                radial-gradient(circle at top right, rgba(22, 78, 125, 0.14), transparent 28%),
+                radial-gradient(circle at bottom left, rgba(110, 186, 205, 0.12), transparent 22%),
                 linear-gradient(180deg, var(--page-top) 0%, var(--page-mid) 42%, var(--page-bottom) 100%);
             overflow-x: hidden;
         }
@@ -67,7 +67,7 @@
             width: 320px;
             height: 320px;
             border-radius: 50%;
-            background: radial-gradient(circle, var(--aurora-gold) 0%, rgba(255, 196, 112, 0) 72%);
+            background: radial-gradient(circle, var(--aurora-gold) 0%, rgba(95, 177, 205, 0) 72%);
             animation: drift 18s ease-in-out infinite;
         }
 
@@ -77,7 +77,7 @@
             width: 360px;
             height: 360px;
             border-radius: 50%;
-            background: radial-gradient(circle, var(--aurora-blue) 0%, rgba(104, 156, 255, 0) 72%);
+            background: radial-gradient(circle, var(--aurora-blue) 0%, rgba(22, 78, 125, 0) 72%);
             animation: drift 22s ease-in-out infinite reverse;
         }
 
@@ -85,28 +85,28 @@
             position: relative;
             z-index: 1;
             min-height: 100vh;
-            padding: 28px 16px 42px;
+            padding: 24px 16px 44px;
         }
 
         .shell {
-            max-width: 1120px;
+            max-width: 1180px;
             margin: 0 auto;
         }
 
         .topbar {
             display: grid;
-            grid-template-columns: 220px minmax(0, 1fr) 220px;
+            grid-template-columns: 88px minmax(0, 1fr) auto;
             align-items: center;
-            gap: 16px;
-            padding: 18px 22px;
+            gap: 18px;
+            padding: 16px 22px;
             margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.82);
             border-radius: 28px;
             background:
-                linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 248, 253, 0.88)),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.92)),
                 rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(16px);
-            box-shadow: var(--shadow);
+            box-shadow: 0 22px 50px rgba(24, 60, 93, 0.12);
             position: relative;
             overflow: visible;
             z-index: 10;
@@ -115,12 +115,12 @@
         .topbar-balance {
             min-width: 0;
             justify-self: start;
-            width: 220px;
+            width: auto;
         }
 
         .brand-wrap {
             display: flex;
-            gap: 18px;
+            gap: 16px;
             align-items: center;
             justify-self: center;
             text-align: left;
@@ -128,10 +128,10 @@
         }
 
         .brand-mark {
-            width: 94px;
-            height: 94px;
-            border-radius: 28px;
-            box-shadow: 0 18px 42px rgba(126, 110, 206, 0.16);
+            width: 88px;
+            height: 88px;
+            border-radius: 26px;
+            box-shadow: 0 14px 34px rgba(24, 60, 93, 0.14);
             flex-shrink: 0;
             object-fit: cover;
             background: rgba(255, 251, 245, 0.98);
@@ -151,7 +151,7 @@
             border-radius: 30px;
             background: rgba(255, 251, 245, 0.98);
             padding: 12px;
-            box-shadow: 0 22px 52px rgba(126, 110, 206, 0.14);
+            box-shadow: 0 22px 52px rgba(24, 60, 93, 0.14);
         }
 
         .auth-logo-note {
@@ -167,25 +167,27 @@
         }
 
         .brand {
-            font-size: 2.05rem;
+            font-size: clamp(1.8rem, 3vw, 2.45rem);
             font-weight: 800;
             letter-spacing: 0.04em;
             text-transform: uppercase;
+            color: #112f47;
+            line-height: 1;
         }
 
         .tagline {
             color: var(--muted);
-            font-size: 0.95rem;
+            font-size: 0.98rem;
         }
 
         .nav {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
             align-items: center;
             justify-self: end;
             justify-content: flex-end;
-            width: 220px;
+            width: auto;
         }
 
         .app-toolbar {
@@ -201,9 +203,9 @@
             cursor: pointer;
             display: grid;
             place-items: center;
-            background: linear-gradient(135deg, var(--accent) 0%, #c18cff 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, #2f7eb2 100%);
             color: #ffffff;
-            box-shadow: 0 18px 34px rgba(126, 110, 206, 0.22);
+            box-shadow: 0 16px 30px rgba(20, 70, 112, 0.18);
         }
 
         .app-toolbar summary::-webkit-details-marker {
@@ -230,10 +232,10 @@
             width: 220px;
             padding: 14px;
             border-radius: 24px;
-            border: 1px solid rgba(142, 124, 232, 0.1);
+            border: 1px solid rgba(34, 94, 139, 0.1);
             background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(16px);
-            box-shadow: 0 24px 54px rgba(126, 110, 206, 0.18);
+            box-shadow: 0 24px 54px rgba(24, 60, 93, 0.16);
             display: grid;
             gap: 10px;
             z-index: 50;
@@ -246,7 +248,7 @@
 
         .app-toolbar-section + .app-toolbar-section {
             padding-top: 6px;
-            border-top: 1px solid rgba(142, 124, 232, 0.08);
+            border-top: 1px solid rgba(34, 94, 139, 0.08);
         }
 
         .app-toolbar-title {
@@ -254,7 +256,7 @@
             font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: var(--accent-dark);
+            color: var(--accent);
             padding: 4px 6px 0;
         }
 
@@ -271,9 +273,9 @@
             text-decoration: none;
             border-radius: 16px;
             padding: 10px 12px;
-            background: rgba(142, 124, 232, 0.08);
+            background: rgba(22, 78, 125, 0.07);
             color: var(--text);
-            border: 1px solid rgba(142, 124, 232, 0.1);
+            border: 1px solid rgba(22, 78, 125, 0.08);
             font-weight: 700;
             text-align: left;
         }
@@ -281,9 +283,9 @@
         .app-toolbar-item-muted {
             border-radius: 16px;
             padding: 10px 12px;
-            background: rgba(142, 124, 232, 0.04);
+            background: rgba(22, 78, 125, 0.04);
             color: var(--muted);
-            border: 1px dashed rgba(142, 124, 232, 0.16);
+            border: 1px dashed rgba(22, 78, 125, 0.16);
             font-weight: 700;
             text-align: left;
         }
@@ -307,13 +309,14 @@
             text-decoration: none;
             border: 1px solid transparent;
             border-radius: 999px;
-            padding: 11px 17px;
+            padding: 11px 18px;
+            min-height: 48px;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 14px 34px rgba(3, 7, 16, 0.24);
+            box-shadow: 0 12px 28px rgba(20, 58, 92, 0.16);
         }
 
         .button:hover,
@@ -325,27 +328,40 @@
         .button,
         .nav a.primary,
         button {
-            background: linear-gradient(135deg, var(--accent) 0%, #c18cff 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, #2a78ad 100%);
             color: #ffffff;
         }
 
         .button.secondary,
         .nav a.secondary {
-            background: rgba(255, 255, 255, 0.82);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.94));
             color: var(--text);
-            border: 1px solid rgba(142, 124, 232, 0.14);
-            box-shadow: none;
+            border: 1px solid rgba(34, 94, 139, 0.12);
+            box-shadow: 0 8px 18px rgba(20, 58, 92, 0.06);
         }
 
-        .nav a.secondary {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(250, 246, 255, 0.9));
+        .music-toggle {
+            width: 48px;
+            min-width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 999px;
+            font-size: 1.15rem;
+            line-height: 1;
+        }
+
+        .music-toggle.is-off {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.94));
+            color: var(--accent-dark);
+            border: 1px solid rgba(34, 94, 139, 0.12);
+            box-shadow: 0 8px 18px rgba(20, 58, 92, 0.06);
         }
 
         .panel {
             background: var(--card);
             border: 1px solid rgba(255, 255, 255, 0.78);
-            border-radius: 34px;
-            padding: 32px;
+            border-radius: 32px;
+            padding: 34px;
             backdrop-filter: blur(18px);
             box-shadow: var(--shadow);
         }
@@ -360,10 +376,10 @@
         .hero-card,
         .soft-card,
         .stat {
-            border-radius: 28px;
+            border-radius: 26px;
             border: 1px solid var(--border);
             background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(250, 246, 255, 0.94)),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.94)),
                 var(--card-strong);
         }
 
@@ -385,8 +401,8 @@
             font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: #5b345f;
-            background: linear-gradient(135deg, var(--accent-dark), #f3b8cf);
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--accent-dark), #2f7eb2);
             border-radius: 999px;
             padding: 8px 12px;
             margin-bottom: 16px;
@@ -432,8 +448,8 @@
         .soft-card {
             padding: 24px;
             background:
-                radial-gradient(circle at top right, rgba(172, 147, 255, 0.12), transparent 42%),
-                linear-gradient(180deg, rgba(255, 252, 245, 0.98), rgba(250, 246, 255, 0.94));
+                radial-gradient(circle at top right, rgba(83, 160, 194, 0.12), transparent 42%),
+                linear-gradient(180deg, rgba(250, 254, 255, 0.98), rgba(241, 248, 252, 0.94));
         }
 
         .grid {
@@ -495,13 +511,13 @@
             display: block;
             border-radius: 18px;
             background:
-                radial-gradient(circle at top left, rgba(172, 147, 255, 0.12), transparent 40%),
-                linear-gradient(180deg, rgba(252, 251, 255, 0.98), rgba(245, 240, 255, 0.95));
-            border: 1px solid rgba(142, 124, 232, 0.1);
+                radial-gradient(circle at top left, rgba(83, 160, 194, 0.12), transparent 40%),
+                linear-gradient(180deg, rgba(251, 254, 255, 0.98), rgba(239, 247, 251, 0.95));
+            border: 1px solid rgba(34, 94, 139, 0.1);
         }
 
         .chart-gridline {
-            stroke: rgba(142, 124, 232, 0.16);
+            stroke: rgba(34, 94, 139, 0.16);
             stroke-width: 1;
             stroke-dasharray: 4 6;
         }
@@ -532,7 +548,7 @@
             stroke-width: 4;
             stroke-linecap: round;
             stroke-linejoin: round;
-            filter: drop-shadow(0 8px 12px rgba(142, 124, 232, 0.16));
+            filter: drop-shadow(0 8px 12px rgba(22, 78, 125, 0.16));
         }
 
         .chart-dot {
@@ -555,7 +571,7 @@
         .comparison-card {
             border-radius: 22px;
             border: 1px solid var(--border);
-            background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.92));
             padding: 20px;
         }
 
@@ -577,7 +593,7 @@
             border-radius: 24px;
             padding: 24px;
             border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
         }
 
@@ -587,7 +603,7 @@
             inset: 0 auto auto 0;
             width: 100%;
             height: 6px;
-            background: linear-gradient(90deg, rgba(142, 124, 232, 0.42), rgba(193, 140, 255, 0.78));
+            background: linear-gradient(90deg, rgba(22, 78, 125, 0.42), rgba(61, 139, 187, 0.78));
         }
 
         .score-card h4 {
@@ -596,15 +612,15 @@
         }
 
         .score-card-positive {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 239, 255, 0.98));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(238, 247, 251, 0.98));
         }
 
         .score-card-positive::before {
-            background: linear-gradient(90deg, #8e7ce8, #c18cff);
+            background: linear-gradient(90deg, #165b74, #3a9fb7);
         }
 
         .score-card-warning {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 243, 246, 0.98));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(239, 247, 251, 0.98));
         }
 
         .score-card-warning::before {
@@ -612,7 +628,7 @@
         }
 
         .score-card-neutral {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 239, 255, 0.98));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(241, 248, 252, 0.98));
         }
 
         .score-head {
@@ -633,8 +649,8 @@
             font-size: 0.88rem;
             font-weight: 800;
             color: var(--text);
-            background: rgba(250, 246, 255, 0.92);
-            border: 1px solid rgba(142, 124, 232, 0.08);
+            background: rgba(241, 248, 252, 0.92);
+            border: 1px solid rgba(34, 94, 139, 0.08);
         }
 
         .score-value {
@@ -656,7 +672,7 @@
         .score-bar {
             height: 12px;
             border-radius: 999px;
-            background: rgba(142, 124, 232, 0.1);
+            background: rgba(22, 78, 125, 0.1);
             overflow: hidden;
             margin: 18px 0 16px;
         }
@@ -664,15 +680,15 @@
         .score-bar-fill {
             height: 100%;
             border-radius: 999px;
-            background: linear-gradient(90deg, var(--accent), #c799ff);
+            background: linear-gradient(90deg, var(--accent), #3c8fbe);
         }
 
         .score-card-positive .score-bar-fill {
-            background: linear-gradient(90deg, #8e7ce8, #c18cff);
+            background: linear-gradient(90deg, #165b74, #3a9fb7);
         }
 
         .score-card-warning .score-bar-fill {
-            background: linear-gradient(90deg, #df7a8d, #f3a2b1);
+            background: linear-gradient(90deg, #d97e59, #efb07f);
         }
 
         .score-summary {
@@ -690,7 +706,7 @@
 
         .score-insight {
             border-radius: 18px;
-            border: 1px solid rgba(142, 124, 232, 0.1);
+            border: 1px solid rgba(34, 94, 139, 0.1);
             background: rgba(255, 255, 255, 0.72);
             padding: 14px 14px 12px;
             display: grid;
@@ -729,7 +745,7 @@
             justify-content: space-between;
             gap: 12px;
             padding-bottom: 10px;
-            border-bottom: 1px solid rgba(142, 124, 232, 0.08);
+            border-bottom: 1px solid rgba(34, 94, 139, 0.08);
             color: var(--muted);
         }
 
@@ -746,7 +762,7 @@
             margin-top: 18px;
             padding: 14px 16px;
             border-radius: 18px;
-            background: linear-gradient(180deg, rgba(255, 249, 241, 0.96), rgba(250, 246, 255, 0.92));
+            background: linear-gradient(180deg, rgba(247, 252, 255, 0.96), rgba(239, 247, 251, 0.92));
             border: 1px solid var(--vanilla-border);
             color: var(--muted);
         }
@@ -762,7 +778,7 @@
             border-radius: 22px;
             padding: 20px;
             border: 1px solid var(--border);
-            background: linear-gradient(180deg, rgba(255, 250, 244, 0.97), rgba(250, 246, 255, 0.9));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.92));
         }
 
         .insight-card h4 {
@@ -778,7 +794,7 @@
         }
 
         .insight-warning {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 243, 246, 0.98));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(239, 247, 251, 0.98));
         }
 
         .insight-neutral {
@@ -808,7 +824,7 @@
             padding: 14px 18px;
             background: var(--success-bg);
             color: var(--success-text);
-            border: 1px solid rgba(142, 124, 232, 0.08);
+            border: 1px solid rgba(28, 126, 105, 0.12);
         }
 
         form {
@@ -834,19 +850,19 @@
         textarea {
             width: 100%;
             border-radius: 18px;
-            border: 1px solid rgba(142, 124, 232, 0.12);
+            border: 1px solid rgba(34, 94, 139, 0.12);
             padding: 14px 16px;
             font: inherit;
             color: var(--text);
-            background: rgba(255, 255, 255, 0.94);
+            background: rgba(248, 252, 255, 0.96);
             outline: none;
         }
 
         input:focus,
         select:focus,
         textarea:focus {
-            border-color: rgba(255, 196, 112, 0.65);
-            box-shadow: 0 0 0 4px rgba(255, 196, 112, 0.14);
+            border-color: rgba(47, 126, 178, 0.5);
+            box-shadow: 0 0 0 4px rgba(47, 126, 178, 0.14);
         }
 
         input[type="checkbox"] {
@@ -869,8 +885,8 @@
             display: grid;
             place-items: center;
             border-radius: 18px;
-            border: 1px solid rgba(142, 124, 232, 0.12);
-            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(34, 94, 139, 0.12);
+            background: rgba(248, 252, 255, 0.96);
         }
 
         .helptext {
@@ -883,7 +899,7 @@
             list-style: none;
             padding: 0;
             margin: 8px 0 0;
-            color: #8c72d8;
+            color: #bf694c;
             font-size: 0.92rem;
         }
 
@@ -897,7 +913,7 @@
             justify-content: space-between;
             gap: 12px;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(142, 124, 232, 0.08);
+            border-bottom: 1px solid rgba(34, 94, 139, 0.08);
         }
 
         .meta-row:last-child {
@@ -923,7 +939,7 @@
         .progress {
             margin-top: 16px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(22, 78, 125, 0.1);
             height: 14px;
             overflow: hidden;
         }
@@ -931,12 +947,256 @@
         .progress-bar {
             height: 100%;
             border-radius: 999px;
-            background: linear-gradient(90deg, var(--accent-dark) 0%, var(--accent) 100%);
+            background: linear-gradient(90deg, var(--accent-dark) 0%, #2f7eb2 100%);
+        }
+
+        .auth-app-header {
+            display: grid;
+            justify-items: center;
+            gap: 10px;
+            margin-bottom: 26px;
+            text-align: center;
+        }
+
+        .auth-app-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .auth-app-brand img {
+            width: 84px;
+            height: 84px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 14px 34px rgba(20, 58, 92, 0.14);
+            padding: 6px;
+            object-fit: cover;
+        }
+
+        .auth-app-brand-copy {
+            display: grid;
+            gap: 2px;
+            text-align: left;
+        }
+
+        .auth-app-brand-copy strong {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1;
+            color: #123d61;
+            letter-spacing: -0.03em;
+        }
+
+        .auth-app-brand-copy span {
+            color: var(--muted);
+            font-size: 0.96rem;
+        }
+
+        .auth-app-subtitle {
+            color: var(--muted);
+            font-size: 1rem;
+            max-width: 60ch;
+        }
+
+        .auth-shell {
+            display: grid;
+            grid-template-columns: minmax(280px, 0.88fr) minmax(360px, 1.12fr);
+            gap: 0;
+            align-items: stretch;
+            max-width: 1220px;
+            margin: 0 auto;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 24px 60px rgba(20, 58, 92, 0.12);
+            background: rgba(255, 255, 255, 0.78);
+        }
+
+        .auth-showcase,
+        .auth-card {
+            min-height: 640px;
+        }
+
+        .auth-showcase {
+            position: relative;
+            padding: 34px 30px;
+            display: grid;
+            gap: 24px;
+            align-content: center;
+            justify-items: center;
+            color: #ffffff;
+            background:
+                radial-gradient(circle at 50% 120%, rgba(173, 214, 234, 0.24), transparent 28%),
+                radial-gradient(circle at 70% 18%, rgba(255, 255, 255, 0.12), transparent 18%),
+                linear-gradient(180deg, rgba(21, 62, 104, 0.94) 0%, rgba(24, 74, 119, 0.96) 48%, rgba(12, 42, 76, 0.98) 100%);
+        }
+
+        .auth-showcase::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 16%, rgba(255, 255, 255, 0.22) 0 2px, transparent 3px),
+                radial-gradient(circle at 82% 28%, rgba(255, 255, 255, 0.18) 0 2px, transparent 3px),
+                radial-gradient(circle at 60% 44%, rgba(255, 255, 255, 0.14) 0 1.5px, transparent 3px);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .auth-showcase::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 30%;
+            background:
+                linear-gradient(180deg, rgba(52, 98, 141, 0.12) 0%, rgba(16, 44, 77, 0.78) 100%);
+            clip-path: polygon(0 88%, 8% 83%, 18% 86%, 29% 74%, 40% 88%, 52% 69%, 67% 86%, 81% 72%, 93% 90%, 100% 85%, 100% 100%, 0 100%);
+            pointer-events: none;
+        }
+
+        .auth-showcase-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 14px;
+            justify-items: start;
+            text-align: left;
+            width: min(100%, 30ch);
+        }
+
+        .auth-showcase h2 {
+            margin: 0;
+            font-size: 2rem;
+            line-height: 1.1;
+        }
+
+        .auth-showcase p {
+            margin: 0;
+            color: rgba(236, 245, 251, 0.88);
+            max-width: 26ch;
+        }
+
+        .auth-card {
+            display: grid;
+            align-content: start;
+            padding: 28px 34px 34px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 253, 0.95));
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid rgba(34, 94, 139, 0.12);
+            margin-bottom: 28px;
+        }
+
+        .auth-tab {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 132px;
+            padding: 14px 8px 16px;
+            color: var(--muted);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-tab.is-active {
+            color: var(--accent-dark);
+        }
+
+        .auth-tab.is-active::after {
+            content: "";
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            bottom: -1px;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent) 0%, #2f7eb2 100%);
+        }
+
+        .auth-kpis {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .auth-kpi {
+            border-radius: 22px;
+            padding: 18px;
+            border: 1px solid rgba(34, 94, 139, 0.08);
+            background: rgba(255, 255, 255, 0.82);
+        }
+
+        .auth-kpi span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .auth-kpi strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 1.4rem;
+        }
+
+        .auth-feature-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .auth-feature {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(34, 94, 139, 0.08);
+        }
+
+        .auth-feature-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--accent) 0%, #2f7eb2 100%);
+            font-size: 0.9rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .auth-feature strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 18px;
+            margin-top: 0;
+        }
+
+        .auth-form button {
+            width: 100%;
+            min-height: 50px;
+        }
+
+        .auth-card h1 {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 3vw, 2.5rem);
         }
 
         code {
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffd8a6;
+            background: rgba(22, 78, 125, 0.08);
+            color: #0e3d63;
             padding: 3px 8px;
             border-radius: 8px;
         }
@@ -955,9 +1215,30 @@
                 grid-template-columns: 1fr;
             }
 
+            .auth-shell {
+                grid-template-columns: 1fr;
+                border-radius: 28px;
+            }
+
+            .auth-kpis {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-showcase,
+            .auth-card {
+                min-height: auto;
+            }
+
+            .auth-showcase {
+                min-height: 320px;
+                align-content: center;
+            }
+
             .topbar {
                 grid-template-columns: 1fr;
                 justify-items: stretch;
+                gap: 16px;
+                padding: 18px;
             }
 
             .brand-wrap,
@@ -971,13 +1252,26 @@
                 width: auto;
             }
 
+            .brand-wrap {
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+            }
+
+            .brand-copy {
+                align-items: center;
+                text-align: center;
+            }
+
             .nav {
                 width: auto;
+                justify-content: center;
             }
 
             .brand-mark {
-                width: 82px;
-                height: 82px;
+                width: 80px;
+                height: 80px;
+                border-radius: 24px;
             }
 
             .auth-links {
@@ -994,6 +1288,10 @@
                 top: calc(100% + 12px);
                 width: min(220px, calc(100vw - 80px));
             }
+
+            .panel {
+                padding: 24px 18px;
+            }
         }
     </style>
 </head>
@@ -1008,7 +1306,7 @@
                     <div class="topbar-balance">
                         {% if user.is_authenticated %}
                             <details class="app-toolbar">
-                                <summary aria-label="Otworz nawigacje aplikacji">
+                                <summary aria-label="Otwórz nawigację aplikacji">
                                     <span class="app-toolbar-icon" aria-hidden="true">
                                         <span></span>
                                         <span></span>
@@ -1036,28 +1334,26 @@
                                         <a href="{% url 'friends' %}">Znajomi</a>
                                         <a href="{% url 'peer_sleep' %}">Sen w grupie</a>
                                     </div>
-                                    <div class="app-toolbar-section">
-                                        <div class="app-toolbar-section-label">Wiedza</div>
-                                        <a href="{% url 'sleep_library' %}">Biblioteka</a>
-                                    </div>
                                 </nav>
                             </details>
                         {% endif %}
                     </div>
+
                     <div class="brand-wrap">
-                        <img class="brand-mark" src="{% static 'sleepwatch-logo.png' %}" alt="Logo SleepWatch - spiacy kotek">
+                        <img class="brand-mark" src="{% static 'sleepwatch-new-logo.png' %}" alt="Logo SleepWatch">
                         <div class="brand-copy">
                             <div class="brand">SleepWatch</div>
                             <div class="tagline">Monitorowanie snu i analiza postępu</div>
                         </div>
                     </div>
+
                     <div class="nav">
                         <button class="music-toggle is-off" id="music-toggle" type="button" aria-pressed="false" aria-label="Muzyka w tle">♪</button>
                         {% if user.is_authenticated %}
                             {% if user.is_staff %}
                                 <a class="secondary" href="/admin/">Admin</a>
                             {% endif %}
-                            <form method="post" action="{% url 'logout' %}" style="margin:0;">
+                            <form method="post" action="{% url 'logout' %}" style="margin: 0;">
                                 {% csrf_token %}
                                 <button type="submit">Wyloguj</button>
                             </form>
@@ -1081,6 +1377,7 @@
             </div>
         </div>
     </div>
+
     <script>
         (function () {
             const audio = document.getElementById("background-music");
@@ -1098,8 +1395,8 @@
             const syncButton = (enabled) => {
                 toggle.textContent = "♪";
                 toggle.classList.toggle("is-off", !enabled);
-                toggle.setAttribute("aria-label", enabled ? "Muzyka w tle w\u0142\u0105czona" : "Muzyka w tle wy\u0142\u0105czona");
-                toggle.title = enabled ? "Wy\u0142\u0105cz muzyk\u0119" : "W\u0142\u0105cz muzyk\u0119";
+                toggle.setAttribute("aria-label", enabled ? "Muzyka w tle włączona" : "Muzyka w tle wyłączona");
+                toggle.title = enabled ? "Wyłącz muzykę" : "Włącz muzykę";
                 toggle.setAttribute("aria-pressed", enabled ? "true" : "false");
             };
 

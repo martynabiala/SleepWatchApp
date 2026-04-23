@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Profil - SleepWatch{% endblock %}
+{% block title %}Profil – SleepWatch{% endblock %}
 
 {% block content %}
 <style>
@@ -24,7 +24,7 @@
         border-radius: 28px;
         border: 1px solid var(--border);
         background:
-            radial-gradient(circle at top right, rgba(193, 140, 255, 0.14), transparent 28%),
+            radial-gradient(circle at top right, rgba(83, 160, 194, 0.14), transparent 28%),
             linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 244, 255, 0.96));
     }
 
@@ -71,7 +71,7 @@
     .avatar-preview-card,
     .profile-summary-card {
         border-radius: 24px;
-        border: 1px solid rgba(142, 124, 232, 0.16);
+        border: 1px solid rgba(34, 94, 139, 0.16);
         background: rgba(255, 255, 255, 0.84);
         padding: 24px;
     }
@@ -92,10 +92,10 @@
         place-items: center;
         font-size: 2.4rem;
         color: #fff;
-        box-shadow: 0 18px 34px rgba(126, 110, 206, 0.18);
+        box-shadow: 0 18px 34px rgba(24, 60, 93, 0.18);
     }
 
-    .avatar-moon { background: linear-gradient(135deg, #8e7ce8 0%, #c18cff 100%); }
+    .avatar-moon { background: linear-gradient(135deg, #164e7d 0%, #2f7eb2 100%); }
     .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
     .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
     .avatar-sun { background: linear-gradient(135deg, #ff8f70 0%, #ffc06a 100%); }
@@ -111,7 +111,7 @@
 
     .profile-kpi {
         border-radius: 20px;
-        border: 1px solid rgba(142, 124, 232, 0.16);
+        border: 1px solid rgba(34, 94, 139, 0.16);
         background: rgba(255, 255, 255, 0.82);
         padding: 16px 18px;
         display: grid;
@@ -125,6 +125,38 @@
 
     .profile-kpi strong {
         font-size: 1.3rem;
+    }
+
+    .profile-highlights {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .profile-highlight-card {
+        border-radius: 22px;
+        border: 1px solid rgba(34, 94, 139, 0.14);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.94));
+        padding: 20px 22px;
+        display: grid;
+        gap: 10px;
+        box-shadow: 0 14px 28px rgba(24, 60, 93, 0.08);
+    }
+
+    .profile-highlight-card span {
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+
+    .profile-highlight-card strong {
+        font-size: 2rem;
+        line-height: 1;
+        color: var(--accent-dark);
+    }
+
+    .profile-highlight-card p {
+        margin: 0;
     }
 
     .meta-list {
@@ -158,70 +190,6 @@
     .profile-badges-card {
         display: grid;
         gap: 18px;
-    }
-
-    .sync-card {
-        padding: 28px;
-        border-radius: 28px;
-        border: 1px solid var(--border);
-        background:
-            radial-gradient(circle at top right, rgba(172, 147, 255, 0.12), transparent 28%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 244, 255, 0.96));
-        display: grid;
-        gap: 18px;
-    }
-
-    .sync-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 14px;
-    }
-
-    .sync-item {
-        border-radius: 22px;
-        border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.82);
-        padding: 18px;
-        display: grid;
-        gap: 10px;
-    }
-
-    .sync-item-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .sync-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 7px 12px;
-        border-radius: 999px;
-        background: rgba(142, 124, 232, 0.12);
-        color: var(--accent-dark);
-        font-size: 0.82rem;
-        font-weight: 700;
-    }
-
-    .sync-badge-recommended {
-        background: rgba(87, 184, 144, 0.16);
-        color: #2f7a5b;
-    }
-
-    .sync-status {
-        font-weight: 700;
-        color: var(--accent-dark);
-    }
-
-    .profile-badges-header {
-        display: grid;
-        gap: 8px;
-    }
-
-    .profile-badges-header p {
-        margin: 0;
     }
 
     .profile-badges-top {
@@ -269,7 +237,7 @@
         display: grid;
         place-items: center;
         font-size: 1.2rem;
-        background: rgba(142, 124, 232, 0.14);
+        background: rgba(22, 78, 125, 0.14);
         color: var(--accent-dark);
     }
 
@@ -300,7 +268,7 @@
         gap: 14px;
         padding: 22px;
         border-radius: 24px;
-        border: 1px solid rgba(142, 124, 232, 0.16);
+        border: 1px solid rgba(34, 94, 139, 0.16);
         background: rgba(255, 255, 255, 0.84);
         text-align: center;
     }
@@ -338,8 +306,8 @@
     }
 
     .avatar-option:has(input:checked) {
-        border-color: rgba(142, 124, 232, 0.65);
-        box-shadow: 0 14px 28px rgba(126, 110, 206, 0.12);
+        border-color: rgba(47, 126, 178, 0.5);
+        box-shadow: 0 14px 28px rgba(24, 60, 93, 0.12);
     }
 
     .avatar-option-name {
@@ -347,9 +315,22 @@
         color: var(--accent-dark);
     }
 
+    .profile-spacing-top {
+        margin-top: 18px;
+    }
+
+    .profile-spacing-meta {
+        margin-top: 18px;
+    }
+
+    .profile-avatar-copy p {
+        margin: 8px 0 0;
+    }
+
     @media (max-width: 1080px) {
         .profile-view-grid,
-        .profile-hero {
+        .profile-hero,
+        .profile-highlights {
             grid-template-columns: 1fr;
         }
 
@@ -403,6 +384,7 @@
                             {{ field.errors }}
                         </div>
                     {% endfor %}
+
                     {% for field in profile_form %}
                         {% if field.name != "avatar" %}
                             <div>
@@ -435,8 +417,9 @@
                         {{ profile_form.avatar.errors }}
                     </div>
                 </div>
+
                 <div class="profile-actions">
-                    <button type="submit">Zapisz profil</button>
+                    <button type="submit">Zapisz zmiany</button>
                     <a class="button secondary" href="{% url 'profile' %}">Wróć do profilu</a>
                 </div>
             </form>
@@ -452,22 +435,22 @@
                         </div>
                         <div class="profile-actions">
                             <a class="button" href="{% url 'profile' %}?edit=1">Edytuj profil</a>
-                            <a class="button secondary" href="{% url 'sync_sources' %}">Wybierz źródło danych</a>
+                            <a class="button secondary" href="{% url 'sync_sources' %}">Źródła danych</a>
                         </div>
                     </div>
 
-                    <div class="profile-hero" style="margin-top: 18px;">
+                    <div class="profile-hero profile-spacing-top">
                         <div class="avatar-preview-card">
                             <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
-                            <div>
+                            <div class="profile-avatar-copy">
                                 <strong>{{ profile.display_name|default:"Brak nazwy" }}</strong>
-                                <p style="margin: 8px 0 0;">Twój awatar i podstawowe informacje o koncie.</p>
+                                <p>Twój awatar i najważniejsze informacje o koncie.</p>
                             </div>
                         </div>
 
                         <div class="profile-summary-card">
-                            <h3>Podgląd profilu</h3>
-                            <div class="meta-list" style="margin-top: 18px;">
+                            <h3>Podsumowanie profilu</h3>
+                            <div class="meta-list profile-spacing-meta">
                                 <div class="meta-row meta-row-balanced">
                                     <span class="meta-key">Login</span>
                                     <strong>{{ request.user.username }}</strong>
@@ -510,67 +493,40 @@
                             <strong>{{ profile.get_lifestyle_display|default:"Brak" }}</strong>
                         </div>
                     </div>
-                </article>
 
-                <article class="sync-card">
-                    <div>
-                        <div class="eyebrow">Synchronizacja</div>
-                        <h3>Integracje mobilne</h3>
-                        <p>Tutaj wybierasz źródło danych. Health Connect pozostaje główną ścieżką automatyczną, a Zepp Life osobną opcją dla opasek Amazfit i Mi Band.</p>
-                    </div>
+                    <div class="profile-highlights">
+                        <div class="profile-highlight-card">
+                            <span>Kompletność profilu</span>
+                            <strong>{{ profile_completion }}%</strong>
+                            <p>Uzupełniony profil pomaga lepiej dopasować wskazówki i cele snu.</p>
+                        </div>
 
-                    <div class="sync-grid">
-                        {% for connection in sync_connections %}
-                            <article class="sync-item">
-                                <div class="sync-item-head">
-                                    <strong>{{ connection.label }}</strong>
-                                    <span class="sync-badge {% if connection.is_recommended %}sync-badge-recommended{% endif %}">
-                                        {{ connection.badge }}{% if connection.is_recommended %} • Polecane{% endif %}
-                                    </span>
-                                </div>
-                                <p>{{ connection.description }}</p>
-                                <div class="sync-status">{{ connection.status_label }}</div>
-                                <div class="meta-list">
-                                    <div class="meta-row meta-row-balanced">
-                                        <span class="meta-key">Ostatnia synchronizacja</span>
-                                        <strong>{% if connection.last_synced_at %}{{ connection.last_synced_at|date:"d.m.Y H:i" }}{% else %}-{% endif %}</strong>
-                                    </div>
-                                    <div class="meta-row meta-row-balanced">
-                                        <span class="meta-key">Ostatnio pobrane rekordy</span>
-                                        <strong>{{ connection.last_imported_count }}</strong>
-                                    </div>
-                                    <div class="meta-row meta-row-balanced">
-                                        <span class="meta-key">Urządzenie</span>
-                                        <strong>{{ connection.last_device_name|default:"-" }}</strong>
-                                    </div>
-                                    <div class="meta-row meta-row-balanced">
-                                        <span class="meta-key">Tryb pobierania</span>
-                                        <strong>{% if connection.supports_realtime %}Automatyczny sync{% else %}Import lub mostek{% endif %}</strong>
-                                    </div>
-                                </div>
-                                <p><strong>Następny krok:</strong> {{ connection.next_step }}</p>
-                                {% if connection.last_error %}
-                                    <p>Ostatni błąd: {{ connection.last_error }}</p>
-                                {% endif %}
-                            </article>
-                        {% endfor %}
+                        <div class="profile-highlight-card">
+                            <span>Zapisane noce</span>
+                            <strong>{{ sleep_entries_count }}</strong>
+                            <p>Im więcej wpisów, tym trafniejsze porównania i bardziej przydatne trendy.</p>
+                        </div>
+
+                        <div class="profile-highlight-card">
+                            <span>Zdobyte odznaki</span>
+                            <strong>{{ badges_earned_count }}/{{ badges_total }}</strong>
+                            <p>Śledź postępy i odblokowuj kolejne osiągnięcia w aplikacji.</p>
+                        </div>
                     </div>
                 </article>
-
             </section>
 
             <aside class="profile-badges-card">
-                <div class="profile-badges-header">
-                    <div class="profile-badges-top">
-                        <div class="profile-badges-copy">
-                            <div class="eyebrow">Osiągnięcia</div>
-                            <h3>Odznaki użytkownika</h3>
-                        </div>
-                        <a class="button secondary profile-badges-action" href="{% url 'achievements' %}">
-                            Zobacz wszystkie{% if badges_total %} ({{ badges_total }}){% endif %}
-                        </a>
+                <div class="profile-badges-top">
+                    <div class="profile-badges-copy">
+                        <div class="eyebrow">Osiągnięcia</div>
+                        <h3>Odznaki użytkownika</h3>
                     </div>
+                    <a class="button secondary profile-badges-action" href="{% url 'achievements' %}">
+                        Zobacz wszystkie{% if badges_total %} ({{ badges_total }}){% endif %}
+                    </a>
                 </div>
+
                 <div class="badges-grid">
                     {% for badge in badges %}
                         <article class="badge-card {% if badge.earned %}badge-card-earned{% else %}badge-card-locked{% endif %}">

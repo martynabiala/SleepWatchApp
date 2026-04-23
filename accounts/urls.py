@@ -24,7 +24,6 @@ from .views import (
     morning_checkin_view,
     peer_sleep_view,
     profile_view,
-    sleep_library_view,
     sync_sources_view,
     signup_done_view,
     signup_view,
@@ -52,7 +51,6 @@ urlpatterns = [
     path("wnioski/", insights_journal_view, name="insights_journal"),
     path("analiza-snu/", analysis_view, name="sleep_analysis"),
     path("sen-w-grupie/", peer_sleep_view, name="peer_sleep"),
-    path("biblioteka-snu/", sleep_library_view, name="sleep_library"),
     path(
         "reset-hasla/",
         UserPasswordResetView.as_view(),
