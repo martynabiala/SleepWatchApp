@@ -967,6 +967,6 @@ class SleepModuleTests(TestCase):
             headers={"Authorization": f"Bearer {token.key}"},
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.user.profile.refresh_from_db()
-        self.assertEqual(self.user.profile.preferred_sync_source, "zepp_life")
+        self.assertEqual(self.user.profile.preferred_sync_source, "health_connect")

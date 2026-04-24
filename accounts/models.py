@@ -4,7 +4,7 @@ from django.db import models
 
 class UserProfile(models.Model):
     SYNC_SOURCE_HEALTH_CONNECT = "health_connect"
-    SYNC_SOURCE_ZEPP_LIFE = "zepp_life"
+    SYNC_SOURCE_MANUAL_CSV = "manual_csv"
     HYPOTHESIS_NONE = ""
     HYPOTHESIS_CAFFEINE = "caffeine"
     HYPOTHESIS_STRESS = "stress"
@@ -30,8 +30,8 @@ class UserProfile(models.Model):
     AVATAR_HEART = "heart"
 
     PREFERRED_SYNC_SOURCE_CHOICES = [
-        (SYNC_SOURCE_HEALTH_CONNECT, "Health Connect"),
-        (SYNC_SOURCE_ZEPP_LIFE, "Zepp Life"),
+        (SYNC_SOURCE_HEALTH_CONNECT, "Synchronizacja z telefonu"),
+        (SYNC_SOURCE_MANUAL_CSV, "Import pliku CSV"),
     ]
 
     HYPOTHESIS_CHOICES = [

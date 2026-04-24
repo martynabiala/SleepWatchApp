@@ -35,7 +35,7 @@
                 android:layout_marginTop="14dp"
                 android:text="SleepWatch"
                 android:textColor="@color/sleepwatch_text"
-                android:textSize="30sp"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -59,7 +59,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/sleepwatch_accent"
+                    android:background="@drawable/sleepwatch_button_primary"
+                    android:elevation="0dp"
                     android:text="Logowanie"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white" />
@@ -70,7 +71,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/sleepwatch_accent_soft"
+                    android:background="@drawable/sleepwatch_button_secondary"
+                    android:elevation="0dp"
                     android:text="Rejestracja"
                     android:textAllCaps="false"
                     android:textColor="@color/sleepwatch_text" />
@@ -81,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:background="@drawable/sleepwatch_card_soft"
+                android:background="@drawable/sleepwatch_input"
                 android:hint="Backend URL, np. http://192.168.x.x:8000"
                 android:inputType="textUri"
                 android:padding="16dp"
@@ -93,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/sleepwatch_card_soft"
+                android:background="@drawable/sleepwatch_input"
                 android:hint="Login lub e-mail"
                 android:inputType="textEmailAddress"
                 android:padding="16dp"
@@ -105,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/sleepwatch_card_soft"
+                android:background="@drawable/sleepwatch_input"
                 android:hint="Haslo"
                 android:inputType="textPassword"
                 android:padding="16dp"
@@ -124,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/sleepwatch_card_soft"
+                    android:background="@drawable/sleepwatch_input"
                     android:padding="8dp" />
 
                 <EditText
@@ -132,7 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/sleepwatch_card_soft"
+                    android:background="@drawable/sleepwatch_input"
                     android:hint="E-mail rodzica lub opiekuna (dla konta dziecka)"
                     android:inputType="textEmailAddress"
                     android:padding="16dp"
@@ -144,7 +146,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/sleepwatch_card_soft"
+                    android:background="@drawable/sleepwatch_input"
                     android:hint="Powtorz haslo"
                     android:inputType="textPassword"
                     android:padding="16dp"
@@ -157,7 +159,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@color/sleepwatch_accent"
+                android:background="@drawable/sleepwatch_button_primary"
+                android:elevation="0dp"
                 android:text="Zaloguj"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white" />
@@ -200,7 +203,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Mobilna wersja SleepWatch prowadzi Cie od logowania, przez wybor zrodla danych, az do synchronizacji snu."
+                    android:text="Mobilna wersja SleepWatch prowadzi Cie od logowania, przez synchronizacje z telefonu, az do przeslania danych snu."
                     android:textColor="@color/sleepwatch_muted" />
 
                 <TextView
@@ -260,7 +263,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:backgroundTint="@color/sleepwatch_accent_soft"
+                    android:background="@drawable/sleepwatch_button_secondary"
+                    android:elevation="0dp"
                     android:text="Wyloguj"
                     android:textAllCaps="false"
                     android:textColor="@color/sleepwatch_text" />
@@ -277,7 +281,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Import danych"
+                    android:text="Synchronizacja z telefonu"
                     android:textColor="@color/sleepwatch_text"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -287,7 +291,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:background="@drawable/sleepwatch_card_soft"
+                    android:background="@drawable/sleepwatch_input"
                     android:padding="8dp" />
 
                 <TextView
@@ -304,8 +308,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:backgroundTint="@color/sleepwatch_accent_soft"
-                    android:text="Zapisz wybor zrodla"
+                    android:background="@drawable/sleepwatch_button_secondary"
+                    android:elevation="0dp"
+                    android:text="Zapisz ustawienie"
                     android:textAllCaps="false"
                     android:textColor="@color/sleepwatch_text" />
             </LinearLayout>
@@ -341,7 +346,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:backgroundTint="@color/sleepwatch_accent_soft"
+                    android:background="@drawable/sleepwatch_button_secondary"
+                    android:elevation="0dp"
                     android:text="Sprawdz dostepnosc"
                     android:textAllCaps="false"
                     android:textColor="@color/sleepwatch_text" />
@@ -351,7 +357,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/sleepwatch_accent_soft"
+                    android:background="@drawable/sleepwatch_button_secondary"
+                    android:elevation="0dp"
                     android:text="Nadaj uprawnienia"
                     android:textAllCaps="false"
                     android:textColor="@color/sleepwatch_text" />
@@ -361,7 +368,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/sleepwatch_accent"
+                    android:background="@drawable/sleepwatch_button_primary"
+                    android:elevation="0dp"
                     android:text="Synchronizuj sen"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white" />

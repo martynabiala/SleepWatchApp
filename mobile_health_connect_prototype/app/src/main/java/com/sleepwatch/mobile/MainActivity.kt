@@ -28,8 +28,7 @@ class MainActivity : ComponentActivity() {
         val label: String,
         val provider: String,
     ) {
-        HEALTH_CONNECT("Health Connect", "health_connect"),
-        ZEPP_LIFE("Zepp Life", "zepp_life"),
+        PHONE_SYNC("Synchronizacja z telefonu", "health_connect"),
     }
 
     private lateinit var authContainer: LinearLayout
@@ -188,9 +187,9 @@ class MainActivity : ComponentActivity() {
             "Zaloguj sie, aby wejsc do mobilnej wersji SleepWatch."
         }
         authActionButton.text = if (isSignup) "Zarejestruj" else "Zaloguj"
-        loginModeButton.setBackgroundTintList(getColorStateList(if (isSignup) R.color.sleepwatch_accent_soft else R.color.sleepwatch_accent))
+        loginModeButton.setBackgroundResource(if (isSignup) R.drawable.sleepwatch_button_secondary else R.drawable.sleepwatch_button_primary)
         loginModeButton.setTextColor(getColor(if (isSignup) R.color.sleepwatch_text else android.R.color.white))
-        signupModeButton.setBackgroundTintList(getColorStateList(if (isSignup) R.color.sleepwatch_accent else R.color.sleepwatch_accent_soft))
+        signupModeButton.setBackgroundResource(if (isSignup) R.drawable.sleepwatch_button_primary else R.drawable.sleepwatch_button_secondary)
         signupModeButton.setTextColor(getColor(if (isSignup) android.R.color.white else R.color.sleepwatch_text))
     }
 
@@ -330,11 +329,10 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             runCatching {
                 val selectedSource = getSelectedSource()
-                val sourceLabel = selectedSource.label
-                updateStatus("Pobieranie danych snu dla zrodla: $sourceLabel...")
+                updateStatus("Pobieranie danych snu z telefonu...")
                 val sleepRecords = healthConnectManager.readLast30DaysSleep()
                 if (sleepRecords.isEmpty()) {
-                    updateStatus("Nie znaleziono danych snu z ostatnich 30 dni. Sprawdz, czy wybrane zrodlo zapisuje sen w Health Connect.")
+                    updateStatus("Nie znaleziono danych snu z ostatnich 30 dni. Sprawdz, czy telefon lub polaczona aplikacja zapisuje sen w Health Connect.")
                     return@launch
                 }
                 updateStatus("Pobrano ${sleepRecords.size} rekordow. Wysylanie do SleepWatch...")
@@ -345,7 +343,7 @@ class MainActivity : ComponentActivity() {
                     ).syncSleepRecords(
                         records = sleepRecords,
                         provider = selectedSource.provider,
-                        deviceName = if (selectedSource == SyncSource.ZEPP_LIFE) "Zepp Life / Android" else "Android Health Connect",
+                        deviceName = "Android Health Connect",
                     )
                 }
             }.onSuccess { result ->
@@ -381,12 +379,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun updateSourceUi() {
-        sourceHintText.text = when (getSelectedSource()) {
-            SyncSource.HEALTH_CONNECT ->
-                "W aplikacji webowej i mobilnej to glowna automatyczna sciezka. Po zalogowaniu mozesz polaczyc ja z Health Connect."
-            SyncSource.ZEPP_LIFE ->
-                "Jesli Zepp Life udostepnia sen w Health Connect, aplikacja wysle te dane do SleepWatch jako zrodlo Zepp Life. W innym przypadku uzyj importu CSV w webowej wersji."
-        }
+        sourceHintText.text =
+            "To glowna automatyczna sciezka na Androidzie. SleepWatch odczytuje sen z Health Connect, wiec moze korzystac z danych udostepnianych przez rozne aplikacje zapisane w telefonie."
     }
 
     private fun saveLocalConfiguration() {
@@ -405,7 +399,7 @@ class MainActivity : ComponentActivity() {
         } else {
             "Token API zapisany automatycznie po zalogowaniu."
         }
-        val savedSource = preferences.getString(KEY_SYNC_SOURCE, SyncSource.HEALTH_CONNECT.provider)
+        val savedSource = preferences.getString(KEY_SYNC_SOURCE, SyncSource.PHONE_SYNC.provider)
         val selectedIndex = SyncSource.entries.indexOfFirst { it.provider == savedSource }.coerceAtLeast(0)
         sourceSpinner.setSelection(selectedIndex)
     }
@@ -424,8 +418,7 @@ class MainActivity : ComponentActivity() {
                     MobileSessionApiClient(backendUrl).fetchSummary(apiToken)
                 }
             }.onSuccess { summary ->
-                val sourceLabel = SyncSource.entries.firstOrNull { it.provider == summary.preferredSyncSource }?.label
-                    ?: summary.preferredSyncSource
+                val sourceLabel = getPreferredSourceLabel(summary.preferredSyncSource)
                 val lastSleepText = if (summary.lastSleepDuration != null && summary.lastSleepDate != null) {
                     "Ostatnia noc: ${summary.lastSleepDuration} (${summary.lastSleepDate})"
                 } else {
@@ -440,6 +433,14 @@ class MainActivity : ComponentActivity() {
             }.onFailure {
                 summaryText.text = "Konto: polaczone, ale nie udalo sie pobrac podsumowania"
             }
+        }
+    }
+
+    private fun getPreferredSourceLabel(provider: String): String {
+        return when (provider) {
+            "health_connect" -> "Synchronizacja z telefonu"
+            "manual_csv" -> "Import pliku CSV"
+            else -> provider
         }
     }
 }

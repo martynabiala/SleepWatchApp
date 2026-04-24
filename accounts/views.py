@@ -853,7 +853,6 @@ def mobile_preferences_api_view(request: HttpRequest) -> HttpResponse:
     preferred_sync_source = str(payload.get("preferred_sync_source") or "").strip()
     allowed_sources = {
         UserProfile.SYNC_SOURCE_HEALTH_CONNECT,
-        UserProfile.SYNC_SOURCE_ZEPP_LIFE,
     }
     if preferred_sync_source not in allowed_sources:
         return JsonResponse({"detail": "Nieobsługiwane źródło danych."}, status=400)
@@ -875,27 +874,31 @@ def build_sync_connections(user):
         user=user,
         provider=SleepRecord.SOURCE_HEALTH_CONNECT,
     ).first()
-    zepp_connection = SleepSyncConnection.objects.filter(
+    latest_import = ImportHistory.objects.filter(
         user=user,
-        provider=SleepRecord.SOURCE_ZEPP_SYNC,
+        source__in=[
+            SleepRecord.SOURCE_MANUAL_CSV,
+            SleepRecord.SOURCE_MI_FITNESS,
+            SleepRecord.SOURCE_ZEPP_LIFE,
+        ],
     ).first()
-    latest_zepp_import = ImportHistory.objects.filter(
+    latest_manual_entry = SleepRecord.objects.filter(
         user=user,
-        source=SleepRecord.SOURCE_ZEPP_LIFE,
+        source=SleepRecord.SOURCE_MANUAL_CSV,
     ).first()
     connections = [
         {
             "provider": SleepRecord.SOURCE_HEALTH_CONNECT,
-            "label": "Health Connect",
+            "label": "Synchronizacja z telefonu",
             "badge": "Automatyczne",
-            "description": "Najlepsza opcja dla Androida. Aplikacja mobilna pobiera dane snu z Health Connect i wysyła je do SleepWatch po każdej synchronizacji telefonu.",
+            "description": "Najprostsza opcja na Androidzie. SleepWatch pobiera sen z Health Connect, więc może korzystać z danych udostępnianych przez różne aplikacje i urządzenia.",
             "is_connected": bool(health_connection and health_connection.last_synced_at),
             "status_label": "Połączono" if health_connection and health_connection.last_synced_at else "Gotowe do podłączenia",
             "last_synced_at": health_connection.last_synced_at if health_connection else None,
             "last_imported_count": health_connection.last_imported_count if health_connection else 0,
             "last_error": health_connection.last_error if health_connection else "",
             "last_device_name": health_connection.last_device_name if health_connection else "",
-            "next_step": "Wybierz to źródło, jeśli Twoje urządzenie zapisuje sen w Health Connect.",
+            "next_step": "Wybierz tę opcję, jeśli telefon lub aplikacja partnera zapisuje sen w Health Connect.",
             "is_recommended": True,
             "supports_realtime": True,
             "sync_mode_label": "Automatycznie po synchronizacji telefonu",
@@ -903,32 +906,40 @@ def build_sync_connections(user):
             "action_url": "",
         },
         {
-            "provider": SleepRecord.SOURCE_ZEPP_LIFE,
-            "label": "Zepp Life",
-            "badge": "Automatyczne / CSV",
-            "description": "Dla opasek Amazfit i Mi Band. Dane mogą trafić do SleepWatch przez aplikację mobilną albo przez import pliku CSV.",
-            "is_connected": bool(
-                (zepp_connection and zepp_connection.last_synced_at)
-                or latest_zepp_import
-            ),
-            "status_label": "Dane z Zepp wykryte" if latest_zepp_import else "Do przygotowania",
-            "last_synced_at": (
-                (zepp_connection.last_synced_at if zepp_connection and zepp_connection.last_synced_at else None)
-                or (latest_zepp_import.imported_at if latest_zepp_import else None)
-            ),
-            "last_imported_count": (
-                zepp_connection.last_imported_count
-                if zepp_connection and zepp_connection.last_imported_count
-                else (latest_zepp_import.added_count if latest_zepp_import else 0)
-            ),
-            "last_error": zepp_connection.last_error if zepp_connection else "",
-            "last_device_name": zepp_connection.last_device_name if zepp_connection else "Zepp Life",
-            "next_step": "Jeśli używasz aplikacji mobilnej SleepWatch, wybierz Zepp Life jako źródło. Jeśli nie, wgraj plik CSV ręcznie.",
+            "provider": SleepRecord.SOURCE_MANUAL_CSV,
+            "label": "Import pliku CSV",
+            "badge": "Plik",
+            "description": "Dobra opcja, gdy dane nie trafiają automatycznie do telefonu. SleepWatch rozpoznaje wgrywane pliki CSV i dopisuje noce do historii.",
+            "is_connected": bool(latest_import),
+            "status_label": "Import gotowy" if latest_import else "Czeka na pierwszy plik",
+            "last_synced_at": latest_import.imported_at if latest_import else None,
+            "last_imported_count": latest_import.added_count if latest_import else 0,
+            "last_error": "",
+            "last_device_name": latest_import.file_name if latest_import else "",
+            "next_step": "Użyj tej opcji, gdy chcesz wgrać eksport z innej aplikacji lub urządzenia.",
             "is_recommended": False,
-            "supports_realtime": True,
-            "sync_mode_label": "Aplikacja mobilna albo import CSV",
-            "action_label": "Importuj dane Zepp",
+            "supports_realtime": False,
+            "sync_mode_label": "Ręcznie, gdy potrzebujesz",
+            "action_label": "Przejdź do importu",
             "action_url": reverse("sleep_import"),
+        },
+        {
+            "provider": "manual_entry",
+            "label": "Dodaj ręcznie",
+            "badge": "Ręcznie",
+            "description": "Jeśli nie masz jeszcze eksportu ani synchronizacji, możesz po prostu dodać noc samodzielnie i od razu zacząć budować historię snu.",
+            "is_connected": bool(latest_manual_entry),
+            "status_label": "Masz zapisane noce" if latest_manual_entry else "Gotowe do pierwszego wpisu",
+            "last_synced_at": latest_manual_entry.updated_at if latest_manual_entry else None,
+            "last_imported_count": 1 if latest_manual_entry else 0,
+            "last_error": "",
+            "last_device_name": "",
+            "next_step": "Najlepsza opcja na start, jeśli chcesz przetestować aplikację bez łączenia żadnych integracji.",
+            "is_recommended": False,
+            "supports_realtime": False,
+            "sync_mode_label": "Pełna kontrola, bez integracji",
+            "action_label": "Dodaj noc ręcznie",
+            "action_url": reverse("sleep_add"),
         },
     ]
 

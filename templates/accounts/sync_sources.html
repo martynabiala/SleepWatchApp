@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Źródła danych - SleepWatch{% endblock %}
+{% block title %}Zrodla danych - SleepWatch{% endblock %}
 
 {% block content %}
 <style>
@@ -57,16 +57,15 @@
         color: var(--muted);
         max-width: 78ch;
     }
-
 </style>
 
 <div class="sources-layout">
     <section class="sources-card">
-        <div class="eyebrow">Źródła danych</div>
-        <h1>Wybierz preferowane źródło danych snu</h1>
+        <div class="eyebrow">Zrodla danych</div>
+        <h1>Wybierz glowny sposob dodawania snu</h1>
         <div class="sync-explainer">
-            <p>SleepWatch może dodać dane snu automatycznie przez aplikację mobilną albo przez ręczny import pliku CSV.</p>
-            <p>Strona WWW nie czyta danych bezpośrednio z zegarka. Dane pojawią się w aplikacji po synchronizacji telefonu albo po wgraniu pliku.</p>
+            <p>SleepWatch nie laczy sie osobno z kazda aplikacja na rynku. Zamiast tego stawia na prostszy model: synchronizacje z telefonu, import pliku CSV albo reczne dodawanie nocy.</p>
+            <p>Na Androidzie glowna automatyczna sciezka to Health Connect. Pozostale dane mozesz dodac przez import pliku albo wpisac samodzielnie.</p>
         </div>
 
         <form method="post">
@@ -76,8 +75,8 @@
             {% endfor %}
             {{ form.preferred_sync_source.errors }}
             <div class="actions">
-                <button type="submit">Zapisz wybór</button>
-                <a class="button secondary" href="{% url 'profile' %}">Wróć do profilu</a>
+                <button type="submit">Zapisz wybor</button>
+                <a class="button secondary" href="{% url 'profile' %}">Wroc do profilu</a>
             </div>
         </form>
     </section>
@@ -94,15 +93,15 @@
                         <strong>{{ connection.status_label }}</strong>
                     </div>
                     <div class="meta-row meta-row-balanced">
-                        <span class="meta-key">Ostatnia synchronizacja</span>
+                        <span class="meta-key">Ostatnia aktywnosc</span>
                         <strong>{% if connection.last_synced_at %}{{ connection.last_synced_at|date:"d.m.Y H:i" }}{% else %}-{% endif %}</strong>
                     </div>
                     <div class="meta-row meta-row-balanced">
-                        <span class="meta-key">Tryb pobierania</span>
+                        <span class="meta-key">Tryb</span>
                         <strong>{{ connection.sync_mode_label }}</strong>
                     </div>
                 </div>
-                <p><strong>Następny krok:</strong> {{ connection.next_step }}</p>
+                <p><strong>Nastepny krok:</strong> {{ connection.next_step }}</p>
                 {% if connection.action_url %}
                     <div class="actions">
                         <a class="button secondary" href="{{ connection.action_url }}">{{ connection.action_label }}</a>
