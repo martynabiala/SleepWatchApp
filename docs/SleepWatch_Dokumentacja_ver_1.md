@@ -1,7 +1,6 @@
-# SleepWatch - dokumentacja ver_1
+﻿# SleepWatch - dokumentacja ver_1
 
 Stan dokumentu: 2026-04-22
-Wersja aplikacji: stan biezacy repozytorium `D:\Aplikacja_SleepWatch`
 Typ dokumentu: dokumentacja analityczno-projektowa i wdrozeniowa
 Link do aplikacji webowej: `https://sleepwatch.onrender.com`
 
@@ -37,7 +36,7 @@ Glowne obszary systemu:
 - uzytkownik koncowy chcacy obserwowac swoj sen,
 - administrator systemu,
 - zespol projektowy rozwijajacy aplikacje,
-- prowadzaca oceniająca postep projektu i dokumentacje.
+- prowadzaca oceniajÄ…ca postep projektu i dokumentacje.
 
 ### 3.2 Zakres funkcjonalny obecnej wersji
 
@@ -79,7 +78,7 @@ System musi pozwalac na utworzenie nowego konta na podstawie adresu e-mail i has
 
 #### WF-02 Obsluga kont niepelnoletnich
 
-System musi rozrozniac konta uzytkownikow ponizej 18 roku zycia. W takim przypadku wymagany jest adres e-mail rodzica lub opiekuna, a aktywacja konta następuje po potwierdzeniu zgody przez osobe dorosla.
+System musi rozrozniac konta uzytkownikow ponizej 18 roku zycia. W takim przypadku wymagany jest adres e-mail rodzica lub opiekuna, a aktywacja konta nastÄ™puje po potwierdzeniu zgody przez osobe dorosla.
 
 #### WF-03 Logowanie i odzyskiwanie dostepu
 
@@ -241,30 +240,30 @@ W przypadku SleepWatch szczegolnie wazne sa:
 
 ```text
 Strona startowa
-└── Logowanie
-└── Rejestracja
+- Logowanie
+- Rejestracja
 
 Po zalogowaniu
-└── Dashboard
-    └── Poranek
-    └── Wieczor
-    └── Nawyki
-    └── Wnioski
-    └── Analiza snu
-    └── Sen w grupie
-    └── Biblioteka snu
-└── Profil
-    └── Zrodla danych
-└── Sen
-    └── Import danych
-    └── Historia importow
-    └── Lista nocy
-        └── Szczegoly nocy
-    └── Dodaj noc recznie
-└── Znajomi
-    └── Profil znajomego
-└── Osiagniecia
-└── Admin
+- Dashboard
+  - Poranek
+  - Wieczor
+  - Nawyki
+  - Wnioski
+  - Analiza snu
+  - Sen w grupie
+  - Biblioteka snu
+- Profil
+  - Zrodla danych
+- Sen
+  - Import danych
+  - Historia importow
+  - Lista nocy
+    - Szczegoly nocy
+  - Dodaj noc recznie
+- Znajomi
+  - Profil znajomego
+- Osiagniecia
+- Admin
 ```
 
 ### 4.3 Sciezki uzytkownika
@@ -320,7 +319,7 @@ Przykladowy szkic low-fidelity szczegolow nocy:
 W wersji high-fidelity interfejs powinien:
 
 - korzystac ze spojnej kolorystyki kojarzacej sie z nocnym monitoringiem i spokojem,
-- wyrózniac najwazniejsze liczby na dashboardzie,
+- wyrÃ³zniac najwazniejsze liczby na dashboardzie,
 - prezentowac wykresy w prosty, nieprzeciazony sposob,
 - stosowac formularze z walidacja i czytelnymi komunikatami,
 - zachowac dobra obsluge na laptopie i telefonie.
@@ -333,7 +332,75 @@ Przyjeta koncepcja hi-fi dla `ver_1`:
 - ekran szczegolow nocy laczy dane liczbowe z formularzem notatki na jednym widoku,
 - najwazniejsze komunikaty maja forme kart lub alertow, a nie dlugich blokow tekstu.
 
-### 4.6 Zestaw wireframe'ow ver_1
+### 4.6 Makieta high-fidelity - aktualny zestaw ekranów
+
+Poniżej zamieszczono nowszy zestaw makiet high-fidelity przygotowany dla aktualnej wersji SleepWatch. Zestaw jest bardziej spójny wizualnie niż wcześniejsza plansza i lepiej pokazuje rzeczywiste kierunki interfejsu: jasne tło, granatowe akcenty, ilustrację śpiącego kota oraz czytelne karty z danymi.
+
+Do dokumentacji wybrano pięć ekranów, które najlepiej pokazują najważniejsze obszary aplikacji:
+
+- logowanie,
+- rejestrację,
+- dashboard,
+- historię nocy,
+- wykresy i trendy.
+
+#### Ekran 1: logowanie
+
+![Makieta hi-fi - logowanie](assets/hifi/hifi_login.png)
+
+Opis:
+
+- lewa część ekranu buduje klimat marki i wykorzystuje ilustrację śpiącego kota,
+- prawa część skupia się na jednym zadaniu: szybkim zalogowaniu użytkownika,
+- formularz jest prosty, czytelny i nie zawiera nadmiarowych elementów rozpraszających.
+
+#### Ekran 2: rejestracja
+
+![Makieta hi-fi - rejestracja](assets/hifi/hifi_signup.png)
+
+Opis:
+
+- układ pozostaje spójny z ekranem logowania,
+- formularz rejestracji pokazuje podstawowe pola potrzebne do założenia konta,
+- makieta zachowuje ten sam język wizualny: biało-granatową kolorystykę, miękkie zaokrąglenia i czytelną hierarchię tekstu.
+
+#### Ekran 3: dashboard
+
+![Makieta hi-fi - dashboard](assets/hifi/hifi_dashboard.png)
+
+Opis:
+
+- dashboard eksponuje ostatnią noc, najważniejsze liczby i wskazówkę dnia,
+- widok został podzielony na czytelne sekcje, aby użytkownik mógł szybko znaleźć podsumowanie snu,
+- układ kart i górnej nawigacji pokazuje docelowy kierunek rozwoju interfejsu po zalogowaniu.
+
+#### Ekran 4: historia nocy
+
+![Makieta hi-fi - historia nocy](assets/hifi/hifi_history.png)
+
+Opis:
+
+- ekran historii nocy pokazuje filtrowanie po dacie oraz listę zapisanych rekordów,
+- przyciski akcji są skupione przy formularzu filtrowania, co porządkuje przepływ użytkownika,
+- makieta podkreśla prostotę obsługi i szybki dostęp do szczegółów konkretnej nocy.
+
+#### Ekran 5: wykresy i trendy
+
+![Makieta hi-fi - wykresy i trendy](assets/hifi/hifi_trends.png)
+
+Opis:
+
+- widok trendów pokazuje sposób prezentacji danych w dłuższym okresie,
+- sekcja łączy podsumowania liczbowe z wykresami liniowymi i krótkimi opisami metryk,
+- dzięki temu użytkownik może jednocześnie zobaczyć wartości zbiorcze i zmiany w czasie.
+
+Podsumowanie zestawu hi-fi:
+
+- wszystkie ekrany utrzymane są w jednej estetyce i wyglądają jak elementy tej samej aplikacji,
+- makiety nie są przesadnie marketingowe, tylko zbliżone do realnych ekranów produktu,
+- wybrane widoki dobrze nadają się do dokumentacji, bo pokazują zarówno wejście do systemu, jak i późniejsze korzystanie z aplikacji.
+
+### 4.7 Zestaw wireframe'ow ver_1
 
 Ponizej zamieszczono trzy podstawowe wireframe'y tekstowe, ktore w wersji `ver_1` dokumentacji pelnia role makiet niskiej wiernosc i pokazuja uklad kluczowych ekranow.
 
@@ -485,6 +552,30 @@ User 1 --- N Friendship (sender)
 User 1 --- N Friendship (receiver)
 ```
 
+#### Schemat logiczny relacji
+
+| Encja glowna | Relacja | Encja powiazana | Znaczenie |
+|---|---|---|---|
+| `auth_user` | 1:1 | `accounts_userprofile` | kazdy uzytkownik ma jeden profil rozszerzony |
+| `auth_user` | 1:N | `sleep_sleeprecord` | jeden uzytkownik moze miec wiele zapisanych nocy |
+| `sleep_sleeprecord` | 1:1 | `sleep_sleepnote` | do jednej nocy przypisana jest jedna notatka kontekstowa |
+| `auth_user` | 1:N | `sleep_importhistory` | uzytkownik moze wykonac wiele importow danych |
+| `auth_user` | 1:N | `sleep_sleepsyncconnection` | profil moze miec kilka zapisanych statusow synchronizacji |
+| `auth_user` | 1:1 | `sleep_sleepapitoken` | konto posiada jeden token API do integracji |
+| `auth_user` | 1:N | `accounts_friendship` | uzytkownik moze wysylac i odbierac wiele zaproszen znajomosci |
+
+#### Schemat danych - najwazniejsze klucze
+
+| Tabela | Klucz glowny | Klucze obce / powiazania |
+|---|---|---|
+| `accounts_userprofile` | `id` | `user_id -> auth_user.id` |
+| `sleep_sleeprecord` | `id` | `user_id -> auth_user.id` |
+| `sleep_sleepnote` | `id` | `sleep_record_id -> sleep_sleeprecord.id`, `user_id -> auth_user.id` |
+| `sleep_importhistory` | `id` | `user_id -> auth_user.id` |
+| `sleep_sleepsyncconnection` | `id` | `user_id -> auth_user.id` |
+| `sleep_sleepapitoken` | `id` | `user_id -> auth_user.id` |
+| `accounts_friendship` | `id` | `sender_id -> auth_user.id`, `receiver_id -> auth_user.id` |
+
 #### Opis tabel
 
 `UserProfile`
@@ -517,7 +608,7 @@ User 1 --- N Friendship (receiver)
 
 `SleepNote`
 
-- `sleep_record` - rekord, którego dotyczy notatka,
+- `sleep_record` - rekord, ktÃ³rego dotyczy notatka,
 - `user` - wlasciciel,
 - `sleep_quality` - subiektywna ocena,
 - `caffeine_used`, `caffeine_last_time`, `caffeine_count`,
@@ -820,6 +911,21 @@ Sluza do sprawdzania wspolpracy widokow, modeli, formularzy i routingu.
 
 Odwzorowuja glowne akcje uzytkownika: rejestracja, import, zapis notatki, analiza.
 
+#### Raport ver_1 - zestawienie wykonanych testow
+
+| Obszar | Rodzaj testu | Narzedzie / sposob wykonania | Wynik |
+|---|---|---|---|
+| konta i aktywacja | jednostkowy / integracyjny | testy Django `accounts/tests.py` | zaliczone |
+| profil i ustawienia | integracyjny | testy Django | zaliczone |
+| import CSV | integracyjny / funkcjonalny | testy Django `sleep/tests.py` | zaliczone |
+| reczne dodawanie nocy | funkcjonalny | testy Django `sleep/tests.py` | zaliczone |
+| notatki do nocy | jednostkowy / funkcjonalny | walidacja formularzy i testy widokow | zaliczone |
+| API synchronizacji | integracyjny | testy endpointow backendu | zaliczone |
+| mobilne endpointy pomocnicze | integracyjny | testy backendu oraz sprawdzenie przeplywu z aplikacji mobilnej | zaliczone |
+| wyglad i przeplywy webowe | przeglad manualny | lokalne uruchomienie aplikacji i kontrola widokow | zaliczone dla `ver_1` |
+
+Wynik ogolny dla `ver_1`: kluczowe przeplywy aplikacji zostaly sprawdzone i nie zglosily bledow blokujacych oddanie wersji roboczej. Obszary wydajnosciowe i bezpieczenstwa pozostaja do dalszego rozszerzenia w kolejnych iteracjach projektu.
+
 #### Testy wydajnosciowe i bezpieczenstwa
 
 W `ver_1` nie zostaly jeszcze sformalizowane jako osobny pakiet testow, ale powinny objac:
@@ -888,7 +994,7 @@ Zakres panelu administratora w aktualnym stanie projektu:
 
 Najbardziej naturalne kierunki rozwoju po `ver_1`:
 
-- dopracowanie formalnych makiet hi-fi,
+- dalsze rozszerzanie zestawu makiet hi-fi o kolejne ekrany aplikacji,
 - rozszerzenie dokumentacji o diagramy graficzne,
 - dopisanie jawnej specyfikacji wszystkich endpointow mobilnych,
 - testy E2E,
@@ -914,14 +1020,14 @@ Ponizsza tabela rozroznia funkcje gotowe, bedace w trakcie rozwoju oraz elementy
 | Mobilne endpointy pomocnicze | gotowe w warstwie backendowej | logowanie, rejestracja, preferencje, summary |
 | Modul znajomych | gotowe | funkcja obecna w aktualnym kodzie |
 | Porownania grupowe | w trakcie rozwoju | funkcja uproszczona, wymaga dalszego doprecyzowania produktowego |
-| Graficzne makiety hi-fi | planowane | w `ver_1` sa wireframe'y tekstowe |
+| Graficzne makiety hi-fi | gotowe | w `ver_1` dodano zestaw ekranow hi-fi dla logowania, rejestracji, dashboardu, historii nocy i trendow |
 | Testy E2E | planowane | brak pelnego scenariusza przegladarkowego |
 | Testy wydajnosciowe i bezpieczenstwa | planowane | do rozbudowy w kolejnej wersji dokumentacji |
 
 ## 10. Ryzyka i ograniczenia
 
 - w dokumentacji i kodzie widoczne sa dwa kierunki rozwoju produktu: analiza wlasnego snu oraz funkcje spolecznosciowe; w kolejnych wersjach warto doprecyzowac, ktory kierunek jest priorytetowy,
-- nie wszystkie elementy UX sa opisane graficznie, dlatego `ver_2` powinna zawierac makiety ekranow,
+- nie wszystkie elementy UX sa jeszcze opisane graficznie, dlatego kolejne wersje dokumentacji powinny rozszerzac zestaw makiet o dalsze widoki aplikacji,
 - lokalne uruchamianie zalezy od poprawnej konfiguracji `.env`,
 - wsparcie dla wielu providerow mobilnych wymaga dalszej walidacji integracyjnej,
 - unikalnosc `external_record_id` moze zachowywac sie inaczej zaleznosci od silnika bazy danych.
@@ -969,4 +1075,8 @@ W obecnym repozytorium przygotowano:
 - plik Word: `docs/SleepWatch_Dokumentacja_ver_1.docx`,
 - wersje zrodlowa dokumentacji: `docs/SleepWatch_Dokumentacja_ver_1.md`,
 - aktualny kod aplikacji w tym samym repozytorium,
-- link do wdrozenia: `https://sleepwatch.onrender.com`.
+- link do wdrozenia aplikacji na Renderze: `https://sleepwatch.onrender.com`.
+
+Aktualnie publicznie dostepna wersja aplikacji webowej SleepWatch jest wdrozona w usludze Render pod adresem:
+
+`https://sleepwatch.onrender.com`

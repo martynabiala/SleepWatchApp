@@ -163,6 +163,24 @@
             grid-template-columns: 1fr;
         }
     }
+
+    :root[data-theme="dark"] .hub-hero,
+    :root[data-theme="dark"] .hub-card,
+    :root[data-theme="dark"] .hub-section,
+    :root[data-theme="dark"] .hub-list-item,
+    :root[data-theme="dark"] .hub-timeline-item,
+    :root[data-theme="dark"] .hub-library-item,
+    :root[data-theme="dark"] .hub-empty {
+        border-color: rgba(124, 164, 200, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
+            rgba(24, 39, 59, 0.94);
+    }
+
+    :root[data-theme="dark"] .hub-pill {
+        background: rgba(94, 152, 204, 0.14);
+        color: #dcecff;
+    }
 </style>
 
 <div class="hub-page">

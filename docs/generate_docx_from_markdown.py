@@ -1,11 +1,30 @@
 from pathlib import Path
 
 from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Inches
 
 
 BASE_DIR = Path(__file__).resolve().parent
 SOURCE_PATH = BASE_DIR / "SleepWatch_Dokumentacja_ver_1.md"
 TARGET_PATH = BASE_DIR / "SleepWatch_Dokumentacja_ver_1.docx"
+
+
+def add_image(document: Document, line: str) -> bool:
+    stripped = line.strip()
+    if not (stripped.startswith("![") and "](" in stripped and stripped.endswith(")")):
+        return False
+
+    target = stripped.split("](", 1)[1][:-1].strip()
+    image_path = (SOURCE_PATH.parent / target).resolve()
+    if not image_path.exists():
+        return False
+
+    paragraph = document.add_paragraph()
+    paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = paragraph.add_run()
+    run.add_picture(str(image_path), width=Inches(6.5))
+    return True
 
 
 def add_table(document: Document, lines: list[str]) -> None:
@@ -65,6 +84,9 @@ def build_docx() -> None:
         if table_buffer:
             add_table(document, table_buffer)
             table_buffer = []
+
+        if add_image(document, stripped):
+            continue
 
         if not stripped:
             document.add_paragraph("")

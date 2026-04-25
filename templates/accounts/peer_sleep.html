@@ -266,6 +266,26 @@
     .avatar-leaf { background: linear-gradient(135deg, #57b890 0%, #8ed4ac 100%); }
     .avatar-heart { background: linear-gradient(135deg, #ef6ba8 0%, #f6a4c8 100%); }
 
+    :root[data-theme="dark"] .peer-hero-card,
+    :root[data-theme="dark"] .peer-highlight,
+    :root[data-theme="dark"] .peer-meta-card,
+    :root[data-theme="dark"] .peer-card,
+    :root[data-theme="dark"] .peer-empty,
+    :root[data-theme="dark"] .peer-member-card {
+        border-color: rgba(124, 164, 200, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(94, 152, 204, 0.12), transparent 30%),
+            rgba(24, 39, 59, 0.94);
+    }
+
+    :root[data-theme="dark"] .peer-row {
+        border-bottom-color: rgba(124, 164, 200, 0.12);
+    }
+
+    :root[data-theme="dark"] .peer-member-avatar {
+        box-shadow: 0 14px 28px rgba(3, 10, 18, 0.24);
+    }
+
     @media (max-width: 860px) {
         .peer-hero-grid {
             grid-template-columns: 1fr;

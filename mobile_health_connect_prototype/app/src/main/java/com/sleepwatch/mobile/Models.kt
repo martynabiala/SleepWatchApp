@@ -35,3 +35,22 @@ data class SyncResult(
     val addedCount: Int,
     val updatedCount: Int,
 )
+
+data class MobileSleepHistoryItem(
+    val id: Int,
+    val sleepDate: String,
+    val durationDisplay: String,
+    val bedtime: String,
+    val wakeTime: String,
+    val awakeningsCount: Int?,
+    val source: String,
+)
+
+data class MobileManualSleepResult(
+    val id: Int,
+    val sleepDate: String,
+    val durationDisplay: String,
+    val bedtime: String,
+    val wakeTime: String,
+    val awakeningsCount: Int?,
+)

@@ -206,6 +206,19 @@
             height: 260px;
         }
     }
+
+    :root[data-theme="dark"] .analysis-summary-card,
+    :root[data-theme="dark"] .analysis-insight-card,
+    :root[data-theme="dark"] .analysis-chart-card,
+    :root[data-theme="dark"] .analysis-chip,
+    :root[data-theme="dark"] .analysis-stat,
+    :root[data-theme="dark"] .analysis-canvas-wrap,
+    :root[data-theme="dark"] .analysis-empty {
+        border-color: rgba(124, 164, 200, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
+            rgba(24, 39, 59, 0.94);
+    }
 </style>
 
 <div class="analysis-page">

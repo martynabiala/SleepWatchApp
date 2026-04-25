@@ -1,203 +1,255 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}SleepWatch – Strona główna{% endblock %}
+{% block title %}SleepWatch - Strona główna{% endblock %}
 
 {% block content %}
 <style>
     .home-hero {
         display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-        gap: 24px;
+        grid-template-columns: minmax(320px, 0.78fr) minmax(320px, 0.92fr);
+        gap: 28px;
         align-items: stretch;
+        max-width: 1080px;
+        margin: 0 auto;
     }
 
-    .home-main,
-    .home-side {
+    .home-visual,
+    .home-content {
         position: relative;
         overflow: hidden;
+        border-radius: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        box-shadow: var(--shadow);
     }
 
-    .home-main {
-        padding: 42px 38px;
+    .home-visual {
+        min-height: 680px;
+        padding: 42px 34px;
+        display: grid;
+        align-content: end;
+        justify-items: center;
         background:
-            radial-gradient(circle at top right, rgba(83, 160, 194, 0.14), transparent 30%),
-            radial-gradient(circle at bottom left, rgba(22, 78, 125, 0.1), transparent 32%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.95)),
-            rgba(255, 255, 255, 0.96);
+            radial-gradient(circle at 78% 16%, rgba(255, 229, 172, 0.16), transparent 14%),
+            linear-gradient(180deg, rgba(14, 56, 101, 0.98) 0%, rgba(14, 49, 91, 1) 50%, rgba(10, 35, 67, 1) 100%);
+        color: #ffffff;
     }
 
-    .home-main::after {
+    .home-visual::before {
         content: "";
         position: absolute;
-        inset: auto -40px -60px auto;
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(83, 160, 194, 0.15), rgba(83, 160, 194, 0));
+        inset: 0;
+        background:
+            radial-gradient(circle at 16% 12%, rgba(255, 240, 199, 0.9) 0 1.5px, transparent 2.5px),
+            radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.7) 0 1.4px, transparent 2.5px),
+            radial-gradient(circle at 70% 26%, rgba(255, 240, 199, 0.82) 0 1.8px, transparent 3px),
+            radial-gradient(circle at 44% 34%, rgba(255, 255, 255, 0.7) 0 1.6px, transparent 2.5px),
+            radial-gradient(circle at 80% 40%, rgba(255, 240, 199, 0.72) 0 1.4px, transparent 2.5px);
+        opacity: 0.8;
         pointer-events: none;
     }
 
-    .home-side {
+    .home-visual::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 28%;
+        background: linear-gradient(180deg, rgba(52, 98, 141, 0.08) 0%, rgba(9, 31, 60, 0.9) 100%);
+        clip-path: polygon(0 84%, 10% 78%, 23% 82%, 38% 72%, 54% 81%, 72% 67%, 88% 81%, 100% 77%, 100% 100%, 0 100%);
+        pointer-events: none;
+    }
+
+    .home-moon {
+        position: absolute;
+        top: 34px;
+        right: 36px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #ffe7b8;
+        box-shadow: 0 0 24px rgba(255, 231, 184, 0.18);
+        z-index: 1;
+    }
+
+    .home-moon::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(14, 56, 101, 0.98);
+    }
+
+    .home-visual-inner {
+        position: relative;
+        z-index: 1;
         display: grid;
-        gap: 16px;
-        padding: 28px;
-        background:
-            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.94)),
-            rgba(255, 255, 255, 0.96);
+        gap: 18px;
+        justify-items: center;
+        text-align: center;
+        width: min(100%, 29ch);
     }
 
-    .home-title {
-        max-width: 11ch;
-        margin-bottom: 14px;
-        font-size: clamp(2.7rem, 5vw, 4.4rem);
-        line-height: 0.95;
-        letter-spacing: -0.04em;
-    }
-
-    .home-lead {
-        max-width: 56ch;
-        font-size: 1.05rem;
-    }
-
-    .home-features {
+    .home-cat {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-        gap: 14px;
-        margin-top: 28px;
-    }
-
-    .home-feature {
-        padding: 16px 18px;
-        border-radius: 20px;
-        border: 1px solid rgba(34, 94, 139, 0.08);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 248, 252, 0.9));
-    }
-
-    .home-feature strong,
-    .home-stat strong {
-        display: block;
+        place-items: center;
+        width: 100%;
         margin-bottom: 8px;
-        color: var(--text);
+    }
+
+    .home-cat img {
+        width: min(290px, 88%);
+        max-width: 290px;
+        mix-blend-mode: screen;
+        opacity: 0.98;
+    }
+
+    .home-visual h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        line-height: 1.18;
+        max-width: 12ch;
+    }
+
+    .home-visual p {
+        margin: 0;
+        max-width: 26ch;
+        color: rgba(236, 245, 251, 0.9);
         font-size: 1rem;
     }
 
-    .home-side-header {
+    .home-content {
+        padding: 42px;
+        display: grid;
+        align-content: center;
+        gap: 22px;
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 253, 0.95));
+    }
+
+    .home-card {
+        padding: 28px;
+        border-radius: 28px;
+        border: 1px solid rgba(34, 94, 139, 0.1);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 254, 0.96));
+        box-shadow: 0 18px 38px rgba(20, 58, 92, 0.08);
+    }
+
+    .home-card .eyebrow {
+        margin-bottom: 18px;
+    }
+
+    .home-card h2 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+    }
+
+    .home-card p {
+        margin: 0;
+        max-width: 36ch;
+    }
+
+    .home-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
         display: grid;
         gap: 12px;
     }
 
-    .home-side-header .auth-logo-wrap {
-        margin-bottom: 0;
-    }
-
-    .home-side-header .auth-logo {
-        width: min(300px, 78vw);
-        max-width: 300px;
-    }
-
-    .home-side-header p {
-        margin: 0;
-    }
-
-    .home-stat-grid {
-        display: grid;
-        gap: 14px;
-    }
-
-    .home-stat {
-        border-radius: 22px;
+    .home-list li {
+        padding: 16px 18px;
+        border-radius: 20px;
         border: 1px solid rgba(34, 94, 139, 0.08);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(241, 248, 252, 0.92));
-        padding: 18px 20px;
-    }
-
-    .home-stat-value {
-        font-size: 2rem;
-        line-height: 1;
-        color: var(--accent-dark);
-        font-weight: 800;
-        margin-bottom: 8px;
-    }
-
-    .home-note {
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(247, 252, 255, 0.96), rgba(239, 247, 251, 0.92));
-        border: 1px solid rgba(99, 149, 182, 0.22);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 248, 252, 0.9));
         color: var(--muted);
+        font-weight: 600;
+    }
+
+    :root[data-theme="dark"] .home-visual,
+    :root[data-theme="dark"] .home-content {
+        border-color: rgba(124, 164, 200, 0.16);
+    }
+
+    :root[data-theme="dark"] .home-content {
+        background: linear-gradient(180deg, rgba(20, 34, 52, 0.98), rgba(15, 27, 42, 0.96));
+    }
+
+    :root[data-theme="dark"] .home-card {
+        border-color: rgba(124, 164, 200, 0.18);
+        background: linear-gradient(180deg, rgba(23, 38, 58, 0.98), rgba(18, 31, 47, 0.96));
+        box-shadow: 0 18px 38px rgba(3, 10, 18, 0.2);
+    }
+
+    :root[data-theme="dark"] .home-list li {
+        background: linear-gradient(180deg, rgba(24, 40, 60, 0.98), rgba(21, 35, 53, 0.96));
+        border-color: rgba(124, 164, 200, 0.18);
     }
 
     @media (max-width: 920px) {
         .home-hero {
             grid-template-columns: 1fr;
         }
+
+        .home-visual {
+            min-height: 420px;
+        }
     }
 
     @media (max-width: 640px) {
-        .home-main,
-        .home-side {
+        .home-content,
+        .home-visual {
             padding: 24px;
+        }
+
+        .home-card {
+            padding: 22px;
+        }
+
+        .home-moon {
+            top: 24px;
+            right: 24px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .home-moon::after {
+            width: 34px;
+            height: 34px;
         }
     }
 </style>
 
 <section class="home-hero">
-    <article class="hero-card home-main">
-        <div class="eyebrow">Monitorowanie snu</div>
-        <h1 class="home-title">Spokojniejszy sen zaczyna się od lepszego wglądu</h1>
-        <p class="home-lead">
-            SleepWatch pomaga śledzić noce, zauważać powtarzające się schematy i budować zdrowsze nawyki bez przytłaczającego, technicznego interfejsu.
-        </p>
-
-        <div class="actions">
-            <a class="button" href="{% url 'signup' %}">Załóż konto</a>
-            <a class="button secondary" href="{% url 'login' %}">Zaloguj się</a>
-        </div>
-
-        <div class="home-features">
-            <div class="home-feature">
-                <strong>Czytelne podsumowania</strong>
-                <p>Najważniejsze informacje o śnie widzisz od razu, bez przeklikiwania się przez kilka ekranów.</p>
+    <aside class="home-visual">
+        <div class="home-moon" aria-hidden="true"></div>
+        <div class="home-visual-inner">
+            <div class="home-cat">
+                <img src="{% static 'cat_white_outline.svg' %}" alt="" aria-hidden="true">
             </div>
-            <div class="home-feature">
-                <strong>Codzienny kontekst</strong>
-                <p>Zapisuj stres, kofeinę, drzemki i trening, aby lepiej rozumieć swoje nawyki.</p>
-            </div>
-            <div class="home-feature">
-                <strong>Lepsza regularność</strong>
-                <p>Obserwuj postępy i krok po kroku buduj spokojniejszą, bardziej przewidywalną rutynę snu.</p>
-            </div>
-        </div>
-    </article>
-
-    <aside class="soft-card home-side">
-        <div class="home-side-header">
-            <div class="auth-logo-wrap">
-                <img class="auth-logo" src="{% static 'sleepwatch-new-logo.png' %}" alt="Logo SleepWatch">
-            </div>
-            <p>
-                Jedno miejsce do obserwowania snu, notatek i najważniejszych zmian z ostatnich dni.
-            </p>
-        </div>
-
-        <div class="home-stat-grid">
-            <div class="home-stat">
-                <strong>Co zyskujesz</strong>
-                <div class="home-stat-value">Przejrzystość</div>
-                <p>Najważniejsze dane, cele i trendy są uporządkowane tak, żeby łatwo było je zrozumieć.</p>
-            </div>
-
-            <div class="home-stat">
-                <strong>Na co stawiamy</strong>
-                <div class="home-stat-value">Równowaga</div>
-                <p>Spokojny wygląd aplikacji i prosty układ pomagają skupić się na odpoczynku, a nie na chaosie.</p>
-            </div>
-        </div>
-
-        <div class="home-note">
-            Zacznij od dodania pierwszych nocy, a aplikacja pokaże Ci trendy, porównania i własne tempo zmian.
+            <h1>Zrozum swój sen. Popraw jakość życia.</h1>
+            <p>SleepWatch pomaga analizować sen, odkrywać zależności i budować lepsze nawyki każdego dnia.</p>
         </div>
     </aside>
+
+    <article class="home-content">
+        <div class="home-card">
+            <div class="eyebrow">Monitorowanie snu</div>
+            <h2>Wszystko w jednym miejscu</h2>
+            <p>Prosty wgląd w noce, notatki i najważniejsze zmiany bez zbędnego chaosu.</p>
+        </div>
+
+        <ul class="home-list">
+            <li>ostatnia noc i krótkie podsumowanie po zalogowaniu,</li>
+            <li>historia snu, notatki i prostszy wgląd w trendy,</li>
+            <li>miejsce do budowania regularniejszych nawyków krok po kroku.</li>
+        </ul>
+    </article>
 </section>
 {% endblock %}

@@ -109,6 +109,59 @@ class MobileSessionApiClient(
         )
     }
 
+    fun fetchSleepHistory(apiToken: String): List<MobileSleepHistoryItem> {
+        val response = request(
+            path = "/api/mobile/sleep-history/",
+            method = "GET",
+            apiToken = apiToken,
+        )
+        val json = JSONObject(response)
+        val records = json.optJSONArray("records") ?: JSONArray()
+        return List(records.length()) { index ->
+            val item = records.getJSONObject(index)
+            MobileSleepHistoryItem(
+                id = item.getInt("id"),
+                sleepDate = item.getString("sleep_date"),
+                durationDisplay = item.getString("duration_display"),
+                bedtime = item.optString("bedtime"),
+                wakeTime = item.optString("wake_time"),
+                awakeningsCount = item.optInt("awakenings_count").takeIf { !item.isNull("awakenings_count") },
+                source = item.getString("source"),
+            )
+        }
+    }
+
+    fun createManualSleep(
+        apiToken: String,
+        sleepDate: String,
+        bedtime: String,
+        wakeTime: String,
+        awakeningsCount: Int?,
+    ): MobileManualSleepResult {
+        val response = request(
+            path = "/api/mobile/manual-sleep/",
+            method = "POST",
+            apiToken = apiToken,
+            body = JSONObject().apply {
+                put("sleep_date", sleepDate)
+                put("bedtime", bedtime)
+                put("wake_time", wakeTime)
+                if (awakeningsCount != null) {
+                    put("awakenings_count", awakeningsCount)
+                }
+            }.toString(),
+        )
+        val json = JSONObject(response).getJSONObject("record")
+        return MobileManualSleepResult(
+            id = json.getInt("id"),
+            sleepDate = json.getString("sleep_date"),
+            durationDisplay = json.getString("duration_display"),
+            bedtime = json.optString("bedtime"),
+            wakeTime = json.optString("wake_time"),
+            awakeningsCount = json.optInt("awakenings_count").takeIf { !json.isNull("awakenings_count") },
+        )
+    }
+
     private fun request(
         path: String,
         method: String,

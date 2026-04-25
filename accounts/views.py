@@ -17,13 +17,14 @@ from django.db.models import Avg, Q
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+from sleep.forms import ManualSleepRecordForm
 from sleep.models import ImportHistory, SleepApiToken, SleepNote, SleepRecord, SleepSyncConnection
 from sleep.services import build_sleep_auto_evaluation, get_sleep_api_token
 
@@ -273,56 +274,6 @@ def get_last_sleep_note(last_sleep):
         return None
 
 
-def is_sleep_note_effectively_empty(note):
-    if note is None:
-        return True
-
-    return (
-        note.sleep_quality == SleepNote.QUALITY_NEUTRAL
-        and not note.caffeine_used
-        and note.caffeine_last_time is None
-        and note.caffeine_count is None
-        and not note.nap_taken
-        and note.nap_time is None
-        and not note.alcohol
-        and not note.training_done
-        and note.training_level == SleepNote.TRAINING_NONE
-        and note.training_time is None
-        and note.stress_level is None
-        and not (note.note_text or "").strip()
-    )
-
-
-def build_filled_note_query(prefix: str = "note__"):
-    return (
-        ~Q(**{f"{prefix}sleep_quality": SleepNote.QUALITY_NEUTRAL})
-        | Q(**{f"{prefix}caffeine_used": True})
-        | Q(**{f"{prefix}caffeine_last_time__isnull": False})
-        | Q(**{f"{prefix}caffeine_count__isnull": False})
-        | Q(**{f"{prefix}nap_taken": True})
-        | Q(**{f"{prefix}nap_time__isnull": False})
-        | Q(**{f"{prefix}alcohol": True})
-        | Q(**{f"{prefix}training_done": True})
-        | ~Q(**{f"{prefix}training_level": SleepNote.TRAINING_NONE})
-        | Q(**{f"{prefix}training_time__isnull": False})
-        | Q(**{f"{prefix}stress_level__isnull": False})
-        | ~Q(**{f"{prefix}note_text": ""})
-    )
-
-
-def get_latest_sleep_record_needing_note(queryset):
-    for sleep_record in queryset.order_by("-sleep_date"):
-        try:
-            sleep_note = sleep_record.note
-        except SleepNote.DoesNotExist:
-            return sleep_record
-
-        if is_sleep_note_effectively_empty(sleep_note):
-            return sleep_record
-
-    return queryset.order_by("-sleep_date").first()
-
-
 def build_evening_plan_cards(profile, stats_7, active_hypothesis_summary, last_sleep_note):
     note_summary = (
         last_sleep_note.get_sleep_quality_display()
@@ -420,9 +371,7 @@ def build_morning_cards(last_sleep, last_sleep_note, evaluation):
 
 def build_habit_cards(queryset):
     today = timezone.localdate()
-    note_records = queryset.filter(
-        sleep_date__gte=today - timedelta(days=29)
-    ).filter(build_filled_note_query())
+    note_records = queryset.filter(sleep_date__gte=today - timedelta(days=29), note__isnull=False)
     cards = [
         {
             "name": "Kofeina",
@@ -525,6 +474,62 @@ def build_insight_journal_entries(queryset, profile):
     return entries, note_entries
 
 
+def build_sleep_library_sections():
+    return [
+        {
+            "name": "Podstawy",
+            "articles": [
+                {
+                    "title": "Dlaczego regularna godzina snu pomaga bardziej niż pojedyncza długa noc",
+                    "read_time": "4 min",
+                    "level": "Podstawy",
+                    "summary": "Krótko o tym, dlaczego rytm bywa ważniejszy niż jednorazowe odsypianie.",
+                },
+                {
+                    "title": "Wieczorne nawyki, które wyciszają zamiast pobudzać",
+                    "read_time": "5 min",
+                    "level": "Praktyka",
+                    "summary": "Proste rzeczy, które można zrobić przed snem bez przebudowy całego dnia.",
+                },
+            ],
+        },
+        {
+            "name": "Nawyki",
+            "articles": [
+                {
+                    "title": "Kofeina, stres i trening: co najczęściej miesza w nocnej regeneracji",
+                    "read_time": "6 min",
+                    "level": "Praktyka",
+                    "summary": "Trzy najczęstsze czynniki, które warto obserwować w swoich notatkach.",
+                },
+                {
+                    "title": "Drzemka w dzień: kiedy pomaga, a kiedy odbiera sen w nocy",
+                    "read_time": "4 min",
+                    "level": "Podstawy",
+                    "summary": "Jak patrzeć na drzemki bez popadania w zasadę wszystko albo nic.",
+                },
+            ],
+        },
+        {
+            "name": "Regeneracja",
+            "articles": [
+                {
+                    "title": "Po czym poznać, że sen był naprawdę regenerujący",
+                    "read_time": "5 min",
+                    "level": "Dla ciekawych",
+                    "summary": "Nie tylko długość snu: co jeszcze warto brać pod uwagę rano.",
+                },
+                {
+                    "title": "Jak czytać swoje dane, żeby nie wyciągać zbyt szybkich wniosków",
+                    "read_time": "5 min",
+                    "level": "Dla ciekawych",
+                    "summary": "Kilka zasad, dzięki którym analiza snu pozostaje spokojna i uczciwa.",
+                },
+            ],
+        },
+    ]
+
+
 @login_required
 def evening_checkin_view(request: HttpRequest) -> HttpResponse:
     profile = request.user.profile
@@ -557,7 +562,6 @@ def morning_checkin_view(request: HttpRequest) -> HttpResponse:
     sleep_records = get_user_sleep_records(request.user)
     last_sleep = sleep_records.order_by("-sleep_date").first()
     last_sleep_note = get_last_sleep_note(last_sleep)
-    sleep_record_needing_note = get_latest_sleep_record_needing_note(sleep_records)
     evaluation = (
         build_sleep_auto_evaluation(last_sleep, last_sleep_note, profile)
         if last_sleep is not None
@@ -567,7 +571,6 @@ def morning_checkin_view(request: HttpRequest) -> HttpResponse:
         "profile": profile,
         "last_sleep": last_sleep,
         "last_sleep_note": last_sleep_note,
-        "sleep_record_needing_note": sleep_record_needing_note,
         "evaluation": evaluation,
         "morning_cards": build_morning_cards(last_sleep, last_sleep_note, evaluation),
     }
@@ -602,6 +605,15 @@ def insights_journal_view(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/insights_journal.html", context)
 
 
+@login_required
+def sleep_library_view(request: HttpRequest) -> HttpResponse:
+    context = {
+        "profile": request.user.profile,
+        "library_sections": build_sleep_library_sections(),
+    }
+    return render(request, "accounts/sleep_library.html", context)
+
+
 def get_friendship_for_users(user, other_user):
     return Friendship.objects.filter(
         Q(sender=user, receiver=other_user) | Q(sender=other_user, receiver=user),
@@ -624,8 +636,7 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
 
         sleep_records = SleepRecord.objects.filter(user=profile_user).select_related("note")
         badges = build_badges(sleep_records)
-
-        messages.success(request, "TO JEST NOWY PROFILE VIEW")
+        
 
         return render(
             request,
@@ -838,6 +849,93 @@ def mobile_summary_api_view(request: HttpRequest) -> HttpResponse:
     )
 
 
+@require_GET
+def mobile_sleep_history_api_view(request: HttpRequest) -> HttpResponse:
+    token = get_sleep_api_token(parse_bearer_token(request))
+    if token is None:
+        return JsonResponse({"detail": "Brak poprawnego tokenu API."}, status=401)
+
+    records = SleepRecord.objects.filter(user=token.user).order_by("-sleep_date", "-created_at")[:20]
+    token.last_used_at = timezone.now()
+    token.save(update_fields=["last_used_at"])
+
+    return JsonResponse(
+        {
+            "status": "ok",
+            "records": [
+                {
+                    "id": record.id,
+                    "sleep_date": record.sleep_date.isoformat(),
+                    "duration_minutes": record.sleep_duration_minutes,
+                    "duration_display": record.sleep_duration_display,
+                    "bedtime": record.bedtime.strftime("%H:%M") if record.bedtime else "",
+                    "wake_time": record.wake_time.strftime("%H:%M") if record.wake_time else "",
+                    "awakenings_count": record.awakenings_count,
+                    "source": record.source,
+                    "device_name": record.device_name,
+                }
+                for record in records
+            ],
+        }
+    )
+
+
+@csrf_exempt
+@require_POST
+def mobile_manual_sleep_create_api_view(request: HttpRequest) -> HttpResponse:
+    token = get_sleep_api_token(parse_bearer_token(request))
+    if token is None:
+        return JsonResponse({"detail": "Brak poprawnego tokenu API."}, status=401)
+
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return JsonResponse({"detail": "Nieprawidłowy JSON."}, status=400)
+
+    form = ManualSleepRecordForm(
+        {
+            "sleep_date": payload.get("sleep_date", ""),
+            "bedtime": payload.get("bedtime", ""),
+            "wake_time": payload.get("wake_time", ""),
+            "awakenings_count": payload.get("awakenings_count", ""),
+        },
+        user=token.user,
+    )
+
+    if not form.is_valid():
+        return JsonResponse(
+            {
+                "detail": "Nie udało się zapisać nocy.",
+                "errors": form.errors,
+            },
+            status=400,
+        )
+
+    sleep_record = form.save(commit=False)
+    sleep_record.user = token.user
+    sleep_record.source = SleepRecord.SOURCE_MANUAL_CSV
+    sleep_record.save()
+
+    token.last_used_at = timezone.now()
+    token.save(update_fields=["last_used_at"])
+
+    return JsonResponse(
+        {
+            "status": "ok",
+            "record": {
+                "id": sleep_record.id,
+                "sleep_date": sleep_record.sleep_date.isoformat(),
+                "duration_minutes": sleep_record.sleep_duration_minutes,
+                "duration_display": sleep_record.sleep_duration_display,
+                "bedtime": sleep_record.bedtime.strftime("%H:%M") if sleep_record.bedtime else "",
+                "wake_time": sleep_record.wake_time.strftime("%H:%M") if sleep_record.wake_time else "",
+                "awakenings_count": sleep_record.awakenings_count,
+                "source": sleep_record.source,
+            },
+        }
+    )
+
+
 @csrf_exempt
 @require_POST
 def mobile_preferences_api_view(request: HttpRequest) -> HttpResponse:
@@ -853,6 +951,7 @@ def mobile_preferences_api_view(request: HttpRequest) -> HttpResponse:
     preferred_sync_source = str(payload.get("preferred_sync_source") or "").strip()
     allowed_sources = {
         UserProfile.SYNC_SOURCE_HEALTH_CONNECT,
+        UserProfile.SYNC_SOURCE_MANUAL_CSV,
     }
     if preferred_sync_source not in allowed_sources:
         return JsonResponse({"detail": "Nieobsługiwane źródło danych."}, status=400)
@@ -874,76 +973,49 @@ def build_sync_connections(user):
         user=user,
         provider=SleepRecord.SOURCE_HEALTH_CONNECT,
     ).first()
-    latest_import = ImportHistory.objects.filter(
-        user=user,
-        source__in=[
-            SleepRecord.SOURCE_MANUAL_CSV,
-            SleepRecord.SOURCE_MI_FITNESS,
-            SleepRecord.SOURCE_ZEPP_LIFE,
-        ],
-    ).first()
-    latest_manual_entry = SleepRecord.objects.filter(
+    latest_manual_import = ImportHistory.objects.filter(
         user=user,
         source=SleepRecord.SOURCE_MANUAL_CSV,
     ).first()
-    connections = [
+
+    return [
         {
             "provider": SleepRecord.SOURCE_HEALTH_CONNECT,
             "label": "Synchronizacja z telefonu",
-            "badge": "Automatyczne",
-            "description": "Najprostsza opcja na Androidzie. SleepWatch pobiera sen z Health Connect, więc może korzystać z danych udostępnianych przez różne aplikacje i urządzenia.",
+            "badge": "Automatycznie",
+            "description": "Najlepsza opcja na Androidzie. SleepWatch pobiera dane zapisane w Health Connect i dodaje je do Twojego konta.",
             "is_connected": bool(health_connection and health_connection.last_synced_at),
-            "status_label": "Połączono" if health_connection and health_connection.last_synced_at else "Gotowe do podłączenia",
+            "status_label": "Połączono" if health_connection and health_connection.last_synced_at else "Gotowe do uruchomienia",
             "last_synced_at": health_connection.last_synced_at if health_connection else None,
             "last_imported_count": health_connection.last_imported_count if health_connection else 0,
             "last_error": health_connection.last_error if health_connection else "",
             "last_device_name": health_connection.last_device_name if health_connection else "",
-            "next_step": "Wybierz tę opcję, jeśli telefon lub aplikacja partnera zapisuje sen w Health Connect.",
+            "next_step": "Wybierz tę opcję, jeśli chcesz dodawać sen automatycznie z telefonu.",
             "is_recommended": True,
             "supports_realtime": True,
-            "sync_mode_label": "Automatycznie po synchronizacji telefonu",
+            "sync_mode_label": "Automatycznie",
+            "action_url": None,
             "action_label": "",
-            "action_url": "",
         },
         {
             "provider": SleepRecord.SOURCE_MANUAL_CSV,
             "label": "Import pliku CSV",
-            "badge": "Plik",
-            "description": "Dobra opcja, gdy dane nie trafiają automatycznie do telefonu. SleepWatch rozpoznaje wgrywane pliki CSV i dopisuje noce do historii.",
-            "is_connected": bool(latest_import),
-            "status_label": "Import gotowy" if latest_import else "Czeka na pierwszy plik",
-            "last_synced_at": latest_import.imported_at if latest_import else None,
-            "last_imported_count": latest_import.added_count if latest_import else 0,
-            "last_error": "",
-            "last_device_name": latest_import.file_name if latest_import else "",
-            "next_step": "Użyj tej opcji, gdy chcesz wgrać eksport z innej aplikacji lub urządzenia.",
-            "is_recommended": False,
-            "supports_realtime": False,
-            "sync_mode_label": "Ręcznie, gdy potrzebujesz",
-            "action_label": "Przejdź do importu",
-            "action_url": reverse("sleep_import"),
-        },
-        {
-            "provider": "manual_entry",
-            "label": "Dodaj ręcznie",
             "badge": "Ręcznie",
-            "description": "Jeśli nie masz jeszcze eksportu ani synchronizacji, możesz po prostu dodać noc samodzielnie i od razu zacząć budować historię snu.",
-            "is_connected": bool(latest_manual_entry),
-            "status_label": "Masz zapisane noce" if latest_manual_entry else "Gotowe do pierwszego wpisu",
-            "last_synced_at": latest_manual_entry.updated_at if latest_manual_entry else None,
-            "last_imported_count": 1 if latest_manual_entry else 0,
+            "description": "Dobra opcja, jeśli masz wyeksportowany plik z danymi snu i chcesz dodać go do SleepWatch jednym importem.",
+            "is_connected": bool(latest_manual_import),
+            "status_label": "Masz już import" if latest_manual_import else "Gotowe do użycia",
+            "last_synced_at": latest_manual_import.imported_at if latest_manual_import else None,
+            "last_imported_count": latest_manual_import.added_count if latest_manual_import else 0,
             "last_error": "",
-            "last_device_name": "",
-            "next_step": "Najlepsza opcja na start, jeśli chcesz przetestować aplikację bez łączenia żadnych integracji.",
+            "last_device_name": latest_manual_import.file_name if latest_manual_import else "",
+            "next_step": "Wybierz tę opcję, jeśli częściej dodajesz sen z pliku niż przez synchronizację telefonu.",
             "is_recommended": False,
             "supports_realtime": False,
-            "sync_mode_label": "Pełna kontrola, bez integracji",
-            "action_label": "Dodaj noc ręcznie",
-            "action_url": reverse("sleep_add"),
+            "sync_mode_label": "Import pliku",
+            "action_url": None,
+            "action_label": "",
         },
     ]
-
-    return connections
 
 
 def build_friends_context(user, query=""):
@@ -1432,8 +1504,9 @@ def build_active_hypothesis_summary(queryset, profile):
         }
 
     note_records = queryset.filter(
-        sleep_date__gte=timezone.localdate() - timedelta(days=29)
-    ).filter(build_filled_note_query())
+        sleep_date__gte=timezone.localdate() - timedelta(days=29),
+        note__isnull=False,
+    )
     analyzers = {
         UserProfile.HYPOTHESIS_CAFFEINE: lambda records: analyze_boolean_hypothesis(
             records,
@@ -1491,8 +1564,8 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "not_enough_notes",
             "tone": "neutral",
             "title": title,
-            "body": "Uzupełnij więcej notatek. Na razie jest za mało danych, żeby pokazać sensowną analizę.",
-            "meta": "Wróć tu po kilku kolejnych nocach.",
+            "body": "To dobry start, ale potrzeba jeszcze kilku notatek, żeby zacząć widzieć pierwszy sensowny wzorzec.",
+            "meta": f"Na razie mamy {with_count + without_count} nocy z notatkami do tego eksperymentu.",
         }
 
     if with_count < 2 or without_count < 2:
@@ -1500,8 +1573,8 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "insufficient_split",
             "tone": "neutral",
             "title": title,
-            "body": "Za mało zróżnicowanych danych do analizy. Uzupełnij kolejne notatki, żebyśmy mogli porównać ten nawyk.",
-            "meta": "Najlepiej, gdy w notatkach pojawiają się różne sytuacje, a nie tylko jeden wariant.",
+            "body": f"Żeby porównanie miało sens, potrzebujemy i nocy {factor_label}, i nocy {without_label}.",
+            "meta": f"Na razie rozkład wygląda tak: {with_count} vs {without_count}.",
         }
 
     avg_with = with_factor.aggregate(avg=Avg("sleep_duration_minutes"))["avg"] or 0
@@ -1546,8 +1619,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "not_enough_notes",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Uzupełnij więcej ocen stresu. Na razie jest za mało danych, żeby pokazać sensowną analizę.",
-            "meta": "Wróć tu po kilku kolejnych nocach.",
+            "body": "Dodaj jeszcze kilka ocen stresu, a SleepWatch zacznie łapać pierwsze różnice między spokojniejszymi i trudniejszymi dniami.",
+            "meta": f"Na razie mamy {high_count + low_count} nocy z oceną stresu.",
         }
 
     if high_count < 2 or low_count < 2:
@@ -1555,8 +1628,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "insufficient_split",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Za mało zróżnicowanych danych do analizy. Uzupełnij kolejne notatki, żebyśmy mogli porównać wpływ stresu.",
-            "meta": "Najlepiej, gdy w ocenach pojawiają się zarówno spokojniejsze, jak i trudniejsze dni.",
+            "body": "Żeby porównanie miało sens, potrzebujemy zarówno nocy z wysokim, jak i z niskim stresem.",
+            "meta": f"Na razie rozkład wygląda tak: {high_count} vs {low_count}.",
         }
 
     avg_high = high_stress.aggregate(avg=Avg("sleep_duration_minutes"))["avg"] or 0
@@ -1652,7 +1725,17 @@ def build_dashboard_alerts(queryset, profile, profile_completion, weekly_goal):
 
 def build_badges(queryset):
     total_records = queryset.count()
-    note_count = queryset.filter(build_filled_note_query()).count()
+    note_count = queryset.filter(
+        Q(note__stress_level__isnull=False)
+        | Q(note__caffeine_used=True)
+        | Q(note__caffeine_last_time__isnull=False)
+        | Q(note__caffeine_count__isnull=False)
+        | Q(note__nap_taken=True)
+        | Q(note__nap_time__isnull=False)
+        | Q(note__alcohol=True)
+        | Q(note__training_done=True)
+        | ~Q(note__note_text="")
+    ).count()
 
     streak = build_sleep_streak(queryset)["count"]
     good_nights = summarize_auto_nights(queryset)["good_nights"] if total_records else 0
@@ -2011,7 +2094,7 @@ def build_self_insights(queryset, profile, self_comparison):
                 }
             )
 
-    note_records = records_30.filter(build_filled_note_query())
+    note_records = records_30.filter(note__isnull=False)
     caffeine_insight = build_boolean_factor_insight(
         note_records,
         "note__caffeine_used",

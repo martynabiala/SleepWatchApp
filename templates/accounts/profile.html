@@ -327,6 +327,37 @@
         margin: 8px 0 0;
     }
 
+    :root[data-theme="dark"] .profile-card,
+    :root[data-theme="dark"] .profile-badges-card,
+    :root[data-theme="dark"] .profile-summary-card,
+    :root[data-theme="dark"] .profile-edit-card,
+    :root[data-theme="dark"] .avatar-preview-card,
+    :root[data-theme="dark"] .profile-kpi,
+    :root[data-theme="dark"] .profile-highlight-card,
+    :root[data-theme="dark"] .badge-card,
+    :root[data-theme="dark"] .profile-edit-preview,
+    :root[data-theme="dark"] .avatar-option {
+        border-color: rgba(124, 164, 200, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
+            rgba(24, 39, 59, 0.94);
+    }
+
+    :root[data-theme="dark"] .badge-card-earned {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    :root[data-theme="dark"] .avatar-option-name,
+    :root[data-theme="dark"] .badge-status,
+    :root[data-theme="dark"] .profile-highlight-card strong,
+    :root[data-theme="dark"] .badge-icon {
+        color: #9bc6ec;
+    }
+
+    :root[data-theme="dark"] .meta-row {
+        border-bottom-color: rgba(124, 164, 200, 0.12);
+    }
+
     @media (max-width: 1080px) {
         .profile-view-grid,
         .profile-hero,
@@ -435,7 +466,7 @@
                         </div>
                         <div class="profile-actions">
                             <a class="button" href="{% url 'profile' %}?edit=1">Edytuj profil</a>
-                            <a class="button secondary" href="{% url 'sync_sources' %}">Źródła danych</a>
+                            <a class="button secondary" href="{% url 'sync_sources' %}">Synchronizacja</a>
                         </div>
                     </div>
 

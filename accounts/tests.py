@@ -171,7 +171,7 @@ class AccountsFlowTests(TestCase):
 
         self.assertRedirects(response, reverse("friends"))
         self.assertFalse(Friendship.objects.exists())
-        self.assertContains(response, "Nie mozna dodac samej siebie do znajomych.")
+        self.assertContains(response, "Nie można dodać samej siebie do znajomych.")
 
     def test_user_can_remove_friend(self):
         first = User.objects.create_user(
@@ -506,8 +506,8 @@ class AccountsFlowTests(TestCase):
         response = self.client.get(reverse("profile"))
 
         self.assertContains(response, "Edytuj profil")
-        self.assertContains(response, "Podgląd profilu")
-        self.assertContains(response, "Odznaki")
+        self.assertContains(response, "Podsumowanie profilu")
+        self.assertContains(response, "Odznaki użytkownika")
         self.assertNotContains(response, "Zapisz profil")
 
     def test_profile_page_shows_form_in_edit_mode(self):
@@ -521,7 +521,7 @@ class AccountsFlowTests(TestCase):
 
         response = self.client.get(f"{reverse('profile')}?edit=1")
 
-        self.assertContains(response, "Zapisz profil")
+        self.assertContains(response, "Zapisz zmiany")
         self.assertContains(response, "Wróć do profilu")
 
     def test_password_reset_sends_email(self):

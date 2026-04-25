@@ -203,7 +203,110 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Mobilna wersja SleepWatch prowadzi Cie od logowania, przez synchronizacje z telefonu, az do przeslania danych snu."
+                    android:text="Przelaczaj sie miedzy sekcjami jak w normalnej aplikacji i zarzadzaj snem z telefonu."
+                    android:textColor="@color/sleepwatch_muted" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/dashboardTabButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_button_primary"
+                        android:elevation="0dp"
+                        android:text="Start"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/historyTabButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_button_secondary"
+                        android:elevation="0dp"
+                        android:text="Noce"
+                        android:textAllCaps="false"
+                        android:textColor="@color/sleepwatch_text" />
+
+                    <Button
+                        android:id="@+id/addTabButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_button_secondary"
+                        android:elevation="0dp"
+                        android:text="Dodaj"
+                        android:textAllCaps="false"
+                        android:textColor="@color/sleepwatch_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/syncTabButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_button_secondary"
+                        android:elevation="0dp"
+                        android:text="Synchronizacja"
+                        android:textAllCaps="false"
+                        android:textColor="@color/sleepwatch_text" />
+
+                    <Button
+                        android:id="@+id/accountTabButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/sleepwatch_button_secondary"
+                        android:elevation="0dp"
+                        android:text="Konto"
+                        android:textAllCaps="false"
+                        android:textColor="@color/sleepwatch_text" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/dashboardSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/sleepwatch_card"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dzisiaj"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Szybki podglad ostatniej nocy i tego, co warto zrobic dalej."
                     android:textColor="@color/sleepwatch_muted" />
 
                 <TextView
@@ -216,112 +319,180 @@
                     android:text="Konto: polaczone"
                     android:textColor="@color/sleepwatch_text" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/sleepwatch_card_soft"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:text="Dashboard"
-                        android:textColor="@color/sleepwatch_text"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/sleepwatch_card_soft"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:text="Import"
-                        android:textColor="@color/sleepwatch_text"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/sleepwatch_card_soft"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:text="Profil"
-                        android:textColor="@color/sleepwatch_text"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/logoutButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:background="@drawable/sleepwatch_button_secondary"
-                    android:elevation="0dp"
-                    android:text="Wyloguj"
-                    android:textAllCaps="false"
-                    android:textColor="@color/sleepwatch_text" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/sleepwatch_card"
-                android:orientation="vertical"
-                android:padding="24dp">
-
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Synchronizacja z telefonu"
-                    android:textColor="@color/sleepwatch_text"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/sourceSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:background="@drawable/sleepwatch_input"
-                    android:padding="8dp" />
-
-                <TextView
-                    android:id="@+id/sourceHintText"
+                    android:id="@+id/dashboardHighlightText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/sleepwatch_card_soft"
                     android:padding="16dp"
+                    android:text="Po zalogowaniu zobaczysz tu krotkie podsumowanie dnia."
                     android:textColor="@color/sleepwatch_muted" />
 
                 <Button
-                    android:id="@+id/saveSourceButton"
+                    android:id="@+id/dashboardSyncButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:background="@drawable/sleepwatch_button_primary"
+                    android:elevation="0dp"
+                    android:text="Synchronizuj teraz"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/dashboardHistoryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/sleepwatch_button_secondary"
                     android:elevation="0dp"
-                    android:text="Zapisz ustawienie"
+                    android:text="Przejdz do nocy"
                     android:textAllCaps="false"
                     android:textColor="@color/sleepwatch_text" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/historySection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/sleepwatch_card"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="24dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ostatnie noce"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Tutaj zobaczysz zapisane noce i szybko odswiezysz historie."
+                    android:textColor="@color/sleepwatch_muted" />
+
+                <TextView
+                    android:id="@+id/recentNightsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/sleepwatch_card_soft"
+                    android:padding="16dp"
+                    android:text="Po zalogowaniu zobaczysz tutaj ostatnie zapisane noce."
+                    android:textColor="@color/sleepwatch_text" />
+
+                <Button
+                    android:id="@+id/refreshHistoryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/sleepwatch_button_secondary"
+                    android:elevation="0dp"
+                    android:text="Odswiez historie"
+                    android:textAllCaps="false"
+                    android:textColor="@color/sleepwatch_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/addSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/sleepwatch_card"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dodaj noc recznie"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Uzupelnij podstawowe dane i zapisz noc bezposrednio z telefonu."
+                    android:textColor="@color/sleepwatch_muted" />
+
+                <EditText
+                    android:id="@+id/manualDateInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/sleepwatch_input"
+                    android:hint="Data nocy, np. 2026-04-24"
+                    android:inputType="date"
+                    android:padding="16dp"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textColorHint="@color/sleepwatch_muted" />
+
+                <EditText
+                    android:id="@+id/manualBedtimeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/sleepwatch_input"
+                    android:hint="Zasniecie, np. 23:10"
+                    android:inputType="datetime"
+                    android:padding="16dp"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textColorHint="@color/sleepwatch_muted" />
+
+                <EditText
+                    android:id="@+id/manualWakeTimeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/sleepwatch_input"
+                    android:hint="Pobudka, np. 07:05"
+                    android:inputType="datetime"
+                    android:padding="16dp"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textColorHint="@color/sleepwatch_muted" />
+
+                <EditText
+                    android:id="@+id/manualAwakeningsInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/sleepwatch_input"
+                    android:hint="Wybudzenia, np. 1"
+                    android:inputType="number"
+                    android:padding="16dp"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textColorHint="@color/sleepwatch_muted" />
+
+                <Button
+                    android:id="@+id/addManualSleepButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/sleepwatch_button_primary"
+                    android:elevation="0dp"
+                    android:text="Zapisz noc"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/syncSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/sleepwatch_card"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -330,6 +501,22 @@
                     android:textColor="@color/sleepwatch_text"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Polacz SleepWatch z danymi z telefonu i uruchom synchronizacje snu."
+                    android:textColor="@color/sleepwatch_muted" />
+
+                <TextView
+                    android:id="@+id/sourceHintText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/sleepwatch_card_soft"
+                    android:padding="16dp"
+                    android:textColor="@color/sleepwatch_muted" />
 
                 <TextView
                     android:id="@+id/apiTokenInput"
@@ -373,34 +560,65 @@
                     android:text="Synchronizuj sen"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/statusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/sleepwatch_card_soft"
+                    android:padding="16dp"
+                    android:text="Status: gotowe"
+                    android:textColor="@color/sleepwatch_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/accountSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/sleepwatch_card"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Konto"
+                    android:textColor="@color/sleepwatch_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Tutaj sprawdzisz stan polaczenia i w razie potrzeby wylogujesz sie z aplikacji."
+                    android:textColor="@color/sleepwatch_muted" />
+
+                <TextView
+                    android:id="@+id/accountDetailsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/sleepwatch_card_soft"
+                    android:padding="16dp"
+                    android:text="Konto: polaczone"
+                    android:textColor="@color/sleepwatch_text" />
+
+                <Button
+                    android:id="@+id/logoutButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/sleepwatch_button_secondary"
+                    android:elevation="0dp"
+                    android:text="Wyloguj"
+                    android:textAllCaps="false"
+                    android:textColor="@color/sleepwatch_text" />
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/sleepwatch_card"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Status"
-                android:textColor="@color/sleepwatch_text"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/statusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/sleepwatch_card_soft"
-                android:padding="16dp"
-                android:text="Status: gotowe"
-                android:textColor="@color/sleepwatch_text" />
-        </LinearLayout>
     </LinearLayout>
 </ScrollView>

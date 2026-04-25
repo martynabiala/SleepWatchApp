@@ -1,75 +1,58 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Rejestracja – SleepWatch{% endblock %}
+{% block title %}Rejestracja - SleepWatch{% endblock %}
 {% block topbar %}{% endblock %}
 
 {% block content %}
-<div class="auth-app-header">
-    <div class="auth-app-brand">
-        <img src="{% static 'sleepwatch-new-logo.png' %}" alt="Logo SleepWatch">
-        <div class="auth-app-brand-copy">
-            <strong>SleepWatch</strong>
-            <span>Aplikacja do monitorowania snu</span>
-        </div>
-    </div>
-    <div class="auth-app-subtitle">
-        Monitoruj sen, analizuj nawyki i buduj spokojniejszą rutynę każdego dnia.
-    </div>
-</div>
-
 <section class="auth-shell">
     <aside class="auth-showcase">
+        <div class="auth-showcase-moon" aria-hidden="true"></div>
         <div class="auth-showcase-content">
-            <div class="eyebrow">Nowy początek</div>
-            <div>
-                <h2>Dołącz do SleepWatch</h2>
-                <p>Zacznij budować swoją historię snu i obserwuj, jak z czasem zmieniają się Twoje nawyki.</p>
+            <div class="auth-showcase-illustration">
+                <img src="{% static 'cat_white_outline.svg' %}" alt="" aria-hidden="true">
+            </div>
+            <div class="auth-showcase-copy">
+                <h2>Zrozum swój sen. Popraw jakość życia.</h2>
+                <p>SleepWatch pomaga analizować sen, odkrywać zależności i budować lepsze nawyki każdego dnia.</p>
             </div>
         </div>
     </aside>
 
     <article class="auth-card">
-        <nav class="auth-tabs" aria-label="Nawigacja logowania i rejestracji">
-            <a class="auth-tab" href="{% url 'login' %}">Logowanie</a>
-            <a class="auth-tab is-active" href="{% url 'signup' %}">Rejestracja</a>
-        </nav>
+        <div class="auth-card-panel">
+            <nav class="auth-tabs" aria-label="Nawigacja logowania i rejestracji">
+                <a class="auth-tab" href="{% url 'login' %}">Logowanie</a>
+                <a class="auth-tab is-active" href="{% url 'signup' %}">Rejestracja</a>
+            </nav>
 
-        <div style="margin-bottom: 22px;">
-            <h1>Załóż konto</h1>
-            <p>Uzupełnij dane, aby rozpocząć korzystanie z aplikacji.</p>
-        </div>
+            <form class="auth-form" method="post">
+                {% csrf_token %}
 
-        <form class="auth-form" method="post">
-            {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <ul class="errorlist">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
-            {% if form.non_field_errors %}
-                <ul class="errorlist">
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
+                <div class="form-grid">
+                    {% for field in form %}
+                        <div {% if field.name == "parent_email" %}id="parent-email-field" style="grid-column: 1 / -1;"{% endif %}>
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="helptext">{{ field.help_text }}</div>
+                            {% endif %}
+                            {{ field.errors }}
+                        </div>
                     {% endfor %}
-                </ul>
-            {% endif %}
+                </div>
 
-            <div class="form-grid">
-                {% for field in form %}
-                    <div {% if field.name == "parent_email" %}id="parent-email-field" style="grid-column: 1 / -1;"{% endif %}>
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.help_text %}
-                            <div class="helptext">{{ field.help_text }}</div>
-                        {% endif %}
-                        {{ field.errors }}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <div class="auth-links">
-                <a class="auth-link subtle" href="{% url 'login' %}">Masz już konto? Zaloguj się</a>
-            </div>
-
-            <button type="submit">Zarejestruj konto</button>
-        </form>
+                <button type="submit">Załóż konto</button>
+            </form>
+        </div>
     </article>
 </section>
 

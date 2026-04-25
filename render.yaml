@@ -13,9 +13,9 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS_EXTRA
-        value: "sleepwatch-app.onrender.com"
+        value: "sleepwatch.onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
-        value: "https://sleepwatch-app.onrender.com"
+        value: "https://sleepwatch.onrender.com"
       - key: DATABASE_URL
         fromDatabase:
           name: sleepwatch-db

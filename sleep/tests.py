@@ -494,7 +494,7 @@ class SleepModuleTests(TestCase):
         response = self.client.get(reverse("dashboard"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Dashboard - SleepWatch")
+        self.assertContains(response, "Dashboard – SleepWatch")
 
     def test_dashboard_uses_app_evaluation_for_good_nights(self):
         record = SleepRecord.objects.create(
@@ -526,7 +526,7 @@ class SleepModuleTests(TestCase):
         response = self.client.get(reverse("dashboard"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Dashboard - SleepWatch")
+        self.assertContains(response, "Dashboard – SleepWatch")
 
     def test_sleep_detail_requires_training_details_when_training_was_done(self):
         record = SleepRecord.objects.create(
@@ -599,9 +599,9 @@ class SleepModuleTests(TestCase):
 
         response = self.client.get(reverse("dashboard"))
 
-        self.assertContains(response, "Analiza własnych danych")
+        self.assertContains(response, "Ostatnie 7 dni na tle 30 dni")
         self.assertContains(response, "W ostatnim tygodniu śpisz dłużej")
-        self.assertContains(response, "Kofeina po 16:00 może skracać sen")
+        self.assertContains(response, "Kofeina może skracać sen")
 
     def test_dashboard_allows_selecting_monthly_hypothesis(self):
         response = self.client.post(
@@ -891,8 +891,7 @@ class SleepModuleTests(TestCase):
 
         response = self.client.get(reverse("profile"))
 
-        self.assertContains(response, "Integracje mobilne")
-        self.assertContains(response, "Health Connect")
+        self.assertContains(response, "Synchronizacja")
         self.assertNotContains(response, "Generuj token API")
 
     def test_mobile_login_api_returns_fresh_token(self):
@@ -956,6 +955,56 @@ class SleepModuleTests(TestCase):
         payload = response.json()
         self.assertEqual(payload["status"], "ok")
         self.assertEqual(payload["flow"], "adult")
+
+    def test_mobile_sleep_history_api_returns_recent_records(self):
+        token = SleepApiToken.objects.create(user=self.user)
+        SleepRecord.objects.create(
+            user=self.user,
+            source="manual_csv",
+            sleep_date="2026-04-18",
+            bedtime="23:15",
+            wake_time="07:05",
+            sleep_duration_minutes=470,
+            awakenings_count=1,
+        )
+
+        response = self.client.get(
+            reverse("mobile_sleep_history_api"),
+            headers={"Authorization": f"Bearer {token.key}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(len(payload["records"]), 1)
+        self.assertEqual(payload["records"][0]["duration_display"], "7h 50m")
+
+    def test_mobile_manual_sleep_create_api_adds_record(self):
+        token = SleepApiToken.objects.create(user=self.user)
+
+        response = self.client.post(
+            reverse("mobile_manual_sleep_create_api"),
+            data={
+                "sleep_date": "2026-04-19",
+                "bedtime": "23:00",
+                "wake_time": "07:10",
+                "awakenings_count": 2,
+            },
+            content_type="application/json",
+            headers={"Authorization": f"Bearer {token.key}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["record"]["duration_display"], "8h 10m")
+        self.assertTrue(
+            SleepRecord.objects.filter(
+                user=self.user,
+                sleep_date="2026-04-19",
+                source=SleepRecord.SOURCE_MANUAL_CSV,
+            ).exists()
+        )
 
     def test_mobile_preferences_api_updates_preferred_sync_source(self):
         token = SleepApiToken.objects.create(user=self.user)
