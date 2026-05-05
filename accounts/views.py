@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 from django.db.models import Avg, Q
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -29,6 +30,7 @@ from sleep.models import ImportHistory, SleepApiToken, SleepNote, SleepRecord, S
 from sleep.services import build_sleep_auto_evaluation, get_sleep_api_token
 
 from .forms import (
+    BugReportForm,
     LoginForm,
     MonthlyHypothesisForm,
     ProfileForm,
@@ -38,7 +40,7 @@ from .forms import (
     SyncSourceSelectionForm,
     UserUpdateForm,
 )
-from .models import Friendship, UserProfile
+from .models import BugReport, Friendship, UserNotification, UserProfile, create_user_notification
 from .tokens import account_activation_token, parental_consent_token
 
 User = get_user_model()
@@ -187,6 +189,24 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
     profile_completion = calculate_profile_completion(profile, request.user)
     stats_7 = build_sleep_stats(sleep_records, 7)
     stats_30 = build_sleep_stats(sleep_records, 30)
+    if profile_completion < 100:
+        create_user_notification(
+            request.user,
+            UserNotification.KIND_PROFILE,
+            "Uzupełnij profil",
+            "Pełniejszy profil pomaga lepiej dopasować cele i wskazówki snu.",
+            action_url=reverse("profile"),
+            dedupe_key="profile-incomplete",
+        )
+    if not sleep_records.exists():
+        create_user_notification(
+            request.user,
+            UserNotification.KIND_SLEEP,
+            "Dodaj pierwszą noc",
+            "Po pierwszym zapisie SleepWatch zacznie pokazywać trendy i podsumowania.",
+            action_url=reverse("sleep_add"),
+            dedupe_key="first-sleep-record",
+        )
     month_comparison = build_month_comparison(sleep_records)
     self_comparison = build_self_comparison(sleep_records)
     weekly_goal = build_weekly_goal(sleep_records)
@@ -668,6 +688,14 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+            create_user_notification(
+                request.user,
+                UserNotification.KIND_PROFILE,
+                "Profil został zaktualizowany",
+                "Zmiany w Twoim profilu zostały zapisane.",
+                action_url=reverse("profile"),
+                dedupe_key="profile-updated",
+            )
             messages.success(request, "Profil został zaktualizowany.")
             return redirect("profile")
     else:
@@ -701,6 +729,14 @@ def sync_sources_view(request: HttpRequest) -> HttpResponse:
         form = SyncSourceSelectionForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
+            create_user_notification(
+                request.user,
+                UserNotification.KIND_SYNC,
+                "Źródło danych zostało zapisane",
+                "Preferowany sposób dodawania snu został zaktualizowany.",
+                action_url=reverse("sync_sources"),
+                dedupe_key="sync-source-updated",
+            )
             messages.success(request, "Źródło danych zostało zapisane.")
             return redirect("sync_sources")
     else:
@@ -715,6 +751,86 @@ def sync_sources_view(request: HttpRequest) -> HttpResponse:
             "sync_connections": sync_connections,
         },
     )
+
+
+@login_required
+def settings_view(request: HttpRequest) -> HttpResponse:
+    profile = request.user.profile
+    settings_sections = [
+        {
+            "label": "Konto",
+            "title": "Profil użytkownika",
+            "body": "Nazwa, awatar, cel snu, grupa wiekowa i aktywność.",
+            "url_name": "profile",
+            "action": "Edytuj profil",
+        },
+        {
+            "label": "Dane snu",
+            "title": "Źródła danych",
+            "body": "Preferowany sposób dodawania snu i status synchronizacji.",
+            "url_name": "sync_sources",
+            "action": "Ustaw źródła",
+        },
+        {
+            "label": "Pomoc",
+            "title": "Zgłoś błąd",
+            "body": "Napisz krótko, co nie działa albo co wygląda nie tak.",
+            "url_name": "bug_report",
+            "action": "Zgłoś błąd",
+        },
+    ]
+    return render(
+        request,
+        "accounts/settings.html",
+        {
+            "profile": profile,
+            "settings_sections": settings_sections,
+        },
+    )
+
+
+@login_required
+def bug_report_view(request: HttpRequest) -> HttpResponse:
+    if request.method == "POST":
+        form = BugReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.user = request.user
+            report.user_agent = request.META.get("HTTP_USER_AGENT", "")[:1000]
+            report.status = BugReport.STATUS_NEW
+            report.save()
+            create_user_notification(
+                request.user,
+                UserNotification.KIND_SUPPORT,
+                "Zgłoszenie zostało zapisane",
+                "Dziękujemy. Twoje zgłoszenie trafiło na listę do sprawdzenia.",
+                action_url=reverse("bug_report"),
+            )
+            messages.success(request, "Dziękujemy, zgłoszenie zostało zapisane.")
+            return redirect("bug_report")
+    else:
+        form = BugReportForm()
+
+    recent_reports = BugReport.objects.filter(user=request.user)[:5]
+    return render(
+        request,
+        "accounts/bug_report.html",
+        {
+            "form": form,
+            "recent_reports": recent_reports,
+        },
+    )
+
+
+@login_required
+@require_POST
+def mark_notifications_read_view(request: HttpRequest) -> HttpResponse:
+    UserNotification.objects.filter(user=request.user, is_read=False).update(
+        is_read=True,
+        read_at=timezone.now(),
+    )
+    next_url = request.POST.get("next") or reverse("dashboard")
+    return redirect(next_url)
 
 
 def parse_bearer_token(request):

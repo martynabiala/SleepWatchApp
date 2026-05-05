@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Zgłoś błąd - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .bug-report-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+        gap: 24px;
+        align-items: start;
+    }
+
+    .bug-report-card,
+    .bug-report-side,
+    .bug-report-item {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background:
+            radial-gradient(circle at top right, rgba(83, 160, 194, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.92));
+    }
+
+    .bug-report-card,
+    .bug-report-side {
+        padding: 28px;
+    }
+
+    .bug-report-card h1,
+    .bug-report-side h3,
+    .bug-report-item h4 {
+        margin-top: 0;
+    }
+
+    .bug-report-copy {
+        max-width: 68ch;
+    }
+
+    .bug-report-form {
+        display: grid;
+        gap: 22px;
+        margin-top: 26px;
+    }
+
+    .bug-report-form-field {
+        display: grid;
+        gap: 8px;
+    }
+
+    .bug-report-category {
+        max-width: 360px;
+    }
+
+    .bug-report-description textarea {
+        min-height: 240px;
+        resize: vertical;
+    }
+
+    .bug-report-actions {
+        margin-top: 18px;
+    }
+
+    .bug-report-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .bug-report-item {
+        padding: 18px;
+        display: grid;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.82);
+    }
+
+    .bug-report-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+
+    .bug-report-status {
+        width: fit-content;
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: rgba(22, 78, 125, 0.12);
+        color: var(--accent-dark);
+        font-size: 0.8rem;
+        font-weight: 800;
+    }
+
+    .bug-report-empty {
+        border-radius: 24px;
+        border: 1px dashed rgba(34, 94, 139, 0.24);
+        background: rgba(255, 255, 255, 0.76);
+        padding: 20px;
+        color: var(--muted);
+    }
+
+    :root[data-theme="dark"] .bug-report-card,
+    :root[data-theme="dark"] .bug-report-side,
+    :root[data-theme="dark"] .bug-report-item,
+    :root[data-theme="dark"] .bug-report-empty {
+        border-color: rgba(124, 164, 200, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
+            rgba(24, 39, 59, 0.94);
+    }
+
+    :root[data-theme="dark"] .bug-report-status {
+        background: rgba(94, 152, 204, 0.14);
+        color: #dcecff;
+    }
+
+    @media (max-width: 920px) {
+        .bug-report-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .bug-report-category {
+            max-width: none;
+        }
+    }
+</style>
+
+<div class="bug-report-layout">
+    <section class="bug-report-card">
+        <div class="eyebrow">Pomoc</div>
+        <h1>Zgłoś błąd</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="bug-report-form">
+                <div class="bug-report-form-field bug-report-category">
+                    <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+                    {{ form.category }}
+                    {{ form.category.errors }}
+                </div>
+
+                <div class="bug-report-form-field bug-report-description">
+                    <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                    {{ form.description }}
+                    {% if form.description.help_text %}
+                        <div class="helptext">{{ form.description.help_text }}</div>
+                    {% endif %}
+                    {{ form.description.errors }}
+                </div>
+            </div>
+
+            <div class="actions bug-report-actions">
+                <button type="submit">Wyślij zgłoszenie</button>
+                <a class="button secondary" href="{% url 'dashboard' %}">Wróć do aplikacji</a>
+            </div>
+        </form>
+    </section>
+
+    <aside class="bug-report-side">
+        <h3>Twoje ostatnie zgłoszenia</h3>
+        {% if recent_reports %}
+            <div class="bug-report-list">
+                {% for report in recent_reports %}
+                    <article class="bug-report-item">
+                        <span class="bug-report-status">{{ report.get_status_display }}</span>
+                        <h4>{{ report.get_category_display }}</h4>
+                        <div class="bug-report-meta">
+                            <span>{{ report.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bug-report-empty">Nie masz jeszcze zapisanych zgłoszeń.</div>
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}

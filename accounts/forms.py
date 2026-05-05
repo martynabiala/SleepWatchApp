@@ -7,7 +7,7 @@ from django.contrib.auth.forms import (
     UserCreationForm,
 )
 
-from .models import UserProfile
+from .models import BugReport, UserProfile
 
 
 User = get_user_model()
@@ -212,3 +212,22 @@ class MonthlyHypothesisForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["active_hypothesis"].help_text = ""
+
+
+class BugReportForm(forms.ModelForm):
+    class Meta:
+        model = BugReport
+        fields = (
+            "category",
+            "description",
+        )
+        labels = {
+            "category": "Rodzaj zgłoszenia",
+            "description": "Opis problemu",
+        }
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 8}),
+        }
+        help_texts = {
+            "description": "Napisz, co widzisz i co utrudnia korzystanie z aplikacji.",
+        }

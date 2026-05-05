@@ -21,6 +21,44 @@ services:
           name: sleepwatch-db
           property: connectionString
 
+  - type: cron
+    name: sleepwatch-morning-notifications
+    runtime: python
+    plan: starter
+    buildCommand: "./build.sh"
+    startCommand: "python manage.py create_daily_notifications --kind morning"
+    schedule: "0 6 * * *"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.2
+      - key: DEBUG
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sleepwatch-db
+          property: connectionString
+
+  - type: cron
+    name: sleepwatch-evening-notifications
+    runtime: python
+    plan: starter
+    buildCommand: "./build.sh"
+    startCommand: "python manage.py create_daily_notifications --kind evening"
+    schedule: "0 19 * * *"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.2
+      - key: DEBUG
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sleepwatch-db
+          property: connectionString
+
 databases:
   - name: sleepwatch-db
     plan: free
