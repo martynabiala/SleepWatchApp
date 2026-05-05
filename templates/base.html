@@ -514,13 +514,6 @@
             color: var(--text);
             box-shadow: none;
             font-weight: 700;
-            cursor: pointer;
-        }
-
-        .nav .notification-item:hover {
-            transform: translateY(-1px);
-            border-color: rgba(34, 94, 139, 0.18);
-            background: rgba(22, 78, 125, 0.075);
         }
 
         .nav .notification-item strong {
@@ -610,11 +603,6 @@
         :root[data-theme="dark"] .nav .notification-item {
             border-color: rgba(124, 164, 200, 0.14);
             background: rgba(94, 152, 204, 0.1);
-        }
-
-        :root[data-theme="dark"] .nav .notification-item:hover {
-            border-color: rgba(124, 164, 200, 0.22);
-            background: rgba(94, 152, 204, 0.14);
         }
 
         :root[data-theme="dark"] .nav .notification-item-unread {
@@ -1831,14 +1819,14 @@
                                     {% if recent_notifications %}
                                         <div class="notification-list">
                                             {% for notification in recent_notifications %}
-                                                <a class="notification-item {% if not notification.is_read %}notification-item-unread{% endif %}" href="{{ notification.action_url|default:'#' }}">
+                                                <div class="notification-item {% if not notification.is_read %}notification-item-unread{% endif %}">
                                                     {% if not notification.is_read %}
                                                         <span class="notification-unread-dot" aria-label="Nowe"></span>
                                                     {% else %}
                                                         <span class="notification-read-dot" aria-hidden="true"></span>
                                                     {% endif %}
                                                     <strong>{{ notification.title }}</strong>
-                                                </a>
+                                                </div>
                                             {% endfor %}
                                         </div>
                                     {% else %}
