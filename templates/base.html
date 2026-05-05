@@ -502,10 +502,12 @@
 
         .nav .notification-item {
             position: relative;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 11px;
             min-height: 0;
-            padding: 13px 14px 13px 16px;
-            border-radius: 18px;
+            padding: 12px 14px;
+            border-radius: 16px;
             border: 1px solid rgba(34, 94, 139, 0.1);
             background: rgba(22, 78, 125, 0.045);
             text-decoration: none;
@@ -521,38 +523,13 @@
             background: rgba(22, 78, 125, 0.075);
         }
 
-        .notification-item-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-
-        .notification-kind {
-            display: inline-flex;
-            align-items: center;
-            width: fit-content;
-            max-width: 100%;
-            padding: 4px 9px;
-            border-radius: 999px;
-            background: rgba(69, 150, 209, 0.16);
-            color: var(--accent-dark);
-            font-size: 0.68rem;
-            font-weight: 900;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-
         .nav .notification-item strong {
             display: block;
-            margin: 0 0 4px;
+            margin: 0;
             font-size: 0.98rem;
-            line-height: 1.25;
+            line-height: 1.3;
         }
 
-        .notification-item-body,
         .notification-empty {
             color: var(--muted);
             font-size: 0.9rem;
@@ -566,6 +543,14 @@
             border-radius: 999px;
             background: #ef6ba8;
             box-shadow: 0 0 0 4px rgba(239, 107, 168, 0.12);
+        }
+
+        .notification-read-dot {
+            width: 9px;
+            height: 9px;
+            flex: 0 0 auto;
+            border-radius: 999px;
+            background: rgba(69, 150, 209, 0.28);
         }
 
         .nav .notification-item-unread {
@@ -630,11 +615,6 @@
         :root[data-theme="dark"] .nav .notification-item:hover {
             border-color: rgba(124, 164, 200, 0.22);
             background: rgba(94, 152, 204, 0.14);
-        }
-
-        :root[data-theme="dark"] .notification-kind {
-            background: rgba(94, 152, 204, 0.18);
-            color: var(--text);
         }
 
         :root[data-theme="dark"] .nav .notification-item-unread {
@@ -1852,14 +1832,12 @@
                                         <div class="notification-list">
                                             {% for notification in recent_notifications %}
                                                 <a class="notification-item {% if not notification.is_read %}notification-item-unread{% endif %}" href="{{ notification.action_url|default:'#' }}">
-                                                    <div class="notification-item-header">
-                                                        <span class="notification-kind">{{ notification.get_kind_display }}</span>
-                                                        {% if not notification.is_read %}
-                                                            <span class="notification-unread-dot" aria-label="Nowe"></span>
-                                                        {% endif %}
-                                                    </div>
+                                                    {% if not notification.is_read %}
+                                                        <span class="notification-unread-dot" aria-label="Nowe"></span>
+                                                    {% else %}
+                                                        <span class="notification-read-dot" aria-hidden="true"></span>
+                                                    {% endif %}
                                                     <strong>{{ notification.title }}</strong>
-                                                    <span class="notification-item-body">{{ notification.body }}</span>
                                                 </a>
                                             {% endfor %}
                                         </div>
