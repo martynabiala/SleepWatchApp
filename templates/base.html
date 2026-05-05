@@ -275,7 +275,7 @@
             top: calc(100% + 12px);
             left: 0;
             width: 220px;
-            padding: 14px;
+            padding: 12px;
             border-radius: 24px;
             border: 1px solid rgba(34, 94, 139, 0.1);
             background: rgba(255, 255, 255, 0.94);
@@ -294,11 +294,11 @@
 
         .app-toolbar-section {
             display: grid;
-            gap: 8px;
+            gap: 7px;
         }
 
         .app-toolbar-section + .app-toolbar-section {
-            padding-top: 6px;
+            padding-top: 4px;
             border-top: 1px solid rgba(34, 94, 139, 0.08);
         }
 
@@ -323,7 +323,7 @@
         .app-toolbar-panel a {
             text-decoration: none;
             border-radius: 16px;
-            padding: 10px 12px;
+            padding: 9px 12px;
             background: rgba(22, 78, 125, 0.07);
             color: var(--text);
             border: 1px solid rgba(22, 78, 125, 0.08);
@@ -421,6 +421,120 @@
             line-height: 1;
         }
 
+        .notification-menu {
+            position: relative;
+            z-index: 45;
+        }
+
+        .notification-menu summary {
+            list-style: none;
+            position: relative;
+            width: 48px;
+            min-width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 999px;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.94));
+            color: var(--accent-dark);
+            border: 1px solid rgba(34, 94, 139, 0.12);
+            box-shadow: 0 8px 18px rgba(20, 58, 92, 0.06);
+            font-size: 1.05rem;
+            font-weight: 900;
+        }
+
+        .notification-menu summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            background: #ef6ba8;
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 900;
+            border: 2px solid var(--card-strong);
+        }
+
+        .notification-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: min(360px, calc(100vw - 32px));
+            padding: 16px;
+            border-radius: 24px;
+            border: 1px solid rgba(34, 94, 139, 0.1);
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 24px 54px rgba(24, 60, 93, 0.16);
+            display: grid;
+            gap: 12px;
+            z-index: 60;
+            text-align: left;
+        }
+
+        .notification-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .notification-panel h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .notification-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .notification-item {
+            display: grid;
+            gap: 6px;
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(34, 94, 139, 0.1);
+            background: rgba(22, 78, 125, 0.06);
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .notification-item strong {
+            font-size: 0.94rem;
+        }
+
+        .notification-item span,
+        .notification-empty {
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .notification-item-unread {
+            border-color: rgba(239, 107, 168, 0.28);
+            background: rgba(239, 107, 168, 0.08);
+        }
+
+        .notification-read-button {
+            min-height: 0;
+            padding: 7px 10px;
+            border-radius: 999px;
+            box-shadow: none;
+            font-size: 0.78rem;
+        }
+
         .music-toggle.is-off {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 252, 0.94));
             color: var(--accent-dark);
@@ -447,11 +561,23 @@
         :root[data-theme="dark"] .button.secondary,
         :root[data-theme="dark"] .nav a.secondary,
         :root[data-theme="dark"] .music-toggle.is-off,
-        :root[data-theme="dark"] .theme-toggle.is-light {
+        :root[data-theme="dark"] .theme-toggle.is-light,
+        :root[data-theme="dark"] .notification-menu summary {
             background: linear-gradient(180deg, rgba(26, 42, 63, 0.98), rgba(18, 31, 48, 0.96));
             border: 1px solid rgba(108, 146, 182, 0.2);
             box-shadow: 0 10px 22px rgba(3, 10, 18, 0.24);
             color: var(--text);
+        }
+
+        :root[data-theme="dark"] .notification-panel {
+            border: 1px solid rgba(108, 146, 182, 0.16);
+            background: rgba(17, 29, 45, 0.96);
+            box-shadow: 0 24px 54px rgba(3, 10, 18, 0.34);
+        }
+
+        :root[data-theme="dark"] .notification-item {
+            border-color: rgba(124, 164, 200, 0.14);
+            background: rgba(94, 152, 204, 0.1);
         }
 
         :root[data-theme="dark"] .panel {
@@ -1620,7 +1746,7 @@
                                         <a href="{% url 'habits_center' %}">Nawyki</a>
                                         <a href="{% url 'insights_journal' %}">Wnioski</a>
                                         <a href="{% url 'sleep_analysis' %}">Analiza</a>
-                                        <a href="{% url 'profile' %}">Profil</a>
+                                        <a href="{% url 'settings' %}">Ustawienia</a>
                                     </div>
                                     <div class="app-toolbar-section">
                                         <div class="app-toolbar-section-label">Społeczność</div>
@@ -1641,6 +1767,40 @@
                     </div>
 
                     <div class="nav">
+                        {% if user.is_authenticated %}
+                            <details class="notification-menu">
+                                <summary aria-label="Powiadomienia">
+                                    !
+                                    {% if unread_notifications_count %}
+                                        <span class="notification-badge">{{ unread_notifications_count }}</span>
+                                    {% endif %}
+                                </summary>
+                                <div class="notification-panel">
+                                    <div class="notification-panel-header">
+                                        <h3>Powiadomienia</h3>
+                                        {% if unread_notifications_count %}
+                                            <form method="post" action="{% url 'mark_notifications_read' %}" style="margin: 0;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                                <button class="notification-read-button" type="submit">Oznacz przeczytane</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                    {% if recent_notifications %}
+                                        <div class="notification-list">
+                                            {% for notification in recent_notifications %}
+                                                <a class="notification-item {% if not notification.is_read %}notification-item-unread{% endif %}" href="{{ notification.action_url|default:'#' }}">
+                                                    <strong>{{ notification.title }}</strong>
+                                                    <span>{{ notification.body }}</span>
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="notification-empty">Nie masz jeszcze powiadomień.</div>
+                                    {% endif %}
+                                </div>
+                            </details>
+                        {% endif %}
                         <button class="theme-toggle is-light" id="theme-toggle" type="button" aria-pressed="false" aria-label="Włącz ciemny tryb">☾</button>
                         <button class="music-toggle is-off" id="music-toggle" type="button" aria-pressed="false" aria-label="Muzyka w tle">♪</button>
                         {% if user.is_authenticated %}

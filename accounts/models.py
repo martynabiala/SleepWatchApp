@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 class UserProfile(models.Model):
@@ -181,3 +182,123 @@ class Friendship(models.Model):
 
     def __str__(self):
         return f"{self.sender.username} -> {self.receiver.username} ({self.get_status_display()})"
+
+
+class BugReport(models.Model):
+    CATEGORY_BUG = "bug"
+    CATEGORY_DATA = "data"
+    CATEGORY_ACCOUNT = "account"
+    CATEGORY_IDEA = "idea"
+    CATEGORY_OTHER = "other"
+
+    STATUS_NEW = "new"
+    STATUS_REVIEWED = "reviewed"
+    STATUS_RESOLVED = "resolved"
+
+    CATEGORY_CHOICES = [
+        (CATEGORY_BUG, "Błąd w aplikacji"),
+        (CATEGORY_DATA, "Problem z danymi snu"),
+        (CATEGORY_ACCOUNT, "Konto lub logowanie"),
+        (CATEGORY_IDEA, "Pomysł na usprawnienie"),
+        (CATEGORY_OTHER, "Inne"),
+    ]
+
+    STATUS_CHOICES = [
+        (STATUS_NEW, "Nowe"),
+        (STATUS_REVIEWED, "Sprawdzone"),
+        (STATUS_RESOLVED, "Rozwiązane"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="bug_reports",
+    )
+    category = models.CharField(
+        "Kategoria",
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default=CATEGORY_BUG,
+    )
+    description = models.TextField("Opis problemu")
+    user_agent = models.TextField("Przeglądarka", blank=True)
+    status = models.CharField(
+        "Status",
+        max_length=12,
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Zgloszenie bledu"
+        verbose_name_plural = "Zgloszenia bledow"
+
+    def __str__(self):
+        return f"{self.get_category_display()} ({self.user.username})"
+
+
+class UserNotification(models.Model):
+    KIND_PROFILE = "profile"
+    KIND_SLEEP = "sleep"
+    KIND_SYNC = "sync"
+    KIND_SUPPORT = "support"
+    KIND_SYSTEM = "system"
+
+    KIND_CHOICES = [
+        (KIND_PROFILE, "Profil"),
+        (KIND_SLEEP, "Sen"),
+        (KIND_SYNC, "Synchronizacja"),
+        (KIND_SUPPORT, "Pomoc"),
+        (KIND_SYSTEM, "System"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="notifications",
+    )
+    kind = models.CharField("Typ", max_length=20, choices=KIND_CHOICES, default=KIND_SYSTEM)
+    title = models.CharField("Tytuł", max_length=140)
+    body = models.TextField("Treść")
+    action_url = models.CharField("Adres akcji", max_length=240, blank=True)
+    dedupe_key = models.CharField("Klucz deduplikacji", max_length=120, blank=True)
+    is_read = models.BooleanField("Przeczytane", default=False)
+    read_at = models.DateTimeField("Data przeczytania", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Powiadomienie"
+        verbose_name_plural = "Powiadomienia"
+
+    def __str__(self):
+        return f"{self.title} ({self.user.username})"
+
+    def mark_read(self):
+        if self.is_read:
+            return
+        self.is_read = True
+        self.read_at = timezone.now()
+        self.save(update_fields=["is_read", "read_at"])
+
+
+def create_user_notification(user, kind, title, body, action_url="", dedupe_key=""):
+    if dedupe_key:
+        existing = UserNotification.objects.filter(
+            user=user,
+            dedupe_key=dedupe_key,
+        ).first()
+        if existing is not None:
+            return existing
+
+    return UserNotification.objects.create(
+        user=user,
+        kind=kind,
+        title=title,
+        body=body,
+        action_url=action_url,
+        dedupe_key=dedupe_key,
+    )

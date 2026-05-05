@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Ustawienia - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .settings-page {
+        display: grid;
+        gap: 24px;
+    }
+
+    .settings-hero,
+    .settings-card {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background:
+            radial-gradient(circle at top right, rgba(83, 160, 194, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 252, 0.92));
+    }
+
+    .settings-hero {
+        padding: 28px;
+    }
+
+    .settings-hero h1,
+    .settings-card h3 {
+        margin-top: 0;
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .settings-card {
+        padding: 24px;
+        display: grid;
+        gap: 12px;
+        align-content: start;
+    }
+
+    .settings-card-label {
+        width: fit-content;
+        border-radius: 999px;
+        padding: 7px 11px;
+        background: rgba(22, 78, 125, 0.12);
+        color: var(--accent-dark);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .settings-card p {
+        margin: 0;
+    }
+
+    .settings-card .button {
+        width: fit-content;
+        margin-top: 6px;
+    }
+
+    :root[data-theme="dark"] .settings-hero,
+    :root[data-theme="dark"] .settings-card {
+        border-color: rgba(124, 164, 200, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
+            rgba(24, 39, 59, 0.94);
+    }
+
+    :root[data-theme="dark"] .settings-card-label {
+        background: rgba(94, 152, 204, 0.14);
+        color: #dcecff;
+    }
+
+    @media (max-width: 820px) {
+        .settings-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="settings-page">
+    <section class="settings-hero">
+        <div class="eyebrow">Ustawienia</div>
+        <h1>Centrum ustawień</h1>
+    </section>
+
+    <section class="settings-grid" aria-label="Sekcje ustawień">
+        {% for section in settings_sections %}
+            <article class="settings-card">
+                <span class="settings-card-label">{{ section.label }}</span>
+                <h3>{{ section.title }}</h3>
+                <p>{{ section.body }}</p>
+                <a class="button secondary" href="{% url section.url_name %}">{{ section.action }}</a>
+            </article>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

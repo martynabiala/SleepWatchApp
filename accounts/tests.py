@@ -1,12 +1,13 @@
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.core import mail
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from accounts.models import Friendship
+from accounts.models import BugReport, Friendship, UserNotification
 from accounts.views import build_badges
 from sleep.models import SleepNote, SleepRecord
 
@@ -222,6 +223,128 @@ class AccountsFlowTests(TestCase):
         for url in urls:
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200)
+
+    def test_bug_report_page_is_available_for_logged_user(self):
+        user = User.objects.create_user(
+            username="reporter",
+            email="reporter@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="reporter", password="BardzoMocneHaslo123!")
+
+        response = self.client.get(reverse("bug_report"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Zgłoś błąd")
+        self.assertContains(response, "Wyślij zgłoszenie")
+
+    def test_settings_page_groups_existing_options(self):
+        User.objects.create_user(
+            username="settings_user",
+            email="settings@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="settings_user", password="BardzoMocneHaslo123!")
+
+        response = self.client.get(reverse("settings"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Centrum ustawień")
+        self.assertContains(response, "Profil użytkownika")
+        self.assertContains(response, reverse("profile"))
+        self.assertContains(response, reverse("sync_sources"))
+        self.assertContains(response, reverse("bug_report"))
+
+    def test_user_can_submit_bug_report(self):
+        user = User.objects.create_user(
+            username="bug_user",
+            email="bug@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="bug_user", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("bug_report"),
+            {
+                "category": BugReport.CATEGORY_BUG,
+                "description": "Po kliknięciu zapisu strona wraca bez komunikatu.",
+            },
+            HTTP_USER_AGENT="SleepWatchTestBrowser",
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("bug_report"))
+        report = BugReport.objects.get(user=user)
+        self.assertEqual(report.category, BugReport.CATEGORY_BUG)
+        self.assertEqual(report.description, "Po kliknięciu zapisu strona wraca bez komunikatu.")
+        self.assertEqual(report.status, BugReport.STATUS_NEW)
+        self.assertEqual(report.user_agent, "SleepWatchTestBrowser")
+        self.assertTrue(
+            UserNotification.objects.filter(
+                user=user,
+                kind=UserNotification.KIND_SUPPORT,
+                title="Zgłoszenie zostało zapisane",
+                is_read=False,
+            ).exists()
+        )
+        self.assertContains(response, "Dziękujemy, zgłoszenie zostało zapisane.")
+
+    def test_user_can_mark_notifications_as_read(self):
+        user = User.objects.create_user(
+            username="notify_user",
+            email="notify@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        notification = UserNotification.objects.create(
+            user=user,
+            kind=UserNotification.KIND_SYSTEM,
+            title="Test",
+            body="Powiadomienie testowe.",
+        )
+        self.client.login(username="notify_user", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("mark_notifications_read"),
+            {"next": reverse("settings")},
+        )
+
+        notification.refresh_from_db()
+        self.assertRedirects(response, reverse("settings"))
+        self.assertTrue(notification.is_read)
+        self.assertIsNotNone(notification.read_at)
+
+    def test_daily_notification_command_creates_morning_and_evening_reminders_once(self):
+        user = User.objects.create_user(
+            username="daily_user",
+            email="daily@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+
+        call_command("create_daily_notifications", kind="morning", date="2026-05-05")
+        call_command("create_daily_notifications", kind="morning", date="2026-05-05")
+        call_command("create_daily_notifications", kind="evening", date="2026-05-05")
+
+        notifications = UserNotification.objects.filter(user=user)
+        self.assertEqual(notifications.count(), 2)
+        self.assertTrue(
+            notifications.filter(
+                title="Poranny check-in",
+                dedupe_key="daily-morning-2026-05-05",
+                action_url=reverse("morning_checkin"),
+            ).exists()
+        )
+        self.assertTrue(
+            notifications.filter(
+                title="Wieczorne przypomnienie",
+                dedupe_key="daily-evening-2026-05-05",
+                action_url=reverse("evening_checkin"),
+            ).exists()
+        )
 
     def test_habits_and_insights_pages_show_note_based_content(self):
         user = User.objects.create_user(
