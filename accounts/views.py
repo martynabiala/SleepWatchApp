@@ -693,7 +693,6 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
                 UserNotification.KIND_PROFILE,
                 "Profil został zaktualizowany",
                 "Zmiany w Twoim profilu zostały zapisane.",
-                action_url=reverse("profile"),
                 dedupe_key="profile-updated",
             )
             messages.success(request, "Profil został zaktualizowany.")
@@ -734,7 +733,6 @@ def sync_sources_view(request: HttpRequest) -> HttpResponse:
                 UserNotification.KIND_SYNC,
                 "Źródło danych zostało zapisane",
                 "Preferowany sposób dodawania snu został zaktualizowany.",
-                action_url=reverse("sync_sources"),
                 dedupe_key="sync-source-updated",
             )
             messages.success(request, "Źródło danych zostało zapisane.")
@@ -804,7 +802,6 @@ def bug_report_view(request: HttpRequest) -> HttpResponse:
                 UserNotification.KIND_SUPPORT,
                 "Zgłoszenie zostało zapisane",
                 "Dziękujemy. Twoje zgłoszenie trafiło na listę do sprawdzenia.",
-                action_url=reverse("bug_report"),
             )
             messages.success(request, "Dziękujemy, zgłoszenie zostało zapisane.")
             return redirect("bug_report")

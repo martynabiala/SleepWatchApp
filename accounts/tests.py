@@ -286,6 +286,7 @@ class AccountsFlowTests(TestCase):
             UserNotification.objects.filter(
                 user=user,
                 kind=UserNotification.KIND_SUPPORT,
+                action_url="",
                 title="Zgłoszenie zostało zapisane",
                 is_read=False,
             ).exists()
@@ -544,6 +545,13 @@ class AccountsFlowTests(TestCase):
         self.assertEqual(user.profile.display_name, "Ewa Pink")
         self.assertEqual(user.profile.avatar, "star")
         self.assertEqual(user.profile.age_group, "26-35")
+        self.assertTrue(
+            UserNotification.objects.filter(
+                user=user,
+                kind=UserNotification.KIND_PROFILE,
+                action_url="",
+            ).exists()
+        )
 
     def test_profile_allows_changing_login(self):
         user = User.objects.create_user(

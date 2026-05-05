@@ -516,6 +516,26 @@
             font-weight: 700;
         }
 
+        .nav .notification-action {
+            min-height: 0;
+            margin-left: auto;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(69, 150, 209, 0.2);
+            background: rgba(69, 150, 209, 0.14);
+            color: var(--text);
+            box-shadow: none;
+            font-size: 0.76rem;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .nav .notification-action:hover {
+            transform: translateY(-1px);
+            border-color: rgba(69, 150, 209, 0.3);
+            background: rgba(69, 150, 209, 0.2);
+        }
+
         .nav .notification-item strong {
             display: block;
             margin: 0;
@@ -603,6 +623,12 @@
         :root[data-theme="dark"] .nav .notification-item {
             border-color: rgba(124, 164, 200, 0.14);
             background: rgba(94, 152, 204, 0.1);
+        }
+
+        :root[data-theme="dark"] .nav .notification-action {
+            border-color: rgba(124, 164, 200, 0.18);
+            background: rgba(94, 152, 204, 0.18);
+            color: var(--text);
         }
 
         :root[data-theme="dark"] .nav .notification-item-unread {
@@ -1826,6 +1852,9 @@
                                                         <span class="notification-read-dot" aria-hidden="true"></span>
                                                     {% endif %}
                                                     <strong>{{ notification.title }}</strong>
+                                                    {% if notification.action_url %}
+                                                        <a class="notification-action" href="{{ notification.action_url }}">Otwórz</a>
+                                                    {% endif %}
                                                 </div>
                                             {% endfor %}
                                         </div>
