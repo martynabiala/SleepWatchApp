@@ -379,6 +379,27 @@ class AccountsFlowTests(TestCase):
             ).exists()
         )
 
+    def test_previous_evening_reminder_is_created_after_midnight(self):
+        user = User.objects.create_user(
+            username="late_reminder_user",
+            email="late-reminder@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        after_midnight = timezone.make_aware(datetime(2026, 5, 6, 0, 30))
+
+        created = create_due_daily_reminder_for_user(user, now=after_midnight)
+
+        self.assertEqual([was_created for _, was_created in created], [True])
+        self.assertTrue(
+            UserNotification.objects.filter(
+                user=user,
+                title="Wieczorne przypomnienie",
+                dedupe_key="daily-evening-2026-05-05",
+                action_url=reverse("evening_checkin"),
+            ).exists()
+        )
+
     def test_habits_and_insights_pages_show_note_based_content(self):
         user = User.objects.create_user(
             username="habit_user",

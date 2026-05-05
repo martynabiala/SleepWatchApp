@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.urls import reverse
 from django.utils import timezone
 
@@ -18,6 +20,8 @@ def get_due_daily_reminder_kinds(now=None):
     local_now = timezone.localtime(now) if now is not None else timezone.localtime()
     hour = local_now.hour
     reminder_kinds = []
+    if hour < 5:
+        reminder_kinds.append("previous_evening")
     if hour >= 5:
         reminder_kinds.append("morning")
     if hour >= 17:
@@ -71,7 +75,12 @@ def create_due_daily_reminder_for_user(user, now=None):
     reminder_date = timezone.localdate(now) if now is not None else timezone.localdate()
     results = []
     for reminder_kind in get_due_daily_reminder_kinds(now):
+        target_date = reminder_date
+        target_kind = reminder_kind
+        if reminder_kind == "previous_evening":
+            target_date = reminder_date - timedelta(days=1)
+            target_kind = "evening"
         results.append(
-            create_daily_reminder_notification(user, reminder_kind, reminder_date)
+            create_daily_reminder_notification(user, target_kind, target_date)
         )
     return results
