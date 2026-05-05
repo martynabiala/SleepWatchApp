@@ -319,6 +319,59 @@ class AccountsFlowTests(TestCase):
         self.assertTrue(notification.is_read)
         self.assertIsNotNone(notification.read_at)
 
+    def test_user_can_mark_single_notification_as_read(self):
+        user = User.objects.create_user(
+            username="single_notify_user",
+            email="single-notify@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        notification = UserNotification.objects.create(
+            user=user,
+            kind=UserNotification.KIND_SLEEP,
+            title="Wieczorne przypomnienie",
+            body="UzupeÅ‚nij wieczorny check-in.",
+            action_url=reverse("evening_checkin"),
+        )
+        self.client.login(username="single_notify_user", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("mark_notification_read", args=[notification.id]),
+            {"next": reverse("evening_checkin")},
+        )
+
+        notification.refresh_from_db()
+        self.assertRedirects(response, reverse("evening_checkin"))
+        self.assertTrue(notification.is_read)
+        self.assertIsNotNone(notification.read_at)
+
+    def test_user_cannot_mark_someone_elses_notification_as_read(self):
+        owner = User.objects.create_user(
+            username="notification_owner",
+            email="notification-owner@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        other_user = User.objects.create_user(
+            username="other_notify_user",
+            email="other-notify@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        notification = UserNotification.objects.create(
+            user=owner,
+            kind=UserNotification.KIND_SYSTEM,
+            title="Prywatne",
+            body="Powiadomienie innego uÅ¼ytkownika.",
+        )
+        self.client.login(username="other_notify_user", password="BardzoMocneHaslo123!")
+
+        self.client.post(reverse("mark_notification_read", args=[notification.id]))
+
+        notification.refresh_from_db()
+        self.assertFalse(notification.is_read)
+        self.assertIsNone(notification.read_at)
+
     def test_daily_notification_command_creates_morning_and_evening_reminders_once(self):
         user = User.objects.create_user(
             username="daily_user",

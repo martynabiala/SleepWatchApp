@@ -21,7 +21,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.http import url_has_allowed_host_and_scheme, urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -826,8 +826,33 @@ def mark_notifications_read_view(request: HttpRequest) -> HttpResponse:
         is_read=True,
         read_at=timezone.now(),
     )
-    next_url = request.POST.get("next") or reverse("dashboard")
+    next_url = get_safe_notification_next_url(request)
     return redirect(next_url)
+
+
+@login_required
+@require_POST
+def mark_notification_read_view(request: HttpRequest, notification_id: int) -> HttpResponse:
+    notification = UserNotification.objects.filter(
+        id=notification_id,
+        user=request.user,
+    ).first()
+    if notification is not None:
+        notification.mark_read()
+
+    next_url = get_safe_notification_next_url(request)
+    return redirect(next_url)
+
+
+def get_safe_notification_next_url(request: HttpRequest) -> str:
+    next_url = request.POST.get("next") or reverse("dashboard")
+    if not url_has_allowed_host_and_scheme(
+        url=next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return reverse("dashboard")
+    return next_url
 
 
 def parse_bearer_token(request):
