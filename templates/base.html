@@ -470,15 +470,15 @@
             position: absolute;
             top: calc(100% + 12px);
             right: 0;
-            width: min(360px, calc(100vw - 32px));
-            padding: 16px;
+            width: min(420px, calc(100vw - 32px));
+            padding: 18px;
             border-radius: 24px;
             border: 1px solid rgba(34, 94, 139, 0.1);
             background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(16px);
             box-shadow: 0 24px 54px rgba(24, 60, 93, 0.16);
             display: grid;
-            gap: 12px;
+            gap: 14px;
             z-index: 60;
             text-align: left;
         }
@@ -492,47 +492,92 @@
 
         .notification-panel h3 {
             margin: 0;
-            font-size: 1rem;
+            font-size: 1.05rem;
         }
 
         .notification-list {
             display: grid;
-            gap: 10px;
+            gap: 8px;
         }
 
         .notification-item {
-            display: grid;
-            gap: 6px;
-            padding: 12px;
-            border-radius: 16px;
+            position: relative;
+            display: block;
+            min-height: 0;
+            padding: 13px 14px 13px 16px;
+            border-radius: 18px;
             border: 1px solid rgba(34, 94, 139, 0.1);
-            background: rgba(22, 78, 125, 0.06);
+            background: rgba(22, 78, 125, 0.045);
             text-decoration: none;
             color: var(--text);
+            box-shadow: none;
+        }
+
+        .notification-item:hover {
+            transform: translateY(-1px);
+            border-color: rgba(34, 94, 139, 0.18);
+            background: rgba(22, 78, 125, 0.075);
+        }
+
+        .notification-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .notification-kind {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            max-width: 100%;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(69, 150, 209, 0.16);
+            color: var(--accent-dark);
+            font-size: 0.68rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .notification-item strong {
-            font-size: 0.94rem;
+            display: block;
+            margin: 0 0 4px;
+            font-size: 0.98rem;
+            line-height: 1.25;
         }
 
-        .notification-item span,
+        .notification-item-body,
         .notification-empty {
             color: var(--muted);
-            font-size: 0.88rem;
-            line-height: 1.5;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .notification-unread-dot {
+            width: 9px;
+            height: 9px;
+            flex: 0 0 auto;
+            border-radius: 999px;
+            background: #ef6ba8;
+            box-shadow: 0 0 0 4px rgba(239, 107, 168, 0.12);
         }
 
         .notification-item-unread {
             border-color: rgba(239, 107, 168, 0.28);
-            background: rgba(239, 107, 168, 0.08);
+            background: linear-gradient(135deg, rgba(239, 107, 168, 0.1), rgba(69, 150, 209, 0.08));
         }
 
         .notification-read-button {
             min-height: 0;
-            padding: 7px 10px;
+            padding: 8px 12px;
             border-radius: 999px;
             box-shadow: none;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
+            white-space: nowrap;
         }
 
         .music-toggle.is-off {
@@ -578,6 +623,21 @@
         :root[data-theme="dark"] .notification-item {
             border-color: rgba(124, 164, 200, 0.14);
             background: rgba(94, 152, 204, 0.1);
+        }
+
+        :root[data-theme="dark"] .notification-item:hover {
+            border-color: rgba(124, 164, 200, 0.22);
+            background: rgba(94, 152, 204, 0.14);
+        }
+
+        :root[data-theme="dark"] .notification-kind {
+            background: rgba(94, 152, 204, 0.18);
+            color: var(--text);
+        }
+
+        :root[data-theme="dark"] .notification-item-unread {
+            border-color: rgba(239, 107, 168, 0.34);
+            background: linear-gradient(135deg, rgba(239, 107, 168, 0.13), rgba(94, 152, 204, 0.13));
         }
 
         :root[data-theme="dark"] .panel {
@@ -1790,8 +1850,14 @@
                                         <div class="notification-list">
                                             {% for notification in recent_notifications %}
                                                 <a class="notification-item {% if not notification.is_read %}notification-item-unread{% endif %}" href="{{ notification.action_url|default:'#' }}">
+                                                    <div class="notification-item-header">
+                                                        <span class="notification-kind">{{ notification.get_kind_display }}</span>
+                                                        {% if not notification.is_read %}
+                                                            <span class="notification-unread-dot" aria-label="Nowe"></span>
+                                                        {% endif %}
+                                                    </div>
                                                     <strong>{{ notification.title }}</strong>
-                                                    <span>{{ notification.body }}</span>
+                                                    <span class="notification-item-body">{{ notification.body }}</span>
                                                 </a>
                                             {% endfor %}
                                         </div>
