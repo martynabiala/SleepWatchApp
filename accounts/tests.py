@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from accounts.models import BugReport, Friendship, UserNotification
+from accounts.notifications import create_due_daily_reminder_for_user
 from accounts.views import build_badges
 from sleep.models import SleepNote, SleepRecord
 
@@ -343,6 +344,29 @@ class AccountsFlowTests(TestCase):
             notifications.filter(
                 title="Wieczorne przypomnienie",
                 dedupe_key="daily-evening-2026-05-05",
+                action_url=reverse("evening_checkin"),
+            ).exists()
+        )
+
+    def test_due_daily_reminder_is_created_when_user_visits_in_evening(self):
+        user = User.objects.create_user(
+            username="visit_reminder_user",
+            email="visit-reminder@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        evening_time = timezone.make_aware(datetime(2026, 5, 6, 19, 15))
+
+        _, created_first = create_due_daily_reminder_for_user(user, now=evening_time)
+        _, created_second = create_due_daily_reminder_for_user(user, now=evening_time)
+
+        self.assertTrue(created_first)
+        self.assertFalse(created_second)
+        self.assertTrue(
+            UserNotification.objects.filter(
+                user=user,
+                title="Wieczorne przypomnienie",
+                dedupe_key="daily-evening-2026-05-06",
                 action_url=reverse("evening_checkin"),
             ).exists()
         )

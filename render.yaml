@@ -27,7 +27,7 @@ services:
     plan: starter
     buildCommand: "./build.sh"
     startCommand: "python manage.py create_daily_notifications --kind morning"
-    schedule: "0 6 * * *"
+    schedule: "0 4 * * *"
     envVars:
       - key: PYTHON_VERSION
         value: 3.13.2
@@ -46,7 +46,7 @@ services:
     plan: starter
     buildCommand: "./build.sh"
     startCommand: "python manage.py create_daily_notifications --kind evening"
-    schedule: "0 19 * * *"
+    schedule: "0 17 * * *"
     envVars:
       - key: PYTHON_VERSION
         value: 3.13.2

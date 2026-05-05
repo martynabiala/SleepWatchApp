@@ -1,5 +1,6 @@
 from django.conf import settings
 
+from .notifications import create_due_daily_reminder_for_user
 from .models import UserNotification
 
 
@@ -9,6 +10,7 @@ def app_settings(request):
     }
 
     if request.user.is_authenticated:
+        create_due_daily_reminder_for_user(request.user)
         notifications = UserNotification.objects.filter(user=request.user)
         context.update(
             {
