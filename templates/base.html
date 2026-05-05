@@ -500,7 +500,7 @@
             gap: 8px;
         }
 
-        .notification-item {
+        .nav .notification-item {
             position: relative;
             display: block;
             min-height: 0;
@@ -511,9 +511,11 @@
             text-decoration: none;
             color: var(--text);
             box-shadow: none;
+            font-weight: 700;
+            cursor: pointer;
         }
 
-        .notification-item:hover {
+        .nav .notification-item:hover {
             transform: translateY(-1px);
             border-color: rgba(34, 94, 139, 0.18);
             background: rgba(22, 78, 125, 0.075);
@@ -543,7 +545,7 @@
             white-space: nowrap;
         }
 
-        .notification-item strong {
+        .nav .notification-item strong {
             display: block;
             margin: 0 0 4px;
             font-size: 0.98rem;
@@ -566,7 +568,7 @@
             box-shadow: 0 0 0 4px rgba(239, 107, 168, 0.12);
         }
 
-        .notification-item-unread {
+        .nav .notification-item-unread {
             border-color: rgba(239, 107, 168, 0.28);
             background: linear-gradient(135deg, rgba(239, 107, 168, 0.1), rgba(69, 150, 209, 0.08));
         }
@@ -620,12 +622,12 @@
             box-shadow: 0 24px 54px rgba(3, 10, 18, 0.34);
         }
 
-        :root[data-theme="dark"] .notification-item {
+        :root[data-theme="dark"] .nav .notification-item {
             border-color: rgba(124, 164, 200, 0.14);
             background: rgba(94, 152, 204, 0.1);
         }
 
-        :root[data-theme="dark"] .notification-item:hover {
+        :root[data-theme="dark"] .nav .notification-item:hover {
             border-color: rgba(124, 164, 200, 0.22);
             background: rgba(94, 152, 204, 0.14);
         }
@@ -635,7 +637,7 @@
             color: var(--text);
         }
 
-        :root[data-theme="dark"] .notification-item-unread {
+        :root[data-theme="dark"] .nav .notification-item-unread {
             border-color: rgba(239, 107, 168, 0.34);
             background: linear-gradient(135deg, rgba(239, 107, 168, 0.13), rgba(94, 152, 204, 0.13));
         }
