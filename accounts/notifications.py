@@ -14,6 +14,17 @@ def resolve_daily_reminder_kind(now=None):
     return None
 
 
+def get_due_daily_reminder_kinds(now=None):
+    local_now = timezone.localtime(now) if now is not None else timezone.localtime()
+    hour = local_now.hour
+    reminder_kinds = []
+    if hour >= 5:
+        reminder_kinds.append("morning")
+    if hour >= 17:
+        reminder_kinds.append("evening")
+    return reminder_kinds
+
+
 def get_daily_reminder_config(reminder_kind, reminder_date):
     date_part = reminder_date.isoformat()
     if reminder_kind == "morning":
@@ -55,11 +66,12 @@ def create_daily_reminder_notification(user, reminder_kind, reminder_date=None):
 
 def create_due_daily_reminder_for_user(user, now=None):
     if not user.is_active:
-        return None, False
-
-    reminder_kind = resolve_daily_reminder_kind(now)
-    if reminder_kind is None:
-        return None, False
+        return []
 
     reminder_date = timezone.localdate(now) if now is not None else timezone.localdate()
-    return create_daily_reminder_notification(user, reminder_kind, reminder_date)
+    results = []
+    for reminder_kind in get_due_daily_reminder_kinds(now):
+        results.append(
+            create_daily_reminder_notification(user, reminder_kind, reminder_date)
+        )
+    return results

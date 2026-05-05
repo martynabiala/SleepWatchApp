@@ -357,11 +357,19 @@ class AccountsFlowTests(TestCase):
         )
         evening_time = timezone.make_aware(datetime(2026, 5, 6, 19, 15))
 
-        _, created_first = create_due_daily_reminder_for_user(user, now=evening_time)
-        _, created_second = create_due_daily_reminder_for_user(user, now=evening_time)
+        created_first = create_due_daily_reminder_for_user(user, now=evening_time)
+        created_second = create_due_daily_reminder_for_user(user, now=evening_time)
 
-        self.assertTrue(created_first)
-        self.assertFalse(created_second)
+        self.assertEqual([created for _, created in created_first], [True, True])
+        self.assertEqual([created for _, created in created_second], [False, False])
+        self.assertTrue(
+            UserNotification.objects.filter(
+                user=user,
+                title="Poranny check-in",
+                dedupe_key="daily-morning-2026-05-06",
+                action_url=reverse("morning_checkin"),
+            ).exists()
+        )
         self.assertTrue(
             UserNotification.objects.filter(
                 user=user,
