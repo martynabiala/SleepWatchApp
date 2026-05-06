@@ -199,9 +199,9 @@
 <div class="sources-layout">
     <section class="sources-card">
         <div class="eyebrow">Synchronizacja</div>
-        <h1>Wybierz domyslny sposob dodawania snu</h1>
+        <h1>Wybierz domyślny sposób dodawania snu</h1>
         <div class="sync-explainer">
-            <p>To tylko ustawienie domyslne. Nadal mozesz korzystac z pozostalych opcji, kiedy bedzie Ci wygodniej.</p>
+            <p>To tylko ustawienie domyślne. Nadal możesz korzystać z pozostałych opcji, kiedy będzie Ci wygodniej.</p>
         </div>
 
         <form method="post">
@@ -226,11 +226,11 @@
                             <div class="source-option-copy">
                                 <strong>{{ label }}</strong>
                                 {% if value == "health_connect" %}
-                                    <span>Najlepsza opcja, jesli chcesz pobierac sen automatycznie z telefonu.</span>
+                                    <span>Najlepsza opcja, jeśli chcesz pobierać sen automatycznie z telefonu.</span>
                                 {% elif value == "manual_csv" %}
-                                    <span>Dobra opcja, jesli masz eksport danych i chcesz dodac go jednym plikiem.</span>
+                                    <span>Dobra opcja, jeśli masz eksport danych i chcesz dodać go jednym plikiem.</span>
                                 {% else %}
-                                    <span>Najprostsza opcja, kiedy chcesz wpisywac noce samodzielnie.</span>
+                                    <span>Najprostsza opcja, kiedy chcesz wpisywać noce samodzielnie.</span>
                                 {% endif %}
                             </div>
                         </label>
@@ -240,7 +240,7 @@
             {{ form.preferred_sync_source.errors }}
             <div class="actions">
                 <button type="submit">Zapisz ustawienie</button>
-                <a class="button secondary" href="{% url 'profile' %}">Wroc do profilu</a>
+                <a class="button secondary" href="{% url 'profile' %}">Wróć do profilu</a>
             </div>
         </form>
     </section>

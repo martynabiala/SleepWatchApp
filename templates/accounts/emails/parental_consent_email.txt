@@ -1,8 +1,8 @@
 Witaj,
 
-na adres e-mail dziecka zostalo zalozone konto w aplikacji SleepWatch.
+na adres e-mail dziecka zostało założone konto w aplikacji SleepWatch.
 
-Aby potwierdzic zgode rodzica lub opiekuna i aktywowac konto, kliknij ponizszy link:
+Aby potwierdzić zgodę rodzica lub opiekuna i aktywować konto, kliknij poniższy link:
 {{ consent_link }}
 
-Jesli nie chcesz wyrazic zgody, zignoruj te wiadomosc. Konto pozostanie nieaktywne.
+Jeśli nie chcesz wyrazić zgody, zignoruj tę wiadomość. Konto pozostanie nieaktywne.

@@ -166,12 +166,12 @@ class Command(BaseCommand):
         updated_records = 0
         base_date = timezone.localdate()
         notes = [
-            "Wieczor byl spokojny i bez ekranu przed snem.",
-            "Pozna kolacja mogla pogorszyc jakosc snu.",
-            "Dzien byl bardziej stresujacy niz zwykle.",
-            "Krotki spacer wieczorem dobrze zadzialal.",
-            "Po treningu zasniecie bylo szybsze.",
-            "Drzemka po poludniu mogla skrocic noc.",
+            "Wieczór był spokojny i bez ekranu przed snem.",
+            "Późna kolacja mogła pogorszyć jakość snu.",
+            "Dzień był bardziej stresujący niż zwykle.",
+            "Krótki spacer wieczorem dobrze zadziałał.",
+            "Po treningu zaśnięcie było szybsze.",
+            "Drzemka po południu mogła skrócić noc.",
         ]
 
         for day_offset in range(days):

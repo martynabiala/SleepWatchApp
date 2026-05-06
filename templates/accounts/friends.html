@@ -228,7 +228,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="decline_request">
                                 <input type="hidden" name="friendship_id" value="{{ request.id }}">
-                                <button class="secondary" type="submit">Odrzuc</button>
+                                <button class="secondary" type="submit">Odrzuć</button>
                             </form>
                         </div>
                     </article>
@@ -236,7 +236,7 @@
             </div>
         {% else %}
             <div class="friend-empty">
-                <p>Na razie nie masz nowych zaproszen.</p>
+                <p>Na razie nie masz nowych zaproszeń.</p>
             </div>
         {% endif %}
     </section>
@@ -267,7 +267,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="remove_friend">
                                 <input type="hidden" name="friendship_id" value="{{ friend.id }}">
-                                <button class="secondary" type="submit">Usun ze znajomych</button>
+                                <button class="secondary" type="submit">Usuń ze znajomych</button>
                             </form>
                         </div>
                     </article>
@@ -275,7 +275,7 @@
             </div>
         {% else %}
             <div class="friend-empty">
-                <p>Jeszcze nikogo tu nie ma. Zacznij od wyszukania pierwszej osoby i wyslij zaproszenie.</p>
+                <p>Jeszcze nikogo tu nie ma. Zacznij od wyszukania pierwszej osoby i wyślij zaproszenie.</p>
             </div>
         {% endif %}
     </section>
