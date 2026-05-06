@@ -259,6 +259,10 @@
         flex-shrink: 0;
     }
 
+    .peer-member-avatar-photo {
+        object-fit: cover;
+    }
+
     .avatar-moon { background: linear-gradient(135deg, #164e7d 0%, #2f7eb2 100%); }
     .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
     .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
@@ -404,7 +408,11 @@
                             <details class="peer-member-card">
                                 <summary class="peer-member-toggle">
                                     <div class="peer-member-head">
-                                        <div class="peer-member-avatar avatar-{{ member.avatar }}">{{ member.avatar_symbol }}</div>
+                                        {% if member.avatar_image_url %}
+                                            <img class="peer-member-avatar peer-member-avatar-photo" src="{{ member.avatar_image_url }}" alt="Awatar uzytkownika">
+                                        {% else %}
+                                            <div class="peer-member-avatar avatar-{{ member.avatar }}">{{ member.avatar_symbol }}</div>
+                                        {% endif %}
                                         <div class="peer-member-copy">
                                             <h4 class="peer-member-name">{{ member.name }}</h4>
                                             <div class="peer-member-username">@{{ member.username }}</div>

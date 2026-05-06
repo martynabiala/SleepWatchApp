@@ -82,6 +82,10 @@
         flex-shrink: 0;
     }
 
+    .friend-avatar-photo {
+        object-fit: cover;
+    }
+
     .friend-copy {
         min-width: 0;
         display: grid;
@@ -174,7 +178,11 @@
                         <article class="friend-card">
                             <div class="friend-head">
                                 <div class="friend-identity">
-                                    <div class="friend-avatar avatar-{{ result.avatar }}">{{ result.avatar_symbol }}</div>
+                                    {% if result.avatar_image_url %}
+                                        <img class="friend-avatar friend-avatar-photo" src="{{ result.avatar_image_url }}" alt="Awatar uzytkownika">
+                                    {% else %}
+                                        <div class="friend-avatar avatar-{{ result.avatar }}">{{ result.avatar_symbol }}</div>
+                                    {% endif %}
                                     <div class="friend-copy">
                                         <h3 class="friend-name">{{ result.display_name }}</h3>
                                         <div class="friend-meta">@{{ result.username }} &bull; {{ result.meta }}</div>
@@ -210,7 +218,11 @@
                     <article class="friend-card">
                         <div class="friend-head">
                             <div class="friend-identity">
-                                <div class="friend-avatar avatar-{{ request.avatar }}">{{ request.avatar_symbol }}</div>
+                                {% if request.avatar_image_url %}
+                                    <img class="friend-avatar friend-avatar-photo" src="{{ request.avatar_image_url }}" alt="Awatar uzytkownika">
+                                {% else %}
+                                    <div class="friend-avatar avatar-{{ request.avatar }}">{{ request.avatar_symbol }}</div>
+                                {% endif %}
                                 <div class="friend-copy">
                                     <h3 class="friend-name">{{ request.display_name }}</h3>
                                     <div class="friend-meta">@{{ request.username }}</div>
@@ -251,7 +263,11 @@
                     <article class="friend-card">
                         <div class="friend-head">
                             <div class="friend-identity">
-                                <div class="friend-avatar avatar-{{ friend.avatar }}">{{ friend.avatar_symbol }}</div>
+                                {% if friend.avatar_image_url %}
+                                    <img class="friend-avatar friend-avatar-photo" src="{{ friend.avatar_image_url }}" alt="Awatar uzytkownika">
+                                {% else %}
+                                    <div class="friend-avatar avatar-{{ friend.avatar }}">{{ friend.avatar_symbol }}</div>
+                                {% endif %}
                                 <div class="friend-copy">
                                     <h3 class="friend-name">{{ friend.display_name }}</h3>
                                     <div class="friend-meta">@{{ friend.username }}</div>

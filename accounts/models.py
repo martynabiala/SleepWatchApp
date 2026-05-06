@@ -3,6 +3,10 @@ from django.db import models
 from django.utils import timezone
 
 
+def user_avatar_upload_path(instance, filename):
+    return f"avatars/user_{instance.user_id}/{filename}"
+
+
 class UserProfile(models.Model):
     SYNC_SOURCE_HEALTH_CONNECT = "health_connect"
     SYNC_SOURCE_MANUAL_CSV = "manual_csv"
@@ -79,6 +83,12 @@ class UserProfile(models.Model):
         choices=AVATAR_CHOICES,
         default=AVATAR_MOON,
     )
+    avatar_image = models.ImageField(
+        "Zdjecie awatara",
+        upload_to=user_avatar_upload_path,
+        blank=True,
+        null=True,
+    )
     age_group = models.CharField(
         "Grupa wiekowa",
         max_length=10,
@@ -137,6 +147,13 @@ class UserProfile(models.Model):
             self.AVATAR_LEAF: "❋",
             self.AVATAR_HEART: "♥",
         }.get(self.avatar, "☾")
+
+
+    @property
+    def avatar_label(self):
+        if self.avatar_image:
+            return "Wlasne zdjecie"
+        return self.get_avatar_display()
 
 
 class Friendship(models.Model):

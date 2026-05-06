@@ -636,6 +636,12 @@ def get_friendship_for_users(user, other_user):
     ).first()
 
 
+def get_avatar_image_url(profile):
+    if not profile.avatar_image:
+        return ""
+    return profile.avatar_image.url
+
+
 @login_required
 def profile_view(request: HttpRequest, username: str | None = None) -> HttpResponse:
     if username is not None:
@@ -679,7 +685,7 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
 
     if request.method == "POST":
         user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=profile)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -1178,6 +1184,7 @@ def build_friends_context(user, query=""):
                 "display_name": friend.profile.display_name or friend.username,
                 "avatar": friend.profile.avatar,
                 "avatar_symbol": friend.profile.avatar_symbol,
+                "avatar_image_url": get_avatar_image_url(friend.profile),
                 "status_since": friendship.responded_at or friendship.updated_at,
             }
         )
@@ -1207,6 +1214,7 @@ def build_friends_context(user, query=""):
                 "display_name": candidate.profile.display_name or candidate.username,
                 "avatar": candidate.profile.avatar,
                 "avatar_symbol": candidate.profile.avatar_symbol,
+                "avatar_image_url": get_avatar_image_url(candidate.profile),
                 "meta": candidate.email,
             }
             for candidate in users
@@ -1220,6 +1228,7 @@ def build_friends_context(user, query=""):
             "display_name": friendship.sender.profile.display_name or friendship.sender.username,
             "avatar": friendship.sender.profile.avatar,
             "avatar_symbol": friendship.sender.profile.avatar_symbol,
+            "avatar_image_url": get_avatar_image_url(friendship.sender.profile),
             "created_at": friendship.created_at,
         }
         for friendship in incoming_requests
@@ -1232,6 +1241,7 @@ def build_friends_context(user, query=""):
             "display_name": friendship.receiver.profile.display_name or friendship.receiver.username,
             "avatar": friendship.receiver.profile.avatar,
             "avatar_symbol": friendship.receiver.profile.avatar_symbol,
+            "avatar_image_url": get_avatar_image_url(friendship.receiver.profile),
             "created_at": friendship.created_at,
         }
         for friendship in outgoing_requests
@@ -1557,6 +1567,7 @@ def build_peer_members(records):
                 "username": peer_user.username,
                 "avatar": peer_profile.avatar,
                 "avatar_symbol": peer_profile.avatar_symbol,
+                "avatar_image_url": get_avatar_image_url(peer_profile),
                 "avg_sleep": minutes_to_display(avg_sleep),
                 "latest_sleep": latest_record.sleep_duration_display,
                 "latest_date": latest_record.sleep_date.strftime("%d.%m.%Y"),
