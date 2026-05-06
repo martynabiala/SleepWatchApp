@@ -730,8 +730,8 @@
             <div class="dashboard-header">
                 <div class="eyebrow">Szybki podgląd</div>
                 <div class="dashboard-intro">
-                    {% if profile.avatar_image %}
-                        <img class="dashboard-avatar dashboard-avatar-photo" src="{{ profile.avatar_image.url }}" alt="Awatar uzytkownika">
+                    {% if profile.avatar_image_src %}
+                        <img class="dashboard-avatar dashboard-avatar-photo" src="{{ profile.avatar_image_src }}" alt="Awatar uzytkownika">
                     {% else %}
                         <div class="dashboard-avatar avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                     {% endif %}

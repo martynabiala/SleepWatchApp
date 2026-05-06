@@ -637,9 +637,7 @@ def get_friendship_for_users(user, other_user):
 
 
 def get_avatar_image_url(profile):
-    if not profile.avatar_image:
-        return ""
-    return profile.avatar_image.url
+    return profile.avatar_image_src
 
 
 @login_required

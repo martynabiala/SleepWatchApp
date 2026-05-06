@@ -230,8 +230,8 @@
 
             <div class="friend-profile-hero">
                 <div class="friend-avatar-card">
-                    {% if profile.avatar_image %}
-                        <img class="avatar-photo" src="{{ profile.avatar_image.url }}" alt="Awatar uzytkownika">
+                    {% if profile.avatar_image_src %}
+                        <img class="avatar-photo" src="{{ profile.avatar_image_src }}" alt="Awatar uzytkownika">
                     {% else %}
                         <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                     {% endif %}

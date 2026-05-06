@@ -440,8 +440,8 @@
             </div>
 
             <div class="profile-edit-preview">
-                {% if profile.avatar_image %}
-                    <img class="avatar-photo" src="{{ profile.avatar_image.url }}" alt="Awatar uzytkownika">
+                {% if profile.avatar_image_src %}
+                    <img class="avatar-photo" src="{{ profile.avatar_image_src }}" alt="Awatar uzytkownika">
                 {% else %}
                     <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                 {% endif %}
@@ -496,11 +496,11 @@
                     <div class="avatar-upload">
                         <label for="{{ profile_form.avatar_image.id_for_label }}">{{ profile_form.avatar_image.label }}</label>
                         <div class="avatar-upload-preview">
-                            {% if profile.avatar_image %}
-                                <img id="avatar-upload-preview-image" class="avatar-photo" src="{{ profile.avatar_image.url }}" alt="Aktualny awatar uzytkownika">
+                            {% if profile.avatar_image_src %}
+                                <img id="avatar-upload-preview-image" class="avatar-photo" src="{{ profile.avatar_image_src }}" alt="Aktualny awatar uzytkownika">
                                 <div>
                                     <strong>Aktualne zdjecie</strong>
-                                    <span>{{ profile.avatar_image.name }}</span>
+                                    <span>Wlasne zdjecie profilowe</span>
                                 </div>
                             {% else %}
                                 <div id="avatar-upload-preview-fallback" class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
@@ -539,8 +539,8 @@
 
                     <div class="profile-hero profile-spacing-top">
                         <div class="avatar-preview-card">
-                            {% if profile.avatar_image %}
-                                <img class="avatar-photo" src="{{ profile.avatar_image.url }}" alt="Awatar uzytkownika">
+                            {% if profile.avatar_image_src %}
+                                <img class="avatar-photo" src="{{ profile.avatar_image_src }}" alt="Awatar uzytkownika">
                             {% else %}
                                 <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                             {% endif %}

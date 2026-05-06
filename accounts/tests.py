@@ -756,6 +756,9 @@ class AccountsFlowTests(TestCase):
 
         self.assertRedirects(response, reverse("profile"))
         self.assertTrue(user.profile.avatar_image.name.startswith("avatars/user_"))
+        self.assertTrue(user.profile.avatar_image_data)
+        self.assertEqual(user.profile.avatar_image_mime, "image/gif")
+        self.assertContains(response, "data:image/gif;base64,")
         self.assertContains(response, "Wlasne zdjecie")
 
     def test_uploaded_media_file_url_is_served(self):
@@ -777,13 +780,15 @@ class AccountsFlowTests(TestCase):
             password="BardzoMocneHaslo123!",
             is_active=True,
         )
-        user.profile.avatar_image = "avatars/user_1/avatar.jpg"
-        user.profile.save(update_fields=["avatar_image"])
+        user.profile.avatar_image_data = "dGVzdC1pbWFnZQ=="
+        user.profile.avatar_image_mime = "image/jpeg"
+        user.profile.save(update_fields=["avatar_image_data", "avatar_image_mime"])
         self.client.login(username="avatarpreview", password="BardzoMocneHaslo123!")
 
         response = self.client.get(f"{reverse('profile')}?edit=1")
 
         self.assertContains(response, "Aktualne zdjecie")
+        self.assertContains(response, "data:image/jpeg;base64,dGVzdC1pbWFnZQ==")
         self.assertContains(response, 'class="avatar-photo"', html=False)
         self.assertNotContains(response, "Teraz:")
         self.assertNotContains(response, "Wyczyść")
