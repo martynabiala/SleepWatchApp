@@ -1702,8 +1702,8 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "not_enough_notes",
             "tone": "neutral",
             "title": title,
-            "body": "To dobry start, ale potrzeba jeszcze kilku notatek, żeby zacząć widzieć pierwszy sensowny wzorzec.",
-            "meta": f"Na razie mamy {with_count + without_count} nocy z notatkami do tego eksperymentu.",
+            "body": "Dodaj jeszcze kilka notatek, żeby aplikacja miała z czego zrobić porównanie.",
+            "meta": f"Na razie są {with_count + without_count} noce z takimi notatkami.",
         }
 
     if with_count < 2 or without_count < 2:
@@ -1711,8 +1711,8 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "insufficient_split",
             "tone": "neutral",
             "title": title,
-            "body": f"Żeby porównanie miało sens, potrzebujemy i nocy {factor_label}, i nocy {without_label}.",
-            "meta": f"Na razie rozkład wygląda tak: {with_count} vs {without_count}.",
+            "body": f"Potrzebujemy kilku nocy {factor_label} i kilku nocy {without_label}. Wtedy porównanie będzie czytelniejsze.",
+            "meta": f"Teraz mamy: {with_count} {factor_label} i {without_count} {without_label}.",
         }
 
     avg_with = with_factor.aggregate(avg=Avg("sleep_duration_minutes"))["avg"] or 0
@@ -1724,8 +1724,8 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "no_pattern",
             "tone": "neutral",
             "title": title,
-            "body": f"Na razie nie widać mocnego sygnału między nocami {factor_label} i {without_label}.",
-            "meta": f"Różnica średniego czasu snu to obecnie {minutes_delta_text(abs(delta))}.",
+            "body": f"Na razie sen wygląda podobnie w noce {factor_label} i {without_label}.",
+            "meta": f"Średnia różnica to tylko {minutes_delta_text(abs(delta))}.",
         }
 
     if delta > 0:
@@ -1733,16 +1733,16 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "state": "pattern_detected",
             "tone": "warning",
             "title": title,
-            "body": f"Zaczyna być widać wzorzec: noce {factor_label} są średnio krótsze o {minutes_delta_text(delta)} niż noce {without_label}.",
-            "meta": f"Porównanie opiera się na {with_count} nocach {factor_label} i {without_count} nocach {without_label}.",
+            "body": f"Widać różnicę: noce {factor_label} są średnio krótsze o {minutes_delta_text(delta)}.",
+            "meta": f"Porównano {with_count} nocy {factor_label} i {without_count} nocy {without_label}.",
         }
 
     return {
         "state": "pattern_detected",
         "tone": "positive",
         "title": title,
-        "body": f"Na ten moment wygląda to obiecująco: noce {factor_label} są średnio dłuższe o {minutes_delta_text(abs(delta))} niż noce {without_label}.",
-        "meta": f"Porównanie opiera się na {with_count} nocach {factor_label} i {without_count} nocach {without_label}.",
+        "body": f"Widać różnicę na plus: noce {factor_label} są średnio dłuższe o {minutes_delta_text(abs(delta))}.",
+        "meta": f"Porównano {with_count} nocy {factor_label} i {without_count} nocy {without_label}.",
     }
 
 
@@ -1757,8 +1757,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "not_enough_notes",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Dodaj jeszcze kilka ocen stresu, a SleepWatch zacznie łapać pierwsze różnice między spokojniejszymi i trudniejszymi dniami.",
-            "meta": f"Na razie mamy {high_count + low_count} nocy z oceną stresu.",
+            "body": "Dodaj jeszcze kilka ocen stresu, żeby aplikacja mogła porównać spokojniejsze i trudniejsze dni.",
+            "meta": f"Na razie są {high_count + low_count} noce z oceną stresu.",
         }
 
     if high_count < 2 or low_count < 2:
@@ -1766,8 +1766,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "insufficient_split",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Żeby porównanie miało sens, potrzebujemy zarówno nocy z wysokim, jak i z niskim stresem.",
-            "meta": f"Na razie rozkład wygląda tak: {high_count} vs {low_count}.",
+            "body": "Potrzebujemy kilku spokojniejszych dni i kilku dni z wyższym stresem. Wtedy porównanie będzie czytelniejsze.",
+            "meta": f"Teraz mamy: {high_count} z wysokim stresem i {low_count} z niskim stresem.",
         }
 
     avg_high = high_stress.aggregate(avg=Avg("sleep_duration_minutes"))["avg"] or 0
@@ -1779,8 +1779,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "no_pattern",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Na razie nie widać mocnego wzorca między stresem a czasem snu.",
-            "meta": f"Różnica średniego czasu snu to obecnie {minutes_delta_text(abs(delta))}.",
+            "body": "Na razie sen wygląda podobnie po spokojniejszych i bardziej stresujących dniach.",
+            "meta": f"Średnia różnica to tylko {minutes_delta_text(abs(delta))}.",
         }
 
     if delta > 0:
@@ -1788,16 +1788,16 @@ def analyze_stress_hypothesis(queryset):
             "state": "pattern_detected",
             "tone": "warning",
             "title": "Wpływ stresu",
-            "body": f"Zaczyna być widać, że noce po dniach z wyższym stresem są średnio krótsze o {minutes_delta_text(delta)}.",
-            "meta": f"Porównanie opiera się na {high_count} nocach z wysokim stresem i {low_count} nocach z niskim stresem.",
+            "body": f"Widać różnicę: po dniach z wyższym stresem sen jest średnio krótszy o {minutes_delta_text(delta)}.",
+            "meta": f"Porównano {high_count} nocy z wysokim stresem i {low_count} nocy z niskim stresem.",
         }
 
     return {
         "state": "pattern_detected",
         "tone": "positive",
         "title": "Wpływ stresu",
-        "body": f"Na ten moment wyższy stres nie wygląda na czynnik skracający sen. Różnica to {minutes_delta_text(abs(delta))}.",
-        "meta": f"Porównanie opiera się na {high_count} nocach z wysokim stresem i {low_count} nocach z niskim stresem.",
+        "body": f"Na razie wyższy stres nie skraca snu w widoczny sposób. Różnica to {minutes_delta_text(abs(delta))}.",
+        "meta": f"Porównano {high_count} nocy z wysokim stresem i {low_count} nocy z niskim stresem.",
     }
 
 
