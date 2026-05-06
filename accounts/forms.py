@@ -206,7 +206,7 @@ class MonthlyHypothesisForm(forms.ModelForm):
         model = UserProfile
         fields = ("active_hypothesis",)
         labels = {
-            "active_hypothesis": "Co chcesz sprawdza\u0107 w tym miesi\u0105cu?",
+            "active_hypothesis": "Czynnik",
         }
 
     def __init__(self, *args, **kwargs):

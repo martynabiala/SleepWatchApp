@@ -816,7 +816,6 @@
         <div class="dashboard-section-head">
             <div class="dashboard-section-kicker">Priorytety</div>
             <h3>Na czym warto skupić się teraz</h3>
-            <p class="dashboard-section-copy">Krótki przegląd najważniejszych rzeczy na ten tydzień.</p>
         </div>
 
         <div class="dashboard-overview-grid">
@@ -832,11 +831,13 @@
 
             <article class="dashboard-hypothesis-card">
                 <div class="dashboard-hypothesis-label">{{ experiment_heading }}</div>
-                <h3>{{ active_hypothesis_summary.title }}</h3>
-                <p>{{ active_hypothesis_summary.body }}</p>
+                <h3>{% if active_hypothesis_summary.state == "inactive" %}Co chcesz sprawdzić?{% else %}{{ active_hypothesis_summary.title }}{% endif %}</h3>
+                {% if active_hypothesis_summary.state != "inactive" %}
+                    <p>{{ active_hypothesis_summary.body }}</p>
 
-                {% if active_hypothesis_summary.meta %}
-                    <div class="dashboard-hypothesis-meta">{{ active_hypothesis_summary.meta }}</div>
+                    {% if active_hypothesis_summary.meta %}
+                        <div class="dashboard-hypothesis-meta">{{ active_hypothesis_summary.meta }}</div>
+                    {% endif %}
                 {% endif %}
 
                 <form method="post" class="dashboard-form">

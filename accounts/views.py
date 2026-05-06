@@ -1636,9 +1636,9 @@ def build_active_hypothesis_summary(queryset, profile):
         return {
             "state": "inactive",
             "tone": "neutral",
-            "title": "Wybierz swój eksperyment na ten miesiąc",
-            "body": "Nadaj sobie mały cel na najbliższe tygodnie. SleepWatch będzie zbierał tropy i pokaże, czy dany czynnik może mieć związek z Twoim snem.",
-            "meta": "Najlepiej działa to wtedy, gdy regularnie dopisujesz krótkie notatki do nocy.",
+            "title": "Wybierz eksperyment miesiąca",
+            "body": "Wybierz jeden czynnik, który chcesz obserwować.",
+            "meta": "",
         }
 
     note_records = queryset.filter(
@@ -1681,9 +1681,9 @@ def build_active_hypothesis_summary(queryset, profile):
         return {
             "state": "inactive",
             "tone": "neutral",
-            "title": "Wybierz swój eksperyment na ten miesiąc",
-            "body": "Nadaj sobie mały cel na najbliższe tygodnie. SleepWatch będzie zbierał tropy i pokaże, czy dany czynnik może mieć związek z Twoim snem.",
-            "meta": "Najlepiej działa to wtedy, gdy regularnie dopisujesz krótkie notatki do nocy.",
+            "title": "Wybierz eksperyment miesiąca",
+            "body": "Wybierz jeden czynnik, który chcesz obserwować.",
+            "meta": "",
         }
 
     summary["started_at"] = profile.active_hypothesis_started_at
@@ -1828,7 +1828,7 @@ def build_dashboard_alerts(queryset, profile, profile_completion, weekly_goal):
             {
                 "tone": "neutral",
                 "title": "Wybierz eksperyment miesiąca",
-                "body": "Nadaj sobie prosty kierunek: sprawdź, czy kofeina, stres, drzemki, alkohol albo trening mają związek z Twoim snem.",
+                "body": "Wybierz jeden czynnik do obserwacji.",
             }
         )
     elif hypothesis_summary["state"] == "pattern_detected":
