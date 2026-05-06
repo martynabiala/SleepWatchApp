@@ -6,16 +6,12 @@
 <section class="hub-hero">
     <div class="hub-kicker">Wiecz&oacute;r</div>
     <h1>Wieczorne podsumowanie</h1>
-    <p class="hub-copy">Spokojny ekran na koniec dnia: szybkie przypomnienie celu snu, ostatniego rytmu i rzeczy, kt&oacute;re warto mie&#263; z ty&#322;u g&#322;owy przed noc&#261;.</p>
+    <p class="hub-copy">Przed snem sprawd&#378; cel, ostatni rytm i kr&oacute;tk&#261; checklist&#281; na wiecz&oacute;r.</p>
     <div class="hub-pill-row">
         <span class="hub-pill">{{ stats_7.total }} zapisanych nocy w 7 dniach</span>
-        <span class="hub-pill">{{ stats_7.avg_sleep_display }} &#347;rednio</span>
-    </div>
-    <div class="hub-action-row">
-        {% if last_sleep %}
-            <a class="button secondary" href="{% url 'sleep_detail' last_sleep.pk %}">Otw&oacute;rz ostatni zapis</a>
+        {% if stats_7.total %}
+            <span class="hub-pill">&#346;rednio {{ stats_7.avg_sleep_display }}</span>
         {% endif %}
-        <a class="button secondary" href="{% url 'sleep_list' %}">Przejd&#378; do historii nocy</a>
     </div>
 </section>
 
@@ -42,15 +38,14 @@
     </div>
 </section>
 
-<section class="hub-section">
-    <div class="hub-kicker">Eksperyment</div>
-    <h2>Na czym teraz si&#281; skupiasz</h2>
-    <div class="hub-list-item" style="margin-top: 18px;">
-        <h3>{{ active_hypothesis_summary.title }}</h3>
-        <p class="hub-note">{{ active_hypothesis_summary.body }}</p>
+{% if active_hypothesis_summary.state != "inactive" %}
+    <section class="hub-section">
+        <div class="hub-kicker">Obserwowany czynnik</div>
+        <h2>{{ active_hypothesis_summary.title }}</h2>
+        <p class="hub-copy" style="margin-top: 12px;">{{ active_hypothesis_summary.body }}</p>
         {% if active_hypothesis_summary.meta %}
-            <p class="hub-note">{{ active_hypothesis_summary.meta }}</p>
+            <p class="hub-copy" style="margin-top: 8px;">{{ active_hypothesis_summary.meta }}</p>
         {% endif %}
-    </div>
-</section>
+    </section>
+{% endif %}
 {% endblock %}

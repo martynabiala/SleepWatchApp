@@ -294,16 +294,11 @@ def get_last_sleep_note(last_sleep):
         return None
 
 
-def build_evening_plan_cards(profile, stats_7, active_hypothesis_summary, last_sleep_note):
+def build_evening_plan_cards(profile, stats_7, last_sleep_note):
     note_summary = (
         last_sleep_note.get_sleep_quality_display()
         if last_sleep_note is not None and last_sleep_note.sleep_quality
         else "Brak ostatniej samooceny"
-    )
-    experiment_label = (
-        profile.get_active_hypothesis_display()
-        if profile.active_hypothesis
-        else "Brak aktywnego eksperymentu"
     )
     return [
         {
@@ -315,11 +310,6 @@ def build_evening_plan_cards(profile, stats_7, active_hypothesis_summary, last_s
             "label": "Rytm z 7 dni",
             "value": stats_7["avg_sleep_display"],
             "body": "Szybkie przypomnienie, ile snu wychodzi Ci ostatnio średnio.",
-        },
-        {
-            "label": "Eksperyment",
-            "value": experiment_label,
-            "body": active_hypothesis_summary["body"],
         },
         {
             "label": "Ostatnia samoocena",
@@ -566,7 +556,6 @@ def evening_checkin_view(request: HttpRequest) -> HttpResponse:
         "plan_cards": build_evening_plan_cards(
             profile,
             stats_7,
-            active_hypothesis_summary,
             last_sleep_note,
         ),
         "checklist": build_evening_checklist(last_sleep_note),
