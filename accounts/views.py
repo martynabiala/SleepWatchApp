@@ -300,6 +300,12 @@ def build_evening_plan_cards(profile, stats_7, last_sleep_note):
         if last_sleep_note is not None and last_sleep_note.sleep_quality
         else "Brak ostatniej samooceny"
     )
+    rhythm_value = stats_7["avg_sleep_display"] if stats_7["total"] else "Brak danych"
+    rhythm_body = (
+        "Szybkie przypomnienie, ile snu wychodzi Ci ostatnio średnio."
+        if stats_7["total"]
+        else "Po kilku zapisanych nocach pojawi się tutaj średnia z ostatnich dni."
+    )
     return [
         {
             "label": "Cel na noc",
@@ -308,8 +314,8 @@ def build_evening_plan_cards(profile, stats_7, last_sleep_note):
         },
         {
             "label": "Rytm z 7 dni",
-            "value": stats_7["avg_sleep_display"],
-            "body": "Szybkie przypomnienie, ile snu wychodzi Ci ostatnio średnio.",
+            "value": rhythm_value,
+            "body": rhythm_body,
         },
         {
             "label": "Ostatnia samoocena",
