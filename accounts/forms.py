@@ -145,7 +145,7 @@ class ProfileForm(forms.ModelForm):
         label="Zdjecie z urzadzenia",
         required=False,
         validators=[FileExtensionValidator(["jpg", "jpeg", "png", "gif", "webp"])],
-        widget=forms.ClearableFileInput(attrs={"accept": "image/*"}),
+        widget=forms.FileInput(attrs={"accept": "image/*"}),
     )
 
     class Meta:

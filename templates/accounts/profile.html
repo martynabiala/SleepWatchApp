@@ -290,7 +290,33 @@
     .avatar-upload {
         grid-column: 1 / -1;
         display: grid;
-        gap: 8px;
+        gap: 12px;
+        padding: 18px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.78);
+    }
+
+    .avatar-upload-preview {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    .avatar-upload-preview strong,
+    .avatar-upload-preview span {
+        display: block;
+    }
+
+    .avatar-upload-preview span,
+    .avatar-upload-help {
+        color: var(--muted);
+        font-size: 0.92rem;
+    }
+
+    .avatar-upload input[type="file"] {
+        width: 100%;
     }
 
     .avatar-picker-grid {
@@ -350,7 +376,8 @@
     :root[data-theme="dark"] .profile-highlight-card,
     :root[data-theme="dark"] .badge-card,
     :root[data-theme="dark"] .profile-edit-preview,
-    :root[data-theme="dark"] .avatar-option {
+    :root[data-theme="dark"] .avatar-option,
+    :root[data-theme="dark"] .avatar-upload {
         border-color: rgba(124, 164, 200, 0.16);
         background:
             radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
@@ -468,8 +495,23 @@
 
                     <div class="avatar-upload">
                         <label for="{{ profile_form.avatar_image.id_for_label }}">{{ profile_form.avatar_image.label }}</label>
+                        <div class="avatar-upload-preview">
+                            {% if profile.avatar_image %}
+                                <img id="avatar-upload-preview-image" class="avatar-photo" src="{{ profile.avatar_image.url }}" alt="Aktualny awatar uzytkownika">
+                                <div>
+                                    <strong>Aktualne zdjecie</strong>
+                                    <span>{{ profile.avatar_image.name }}</span>
+                                </div>
+                            {% else %}
+                                <div id="avatar-upload-preview-fallback" class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
+                                <div>
+                                    <strong>Brak wlasnego zdjecia</strong>
+                                    <span>Po wybraniu pliku zobaczysz tutaj podglad.</span>
+                                </div>
+                            {% endif %}
+                        </div>
                         {{ profile_form.avatar_image }}
-                        {{ profile_form.avatar_image.help_text }}
+                        <div class="avatar-upload-help">{{ profile_form.avatar_image.help_text }}</div>
                         {{ profile_form.avatar_image.errors }}
                     </div>
                 </div>
@@ -603,4 +645,33 @@
         </div>
     {% endif %}
 </div>
+<script>
+    const avatarInput = document.getElementById("{{ profile_form.avatar_image.id_for_label }}");
+    const previewImage = document.getElementById("avatar-upload-preview-image");
+    const previewFallback = document.getElementById("avatar-upload-preview-fallback");
+
+    if (avatarInput) {
+        avatarInput.addEventListener("change", () => {
+            const file = avatarInput.files && avatarInput.files[0];
+            if (!file) {
+                return;
+            }
+
+            const previewUrl = URL.createObjectURL(file);
+            if (previewImage) {
+                previewImage.src = previewUrl;
+                return;
+            }
+
+            if (previewFallback) {
+                const image = document.createElement("img");
+                image.id = "avatar-upload-preview-image";
+                image.className = "avatar-photo";
+                image.alt = "Podglad nowego awatara";
+                image.src = previewUrl;
+                previewFallback.replaceWith(image);
+            }
+        });
+    }
+</script>
 {% endblock %}
