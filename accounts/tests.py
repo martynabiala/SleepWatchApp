@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
+import shutil
+import tempfile
 
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core import mail
 from django.test import TestCase, override_settings
@@ -712,6 +715,47 @@ class AccountsFlowTests(TestCase):
         self.assertRedirects(response, reverse("profile"))
         self.assertEqual(user.profile.age_group, "under_18")
         self.assertEqual(user.profile.avatar, "heart")
+
+    def test_profile_accepts_uploaded_avatar_image(self):
+        media_root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, media_root, ignore_errors=True)
+        user = User.objects.create_user(
+            username="avatarupload",
+            email="avatarupload@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="avatarupload", password="BardzoMocneHaslo123!")
+        image = SimpleUploadedFile(
+            "avatar.gif",
+            (
+                b"GIF87a\x01\x00\x01\x00\x80\x01\x00\x00\x00\x00"
+                b"\xff\xff\xff,\x00\x00\x00\x00\x01\x00\x01\x00"
+                b"\x00\x02\x02D\x01\x00;"
+            ),
+            content_type="image/gif",
+        )
+
+        with override_settings(MEDIA_ROOT=media_root):
+            response = self.client.post(
+                reverse("profile"),
+                {
+                    "username": "avatarupload",
+                    "display_name": "Avatar Upload",
+                    "avatar": "moon",
+                    "age_group": "26-35",
+                    "lifestyle": "moderate",
+                    "sleep_goal_hours": 8,
+                    "avatar_image": image,
+                },
+                follow=True,
+            )
+
+            user.refresh_from_db()
+
+        self.assertRedirects(response, reverse("profile"))
+        self.assertTrue(user.profile.avatar_image.name.startswith("avatars/user_"))
+        self.assertContains(response, "Wlasne zdjecie")
 
     def test_profile_page_shows_login_and_email_as_read_only_summary(self):
         user = User.objects.create_user(

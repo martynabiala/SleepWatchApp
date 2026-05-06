@@ -31,6 +31,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = (
         "display_name",
         "avatar",
+        "avatar_image",
         "user",
         "age_group",
         "lifestyle",

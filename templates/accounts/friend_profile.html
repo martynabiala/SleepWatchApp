@@ -85,6 +85,14 @@
         box-shadow: 0 18px 34px rgba(24, 60, 93, 0.18);
     }
 
+    .avatar-photo {
+        width: 96px;
+        height: 96px;
+        border-radius: 28px;
+        object-fit: cover;
+        box-shadow: 0 18px 34px rgba(24, 60, 93, 0.18);
+    }
+
     .avatar-moon { background: linear-gradient(135deg, #164e7d 0%, #2f7eb2 100%); }
     .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
     .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
@@ -222,7 +230,11 @@
 
             <div class="friend-profile-hero">
                 <div class="friend-avatar-card">
-                    <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
+                    {% if profile.avatar_image %}
+                        <img class="avatar-photo" src="{{ profile.avatar_image.url }}" alt="Awatar uzytkownika">
+                    {% else %}
+                        <div class="avatar-badge avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
+                    {% endif %}
                     <div>
                         <strong>@{{ profile_user.username }}</strong>
                         <p style="margin: 8px 0 0;">Znajomi od {{ friendship_since|date:"d.m.Y" }}</p>
@@ -234,7 +246,7 @@
                     <div class="meta-list">
                         <div class="meta-row">
                             <span class="meta-key">Awatar</span>
-                            <strong>{{ profile.get_avatar_display }}</strong>
+                            <strong>{{ profile.avatar_label }}</strong>
                         </div>
                         <div class="meta-row">
                             <span class="meta-key">Grupa wiekowa</span>

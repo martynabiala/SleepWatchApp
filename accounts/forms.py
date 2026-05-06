@@ -6,6 +6,7 @@ from django.contrib.auth.forms import (
     SetPasswordForm,
     UserCreationForm,
 )
+from django.core.validators import FileExtensionValidator
 
 from .models import BugReport, UserProfile
 
@@ -140,11 +141,19 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
+    avatar_image = forms.ImageField(
+        label="Zdjecie z urzadzenia",
+        required=False,
+        validators=[FileExtensionValidator(["jpg", "jpeg", "png", "gif", "webp"])],
+        widget=forms.ClearableFileInput(attrs={"accept": "image/*"}),
+    )
+
     class Meta:
         model = UserProfile
         fields = (
             "display_name",
             "avatar",
+            "avatar_image",
             "age_group",
             "lifestyle",
             "sleep_goal_hours",
@@ -159,6 +168,13 @@ class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["avatar"].help_text = ""
+        self.fields["avatar_image"].help_text = "JPG, PNG, GIF lub WebP, maksymalnie 5 MB."
+
+    def clean_avatar_image(self):
+        avatar_image = self.cleaned_data.get("avatar_image")
+        if avatar_image and avatar_image.size > 5 * 1024 * 1024:
+            raise forms.ValidationError("Zdjecie awatara moze miec maksymalnie 5 MB.")
+        return avatar_image
 
 
 class SleepWatchPasswordResetForm(PasswordResetForm):
