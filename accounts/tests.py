@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pathlib import Path
 import shutil
 import tempfile
 
@@ -756,6 +757,18 @@ class AccountsFlowTests(TestCase):
         self.assertRedirects(response, reverse("profile"))
         self.assertTrue(user.profile.avatar_image.name.startswith("avatars/user_"))
         self.assertContains(response, "Wlasne zdjecie")
+
+    def test_uploaded_media_file_url_is_served(self):
+        media_root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, media_root, ignore_errors=True)
+        avatar_path = Path(media_root) / "avatars" / "user_1"
+        avatar_path.mkdir(parents=True)
+        (avatar_path / "avatar.jpg").write_bytes(b"test-image")
+
+        with override_settings(MEDIA_ROOT=media_root):
+            image_response = self.client.get("/media/avatars/user_1/avatar.jpg")
+
+        self.assertEqual(image_response.status_code, 200)
 
     def test_profile_page_shows_login_and_email_as_read_only_summary(self):
         user = User.objects.create_user(
