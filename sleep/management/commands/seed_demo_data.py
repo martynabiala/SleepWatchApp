@@ -53,7 +53,7 @@ class Command(BaseCommand):
         for index in range(user_count):
             user, user_created = self._build_user(index=index, password=password)
             profile = self._build_profile(user=user, index=index)
-            self._ensure_import_history(user=user)
+            self._ensure_import_history(user=user, days=days)
 
             if user_created:
                 created_users += 1
@@ -65,9 +65,8 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"Gotowe. Uzytkownicy utworzeni: {created_users}, rekordy dodane: {created_records}, rekordy zaktualizowane: {updated_records}."
         ))
-        self.stdout.write(
-            "Demo loginy: demo_anna, demo_bartek, demo_celina ... z haslem podanym w parametrze --password."
-        )
+        self.stdout.write("Demo loginy: demo_anna, demo_bartek, demo_celina ... z haslem podanym w parametrze --password.")
+        self.stdout.write("Na dashboardzie demo zobaczysz biezacy tydzien, aktywny eksperyment kofeiny i wynik hipotezy.")
 
     def _build_user(self, index, password):
         User = get_user_model()
@@ -130,6 +129,8 @@ class Command(BaseCommand):
         profile.age_group = age_groups[index % len(age_groups)]
         profile.lifestyle = lifestyles[index % len(lifestyles)]
         profile.sleep_goal_hours = 7 + (index % 3)
+        profile.active_hypothesis = UserProfile.HYPOTHESIS_CAFFEINE
+        profile.active_hypothesis_started_at = timezone.localdate().replace(day=1)
 
         is_child_account = profile.age_group == UserProfile.AGE_GROUP_UNDER_18
         profile.is_child_account = is_child_account
@@ -139,13 +140,13 @@ class Command(BaseCommand):
         profile.save()
         return profile
 
-    def _ensure_import_history(self, user):
+    def _ensure_import_history(self, user, days):
         file_name = f"seeded-demo-{user.username}.csv"
         history = ImportHistory.objects.filter(user=user, file_name=file_name).first()
         if history:
             history.source = ImportHistory.SOURCE_MANUAL_CSV
-            history.total_rows = 45
-            history.added_count = 45
+            history.total_rows = days
+            history.added_count = days
             history.duplicate_count = 0
             history.error_count = 0
             history.save(update_fields=["source", "total_rows", "added_count", "duplicate_count", "error_count"])
@@ -155,8 +156,8 @@ class Command(BaseCommand):
             user=user,
             source=ImportHistory.SOURCE_MANUAL_CSV,
             file_name=file_name,
-            total_rows=45,
-            added_count=45,
+            total_rows=days,
+            added_count=days,
             duplicate_count=0,
             error_count=0,
         )
@@ -178,7 +179,10 @@ class Command(BaseCommand):
             sleep_date = base_date - timedelta(days=day_offset)
             rng = random.Random((seed_offset + 1) * 10_000 + day_offset)
 
-            duration = max(320, min(560, int(rng.normalvariate(450 + seed_offset * 10, 38))))
+            caffeine_used = day_offset % 3 == 0
+            duration_base = 470 + seed_offset * 8
+            duration_adjustment = -55 if caffeine_used else 20
+            duration = max(320, min(560, int(rng.normalvariate(duration_base + duration_adjustment, 24))))
             bedtime_minutes = 21 * 60 + 15 + rng.randint(0, 180)
             bedtime_dt = datetime.combine(date.today(), time.min) + timedelta(minutes=bedtime_minutes)
             bedtime = bedtime_dt.time().replace(second=0, microsecond=0)
@@ -222,16 +226,22 @@ class Command(BaseCommand):
             else:
                 updated_records += 1
 
-            self._build_note(user=user, record=record, day_offset=day_offset, rng=rng, notes=notes)
+            self._build_note(
+                user=user,
+                record=record,
+                day_offset=day_offset,
+                rng=rng,
+                notes=notes,
+                caffeine_used=caffeine_used,
+            )
 
         return created_records, updated_records
 
-    def _build_note(self, user, record, day_offset, rng, notes):
+    def _build_note(self, user, record, day_offset, rng, notes, caffeine_used):
         quality = SleepNote.QUALITY_GOOD if record.sleep_duration_minutes >= 440 else (
             SleepNote.QUALITY_BAD if record.sleep_duration_minutes < 390 else SleepNote.QUALITY_NEUTRAL
         )
 
-        caffeine_used = rng.random() < 0.35
         nap_taken = rng.random() < 0.22
         alcohol_used = rng.random() < 0.14
         training_done = rng.random() < 0.45

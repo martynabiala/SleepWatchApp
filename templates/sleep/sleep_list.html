@@ -3,6 +3,166 @@
 {% block title %}Historia nocy - SleepWatch{% endblock %}
 
 {% block content %}
+<style>
+    .sleep-night-grid {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .sleep-night-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 16px;
+        padding: 18px 20px;
+        border-radius: 22px;
+        border: 1px solid rgba(34, 94, 139, 0.1);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 14px 28px rgba(20, 58, 92, 0.06);
+    }
+
+    .sleep-night-check {
+        margin-top: 4px;
+    }
+
+    .sleep-night-check input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--accent);
+    }
+
+    .sleep-night-main {
+        display: grid;
+        gap: 12px;
+    }
+
+    .sleep-night-date {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 800;
+    }
+
+    .sleep-night-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .sleep-night-stat {
+        display: grid;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    .sleep-night-stat span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .sleep-night-stat strong {
+        color: var(--text);
+        font-size: 0.98rem;
+    }
+
+    .sleep-night-actions {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-end;
+    }
+
+    :root[data-theme="dark"] .sleep-night-card {
+        border-color: rgba(124, 164, 200, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(98, 194, 180, 0.08), transparent 28%),
+            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+        box-shadow: 0 14px 28px rgba(3, 10, 18, 0.18);
+    }
+
+    :root[data-theme="dark"] .sleep-night-stat strong,
+    :root[data-theme="dark"] .sleep-night-date {
+        color: #f1f7ff;
+    }
+
+    :root[data-theme="dark"] .sleep-night-stat span {
+        color: #b8cde1;
+    }
+
+    @media (max-width: 780px) {
+        .sleep-night-card {
+            grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .sleep-night-actions {
+            grid-column: 2;
+            justify-content: flex-start;
+        }
+
+        .sleep-night-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 520px) {
+        .sleep-night-card {
+            padding: 16px;
+        }
+
+        .sleep-night-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+    .sleep-night-card {
+        border-radius: 8px;
+        border-color: rgba(15, 76, 70, 0.12);
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 12px 26px rgba(13, 73, 68, 0.07);
+    }
+
+    .sleep-night-date {
+        color: #12343a;
+    }
+
+    .sleep-night-stat {
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: rgba(15, 118, 110, 0.06);
+    }
+
+    .sleep-night-stat span {
+        color: #5d7072;
+    }
+
+    .sleep-night-stat strong {
+        color: #12343a;
+    }
+
+    :root[data-theme="dark"] .sleep-night-card,
+    :root[data-theme="dark"] .sleep-night-stat {
+        border-color: rgba(157, 225, 216, 0.16);
+        background: linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+    }
+
+    :root[data-theme="dark"] .sleep-night-date,
+    :root[data-theme="dark"] .sleep-night-stat strong {
+        color: #edf8f5;
+    }
+
+    :root[data-theme="dark"] .sleep-night-stat span {
+        color: #abc3c0;
+    }
+
+    .sleep-night-date {
+        font-weight: 650;
+    }
+
+    .sleep-night-stat span,
+    .sleep-night-stat strong {
+        font-weight: 500;
+    }
+</style>
+
 <section class="hero-card">
     <div class="eyebrow">Historia nocy</div>
     <h1>Lista zapisanych nocy</h1>
@@ -33,18 +193,37 @@
     {% if sleep_records %}
         <form method="post">
             {% csrf_token %}
-            <div class="meta-list">
+            <div class="sleep-night-grid">
                 {% for item in sleep_records %}
-                    <div class="meta-row" style="align-items: center;">
-                        <label style="display: flex; align-items: center; gap: 12px; margin: 0; font-weight: 600;">
-                            <input type="checkbox" name="selected_records" value="{{ item.pk }}" style="width: auto;">
-                            <span class="meta-key">
-                                {{ item.sleep_date|date:"d.m.Y" }} | {{ item.sleep_duration_display }} |
-                                Wybudzenia {{ item.awakenings_count|default:"-" }} | HR {{ item.avg_heart_rate|default:"-" }}
-                            </span>
+                    <article class="sleep-night-card">
+                        <label class="sleep-night-check" aria-label="Zaznacz noc z {{ item.sleep_date|date:'d.m.Y' }}">
+                            <input type="checkbox" name="selected_records" value="{{ item.pk }}">
                         </label>
-                        <a class="auth-link" href="{% url 'sleep_detail' item.pk %}">Szczegóły</a>
-                    </div>
+                        <div class="sleep-night-main">
+                            <h4 class="sleep-night-date">{{ item.sleep_date|date:"d.m.Y" }}</h4>
+                            <div class="sleep-night-stats">
+                                <div class="sleep-night-stat">
+                                    <span>Sen</span>
+                                    <strong>{{ item.sleep_duration_display }}</strong>
+                                </div>
+                                <div class="sleep-night-stat">
+                                    <span>HR</span>
+                                    <strong>{{ item.avg_heart_rate|default:"-" }}</strong>
+                                </div>
+                                <div class="sleep-night-stat">
+                                    <span>Wybudzenia</span>
+                                    <strong>{{ item.awakenings_count|default:"-" }}</strong>
+                                </div>
+                                <div class="sleep-night-stat">
+                                    <span>Jakość</span>
+                                    <strong>{% if item.note %}{{ item.note.get_sleep_quality_display }}{% else %}-{% endif %}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sleep-night-actions">
+                            <a class="button secondary" href="{% url 'sleep_detail' item.pk %}">Szczegóły</a>
+                        </div>
+                    </article>
                 {% endfor %}
             </div>
             <div class="actions">

@@ -65,12 +65,12 @@
     :root[data-theme="dark"] .settings-card {
         border-color: rgba(124, 164, 200, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
-            rgba(24, 39, 59, 0.94);
+            radial-gradient(circle at top right, rgba(98, 194, 180, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
     }
 
     :root[data-theme="dark"] .settings-card-label {
-        background: rgba(94, 152, 204, 0.14);
+        background: rgba(98, 194, 180, 0.14);
         color: #dcecff;
     }
 
@@ -78,6 +78,47 @@
         .settings-grid {
             grid-template-columns: 1fr;
         }
+    }
+    .settings-hero,
+    .settings-card {
+        border-radius: 8px;
+        border-color: rgba(15, 76, 70, 0.12);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 250, 0.96));
+        box-shadow: 0 12px 26px rgba(13, 73, 68, 0.07);
+    }
+
+    .settings-hero {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .settings-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 4px;
+        background: linear-gradient(90deg, #0f766e, #77cfc0, #d97757);
+    }
+
+    .settings-card-label {
+        background: rgba(15, 118, 110, 0.1);
+        color: #0b4f4a;
+    }
+
+    :root[data-theme="dark"] .settings-hero,
+    :root[data-theme="dark"] .settings-card {
+        border-color: rgba(157, 225, 216, 0.16);
+        background: linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+    }
+
+    :root[data-theme="dark"] .settings-card-label {
+        background: rgba(98, 194, 180, 0.14);
+        color: #bff1e9;
+    }
+
+    .settings-card-label,
+    .settings-card .button {
+        font-weight: 600;
     }
 </style>
 

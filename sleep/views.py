@@ -227,7 +227,7 @@ def add_sleep_record_view(request):
 
 @login_required
 def sleep_list_view(request):
-    queryset = SleepRecord.objects.filter(user=request.user)
+    queryset = SleepRecord.objects.filter(user=request.user).select_related("note")
     if request.method == "POST":
         selected_ids = request.POST.getlist("selected_records")
         if selected_ids:

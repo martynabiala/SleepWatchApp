@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+
+{% block title %}Raport tygodnia - SleepWatch{% endblock %}
+
+{% block content %}
+<style>
+    .weekly-report-page {
+        display: grid;
+        gap: 14px;
+    }
+
+    .weekly-report-hero,
+    .weekly-report-card {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 16px 34px rgba(21, 50, 75, 0.08);
+    }
+
+    .weekly-report-hero {
+        border-radius: 18px;
+        padding: 18px 20px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: end;
+    }
+
+    .weekly-report-copy {
+        display: grid;
+        gap: 5px;
+        max-width: 760px;
+    }
+
+    .weekly-report-back-link {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        width: fit-content;
+    }
+
+    .weekly-report-back-link:hover {
+        color: var(--accent-dark);
+    }
+
+    .weekly-report-kicker,
+    .weekly-report-label {
+        color: var(--accent-dark);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .weekly-report-copy h1,
+    .weekly-report-card h2,
+    .weekly-report-card h3,
+    .weekly-report-copy p,
+    .weekly-report-card p {
+        margin: 0;
+    }
+
+    .weekly-report-copy h1 {
+        font-size: clamp(1.45rem, 2.2vw, 2rem);
+        font-weight: 800;
+        line-height: 1.12;
+    }
+
+    .weekly-report-copy .weekly-report-kicker {
+        font-size: clamp(1.35rem, 2vw, 1.85rem);
+        letter-spacing: 0;
+        text-transform: none;
+    }
+
+    .weekly-report-copy p,
+    .weekly-report-card p,
+    .weekly-report-range {
+        color: var(--muted);
+        line-height: 1.45;
+    }
+
+    .weekly-report-range {
+        font-size: 0.98rem;
+        font-weight: 700;
+    }
+
+    .weekly-report-controls,
+    .weekly-report-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .weekly-report-controls {
+        align-items: end;
+        justify-content: flex-end;
+    }
+
+    .weekly-report-controls .button {
+        padding-block: 10px;
+    }
+
+    .weekly-report-week-picker {
+        position: relative;
+        min-width: 250px;
+    }
+
+    .weekly-report-week-picker-label {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .weekly-report-week-picker summary {
+        list-style: none;
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 700;
+        padding: 10px 40px 10px 16px;
+        position: relative;
+    }
+
+    .weekly-report-week-picker summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .weekly-report-week-picker summary::after {
+        content: "v";
+        color: var(--muted);
+        font-size: 0.9rem;
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .weekly-report-week-list {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        max-height: 300px;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 18px 38px rgba(21, 50, 75, 0.16);
+        padding: 8px;
+    }
+
+    .weekly-report-week-list a {
+        display: block;
+        border-radius: 12px;
+        color: var(--text);
+        font-weight: 600;
+        padding: 10px 12px;
+        text-decoration: none;
+    }
+
+    .weekly-report-week-list a:hover,
+    .weekly-report-week-list a.is-selected {
+        background: rgba(15, 118, 110, 0.12);
+        color: var(--accent-dark);
+    }
+
+    .weekly-report-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .weekly-report-card {
+        border-radius: 16px;
+        padding: 16px;
+        display: grid;
+        gap: 8px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .weekly-report-metric {
+        align-content: space-between;
+        min-height: 132px;
+    }
+
+    .weekly-report-metric::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 6px;
+        background: #0f766e;
+    }
+
+    .weekly-report-metric:nth-child(2)::before {
+        background: #118f82;
+    }
+
+    .weekly-report-metric:nth-child(3)::before {
+        background: #d97757;
+    }
+
+    .weekly-report-metric h2 {
+        color: var(--muted);
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .weekly-report-card strong {
+        color: var(--text);
+        font-size: clamp(1.35rem, 2vw, 1.8rem);
+        font-weight: 800;
+        line-height: 1.08;
+    }
+
+    .weekly-report-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .weekly-report-insight-card {
+        align-content: center;
+        min-height: 190px;
+        gap: 10px;
+        background:
+            radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 34%),
+            rgba(255, 255, 255, 0.96);
+    }
+
+    .weekly-report-insight-card h2 {
+        font-size: clamp(1.12rem, 1.7vw, 1.45rem);
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+    .weekly-report-side {
+        display: grid;
+        gap: 12px;
+    }
+
+    .weekly-report-list,
+    .weekly-report-factor-list,
+    .weekly-report-empty-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .weekly-report-list li {
+        display: grid;
+        gap: 5px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(90, 124, 154, 0.18);
+    }
+
+    .weekly-report-list li:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .weekly-report-list span,
+    .weekly-report-factor-list span {
+        color: var(--muted);
+    }
+
+    .weekly-report-list strong {
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.45;
+    }
+
+    .weekly-report-factor-list li,
+    .weekly-report-empty-list li {
+        border-radius: 14px;
+        background: rgba(47, 126, 178, 0.08);
+        padding: 9px 11px;
+    }
+
+    .weekly-report-factor-list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .weekly-report-factor-list strong {
+        color: var(--text);
+    }
+
+    .weekly-report-empty-list li {
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    :root[data-theme="dark"] .weekly-report-hero,
+    :root[data-theme="dark"] .weekly-report-card {
+        border-color: rgba(157, 225, 216, 0.16);
+        background:
+            radial-gradient(circle at top right, rgba(98, 194, 180, 0.08), transparent 28%),
+            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+        box-shadow: 0 14px 28px rgba(2, 15, 16, 0.22);
+    }
+
+    :root[data-theme="dark"] .weekly-report-insight-card {
+        background:
+            radial-gradient(circle at top right, rgba(98, 194, 180, 0.12), transparent 34%),
+            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+    }
+
+    :root[data-theme="dark"] .weekly-report-copy h1,
+    :root[data-theme="dark"] .weekly-report-card strong,
+    :root[data-theme="dark"] .weekly-report-card h2,
+    :root[data-theme="dark"] .weekly-report-card h3,
+    :root[data-theme="dark"] .weekly-report-list strong,
+    :root[data-theme="dark"] .weekly-report-factor-list strong {
+        color: var(--text);
+    }
+
+    :root[data-theme="dark"] .weekly-report-range,
+    :root[data-theme="dark"] .weekly-report-copy p,
+    :root[data-theme="dark"] .weekly-report-card p,
+    :root[data-theme="dark"] .weekly-report-list span,
+    :root[data-theme="dark"] .weekly-report-factor-list span {
+        color: var(--muted);
+    }
+
+    :root[data-theme="dark"] .weekly-report-kicker,
+    :root[data-theme="dark"] .weekly-report-label {
+        color: #8bded2;
+    }
+
+    :root[data-theme="dark"] .weekly-report-back-link {
+        color: var(--muted);
+    }
+
+    :root[data-theme="dark"] .weekly-report-back-link:hover {
+        color: var(--text);
+    }
+
+    :root[data-theme="dark"] .weekly-report-week-picker summary {
+        border-color: rgba(157, 225, 216, 0.18);
+        background: rgba(10, 29, 31, 0.92);
+        color: var(--text);
+    }
+
+    :root[data-theme="dark"] .weekly-report-week-list {
+        border-color: rgba(157, 225, 216, 0.18);
+        background: rgba(12, 32, 34, 0.98);
+        box-shadow: 0 18px 38px rgba(2, 15, 16, 0.3);
+    }
+
+    :root[data-theme="dark"] .weekly-report-week-list a {
+        color: var(--text);
+    }
+
+    :root[data-theme="dark"] .weekly-report-week-list a:hover,
+    :root[data-theme="dark"] .weekly-report-week-list a.is-selected,
+    :root[data-theme="dark"] .weekly-report-factor-list li,
+    :root[data-theme="dark"] .weekly-report-empty-list li {
+        background: rgba(98, 194, 180, 0.14);
+        color: var(--text);
+    }
+
+    @media (max-width: 1080px) {
+        .weekly-report-hero,
+        .weekly-report-body {
+            grid-template-columns: 1fr;
+        }
+
+        .weekly-report-controls {
+            justify-content: flex-start;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .weekly-report-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .weekly-report-hero,
+        .weekly-report-card {
+            border-radius: 16px;
+        }
+
+        .weekly-report-week-picker,
+        .weekly-report-controls .button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="weekly-report-page">
+    <section class="weekly-report-hero">
+        <div class="weekly-report-copy">
+            <a class="weekly-report-back-link" href="{% url 'dashboard' %}">&lt; Wróć do panelu</a>
+            <div class="weekly-report-kicker">Raport tygodniowy</div>
+        </div>
+        <div class="weekly-report-controls">
+            <details class="weekly-report-week-picker">
+                <div class="weekly-report-week-picker-label">Tydzień raportu</div>
+                <summary>{{ report.range|capfirst }}</summary>
+                <div class="weekly-report-week-list">
+                    {% for week_option in week_options %}
+                        <a href="{% url 'weekly_report' %}?week={{ week_option.value }}" class="{% if week_option.selected %}is-selected{% endif %}">
+                            {{ week_option.label }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </details>
+            <a class="button" href="{% url 'weekly_report_pdf' %}?week={{ report.week_start }}">Pobierz PDF</a>
+        </div>
+    </section>
+
+    <section class="weekly-report-grid" aria-label="Najważniejsze wyniki tygodnia">
+        {% for metric in report.metrics %}
+            <article class="weekly-report-card weekly-report-metric">
+                <div>
+                    <div class="weekly-report-label">{{ metric.label }}</div>
+                    <h2>{{ metric.title }}</h2>
+                </div>
+                <strong>{{ metric.value }}</strong>
+                <p>{{ metric.detail }}</p>
+            </article>
+        {% endfor %}
+    </section>
+
+    <section class="weekly-report-body">
+        {% if not report.has_enough_data %}
+            <article class="weekly-report-card weekly-report-insight-card">
+                <div class="weekly-report-label">Stan raportu</div>
+                <h2>{{ report.empty_title }}</h2>
+                <p>{{ report.empty_body }}</p>
+                <div class="weekly-report-actions">
+                    <a class="button" href="{% url 'sleep_add' %}">Dodaj noc</a>
+                    <a class="button secondary" href="{% url 'sleep_import' %}">Importuj CSV</a>
+                </div>
+            </article>
+
+            <div class="weekly-report-side">
+                <article class="weekly-report-card">
+                    <div class="weekly-report-label">Co pokaże raport</div>
+                    <ul class="weekly-report-empty-list">
+                        <li>Średni sen z tygodnia</li>
+                        <li>Postęp celu tygodniowego</li>
+                        <li>Najlepszą noc i najczęstsze czynniki</li>
+                    </ul>
+                </article>
+            </div>
+        {% else %}
+            <article class="weekly-report-card weekly-report-insight-card">
+                <div class="weekly-report-label">Wniosek tygodnia</div>
+                <h2>{{ report.conclusion.body }}</h2>
+                <p>{{ report.conclusion.signal }}</p>
+            </article>
+
+            <div class="weekly-report-side">
+                <article class="weekly-report-card">
+                    <div class="weekly-report-label">Noce</div>
+                    <ul class="weekly-report-list">
+                        <li>
+                            <span>Najlepsza noc</span>
+                            <strong>{{ report.best_night.date }} · {{ report.best_night.duration }} · {{ report.best_night.detail }}</strong>
+                        </li>
+                        <li>
+                            <span>Najkrótsza noc</span>
+                            <strong>{{ report.shortest_night.date }} · {{ report.shortest_night.duration }} · {{ report.shortest_night.detail }}</strong>
+                        </li>
+                    </ul>
+                </article>
+
+                <article class="weekly-report-card">
+                    <div class="weekly-report-label">Najczęstsze czynniki</div>
+                    {% if report.factors %}
+                        <ul class="weekly-report-factor-list">
+                            {% for factor in report.factors %}
+                                <li><span>{{ factor.name }}</span><strong>{{ factor.count }} razy</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Uzupełnij notatki przy nocach, żeby zobaczyć najczęstsze czynniki.</p>
+                    {% endif %}
+                </article>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

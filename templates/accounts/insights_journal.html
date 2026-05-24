@@ -34,7 +34,9 @@
                 <article class="hub-timeline-item journal-entry">
                     <div class="journal-meta">{{ entry.kind }} • {{ entry.date_label }}</div>
                     <h3>{{ entry.title }}</h3>
-                    <p class="hub-note">{{ entry.body }}</p>
+                    {% if entry.body %}
+                        <p class="hub-note">{{ entry.body }}</p>
+                    {% endif %}
                 </article>
             {% endfor %}
         </div>

@@ -1,3 +1,5 @@
+import base64
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (
@@ -145,7 +147,7 @@ class ProfileForm(forms.ModelForm):
         label="Zdjecie z urzadzenia",
         required=False,
         validators=[FileExtensionValidator(["jpg", "jpeg", "png", "gif", "webp"])],
-        widget=forms.ClearableFileInput(attrs={"accept": "image/*"}),
+        widget=forms.FileInput(attrs={"accept": "image/*"}),
     )
 
     class Meta:
@@ -175,6 +177,19 @@ class ProfileForm(forms.ModelForm):
         if avatar_image and avatar_image.size > 5 * 1024 * 1024:
             raise forms.ValidationError("Zdjecie awatara moze miec maksymalnie 5 MB.")
         return avatar_image
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        avatar_image = self.cleaned_data.get("avatar_image")
+        if avatar_image:
+            profile.avatar_image_data = base64.b64encode(avatar_image.read()).decode("ascii")
+            profile.avatar_image_mime = avatar_image.content_type or "image/jpeg"
+            avatar_image.seek(0)
+
+        if commit:
+            profile.save()
+            self.save_m2m()
+        return profile
 
 
 class SleepWatchPasswordResetForm(PasswordResetForm):

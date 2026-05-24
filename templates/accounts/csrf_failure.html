@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Sesja wygasła - SleepWatch{% endblock %}
+{% block topbar %}{% endblock %}
+
+{% block content %}
+<section class="auth-card-panel" style="display: grid; gap: 18px;">
+    <div class="eyebrow">Bezpieczeństwo</div>
+    <h1 style="margin: 0;">Sesja formularza wygasła</h1>
+    <p style="margin: 0; color: var(--muted); line-height: 1.55;">
+        Odśwież stronę logowania i spróbuj jeszcze raz. To zwykle dzieje się po dłużej otwartej karcie,
+        cofnięciu po logowaniu albo restarcie aplikacji.
+    </p>
+    <div class="actions">
+        <a class="button" href="{% url 'login' %}">Wróć do logowania</a>
+        <a class="button secondary" href="{% url 'home' %}">Strona główna</a>
+    </div>
+</section>
+{% endblock %}

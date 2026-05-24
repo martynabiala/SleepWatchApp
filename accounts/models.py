@@ -89,6 +89,8 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
     )
+    avatar_image_data = models.TextField("Dane zdjecia awatara", blank=True)
+    avatar_image_mime = models.CharField("Typ zdjecia awatara", max_length=80, blank=True)
     age_group = models.CharField(
         "Grupa wiekowa",
         max_length=10,
@@ -151,9 +153,15 @@ class UserProfile(models.Model):
 
     @property
     def avatar_label(self):
-        if self.avatar_image:
+        if self.avatar_image_src:
             return "Wlasne zdjecie"
         return self.get_avatar_display()
+
+    @property
+    def avatar_image_src(self):
+        if self.avatar_image_data and self.avatar_image_mime:
+            return f"data:{self.avatar_image_mime};base64,{self.avatar_image_data}"
+        return ""
 
 
 class Friendship(models.Model):

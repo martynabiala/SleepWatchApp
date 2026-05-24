@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pathlib import Path
 import shutil
 import tempfile
 
@@ -6,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core import mail
-from django.test import TestCase, override_settings
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -625,6 +626,17 @@ class AccountsFlowTests(TestCase):
         self.assertRedirects(response, reverse("dashboard"))
         self.assertTrue(response.wsgi_request.user.is_authenticated)
 
+    def test_invalid_csrf_on_login_shows_friendly_page(self):
+        csrf_client = Client(enforce_csrf_checks=True)
+
+        response = csrf_client.post(
+            reverse("login"),
+            {"username": "maillogin@example.com", "password": "BardzoMocneHaslo123!"},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Sesja formularza wygasła", status_code=403)
+
     def test_logged_user_can_update_profile_without_changing_login_or_email(self):
         user = User.objects.create_user(
             username="ewa",
@@ -755,7 +767,42 @@ class AccountsFlowTests(TestCase):
 
         self.assertRedirects(response, reverse("profile"))
         self.assertTrue(user.profile.avatar_image.name.startswith("avatars/user_"))
+        self.assertTrue(user.profile.avatar_image_data)
+        self.assertEqual(user.profile.avatar_image_mime, "image/gif")
+        self.assertContains(response, "data:image/gif;base64,")
         self.assertContains(response, "Wlasne zdjecie")
+
+    def test_uploaded_media_file_url_is_served(self):
+        media_root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, media_root, ignore_errors=True)
+        avatar_path = Path(media_root) / "avatars" / "user_1"
+        avatar_path.mkdir(parents=True)
+        (avatar_path / "avatar.jpg").write_bytes(b"test-image")
+
+        with override_settings(MEDIA_ROOT=media_root):
+            image_response = self.client.get("/media/avatars/user_1/avatar.jpg")
+
+        self.assertEqual(image_response.status_code, 200)
+
+    def test_profile_edit_page_shows_uploaded_avatar_preview(self):
+        user = User.objects.create_user(
+            username="avatarpreview",
+            email="avatarpreview@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        user.profile.avatar_image_data = "dGVzdC1pbWFnZQ=="
+        user.profile.avatar_image_mime = "image/jpeg"
+        user.profile.save(update_fields=["avatar_image_data", "avatar_image_mime"])
+        self.client.login(username="avatarpreview", password="BardzoMocneHaslo123!")
+
+        response = self.client.get(f"{reverse('profile')}?edit=1")
+
+        self.assertContains(response, "Aktualne zdjecie")
+        self.assertContains(response, "data:image/jpeg;base64,dGVzdC1pbWFnZQ==")
+        self.assertContains(response, 'class="avatar-photo"', html=False)
+        self.assertNotContains(response, "Teraz:")
+        self.assertNotContains(response, "Wyczyść")
 
     def test_profile_page_shows_login_and_email_as_read_only_summary(self):
         user = User.objects.create_user(

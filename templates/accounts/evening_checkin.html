@@ -42,7 +42,9 @@
     <section class="hub-section">
         <div class="hub-kicker">Obserwowany czynnik</div>
         <h2>{{ active_hypothesis_summary.title }}</h2>
-        <p class="hub-copy" style="margin-top: 12px;">{{ active_hypothesis_summary.body }}</p>
+        {% if active_hypothesis_summary.body %}
+            <p class="hub-copy" style="margin-top: 12px;">{{ active_hypothesis_summary.body }}</p>
+        {% endif %}
         {% if active_hypothesis_summary.meta %}
             <p class="hub-copy" style="margin-top: 8px;">{{ active_hypothesis_summary.meta }}</p>
         {% endif %}

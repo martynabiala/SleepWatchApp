@@ -33,7 +33,7 @@
     }
 
     .analysis-range .button.active {
-        background: linear-gradient(135deg, var(--accent) 0%, #2f7eb2 100%);
+        background: linear-gradient(135deg, #0f766e 0%, #118f82 100%);
         color: #fff;
     }
 
@@ -85,8 +85,8 @@
         gap: 16px;
         padding: 26px;
         background:
-            radial-gradient(circle at top right, rgba(83, 160, 194, 0.1), transparent 28%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 244, 255, 0.97));
+            radial-gradient(circle at top right, rgba(15, 118, 110, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 252, 250, 0.97));
     }
 
     .analysis-chart-head {
@@ -123,11 +123,11 @@
     }
 
     .dot-sleep {
-        background: #1d5d90;
+        background: #0f766e;
     }
 
     .dot-heart {
-        background: #4fa8df;
+        background: #62c2b4;
     }
 
     .dot-awakenings {
@@ -214,10 +214,22 @@
     :root[data-theme="dark"] .analysis-stat,
     :root[data-theme="dark"] .analysis-canvas-wrap,
     :root[data-theme="dark"] .analysis-empty {
-        border-color: rgba(124, 164, 200, 0.16);
+        border-color: rgba(157, 225, 216, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 28%),
-            rgba(24, 39, 59, 0.94);
+            radial-gradient(circle at top right, rgba(98, 194, 180, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+    }
+
+    :root[data-theme="dark"] .analysis-chip,
+    :root[data-theme="dark"] .analysis-stat,
+    :root[data-theme="dark"] .analysis-canvas-wrap,
+    :root[data-theme="dark"] .analysis-empty {
+        background: rgba(10, 29, 31, 0.58);
+    }
+
+    :root[data-theme="dark"] .analysis-range .button.active {
+        background: linear-gradient(135deg, #2eb5a5 0%, #62c2b4 100%);
+        color: #092426;
     }
 </style>
 
@@ -505,8 +517,8 @@
 
     createLineChart("sleepChart", sleepChartData, {
         label: "Czas snu",
-        color: "#1d5d90",
-        fill: "rgba(29, 93, 144, 0.14)",
+        color: "#0f766e",
+        fill: "rgba(15, 118, 110, 0.14)",
         tickFormatter: function(value) {
             return minutesToHourLabel(value);
         }
@@ -514,8 +526,8 @@
 
     createLineChart("hrChart", hrChartData, {
         label: "Średnie tętno",
-        color: "#4fa8df",
-        fill: "rgba(79, 168, 223, 0.14)",
+        color: "#62c2b4",
+        fill: "rgba(98, 194, 180, 0.14)",
         tickFormatter: function(value) {
             return value;
         }

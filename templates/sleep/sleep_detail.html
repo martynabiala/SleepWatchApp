@@ -52,7 +52,7 @@
         justify-content: center;
         padding: 8px 12px;
         border-radius: 999px;
-        background: linear-gradient(135deg, var(--accent-dark), #2f7eb2);
+        background: linear-gradient(135deg, #0f766e, #118f82);
         color: #ffffff;
         font-size: 0.82rem;
         font-weight: 800;
@@ -155,9 +155,80 @@
     :root[data-theme="dark"] .sleep-detail-stat {
         border-color: rgba(124, 164, 200, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(94, 152, 204, 0.1), transparent 30%),
-            rgba(24, 39, 59, 0.94);
+            radial-gradient(circle at top right, rgba(98, 194, 180, 0.1), transparent 30%),
+            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
         box-shadow: 0 14px 34px rgba(3, 10, 18, 0.18);
+    }
+    .sleep-detail-card,
+    .sleep-detail-side,
+    .sleep-detail-form,
+    .sleep-detail-stat {
+        border-radius: 8px;
+        border-color: rgba(15, 76, 70, 0.12);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 250, 0.96));
+        box-shadow: 0 12px 26px rgba(13, 73, 68, 0.07);
+    }
+
+    .sleep-detail-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sleep-detail-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 4px;
+        background: linear-gradient(90deg, #0f766e, #77cfc0, #d97757);
+    }
+
+    .sleep-detail-badge {
+        border-radius: 999px;
+        background: #0f766e;
+    }
+
+    .sleep-detail-date h1,
+    .sleep-detail-stat strong {
+        color: #12343a;
+    }
+
+    .sleep-detail-stat span {
+        color: #5d7072;
+    }
+
+    :root[data-theme="dark"] .sleep-detail-card,
+    :root[data-theme="dark"] .sleep-detail-side,
+    :root[data-theme="dark"] .sleep-detail-form,
+    :root[data-theme="dark"] .sleep-detail-stat {
+        border-color: rgba(157, 225, 216, 0.16);
+        background: linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+    }
+
+    :root[data-theme="dark"] .sleep-detail-date h1,
+    :root[data-theme="dark"] .sleep-detail-stat strong {
+        color: var(--text);
+    }
+
+    :root[data-theme="dark"] .sleep-detail-badge {
+        background: #62c2b4;
+        color: #092426;
+    }
+
+    :root[data-theme="dark"] .sleep-detail-stat span {
+        color: #abc3c0;
+    }
+
+    .sleep-detail-badge {
+        font-weight: 650;
+    }
+
+    .sleep-detail-stat strong {
+        font-weight: 650;
+    }
+
+    .sleep-detail-stat span,
+    .meta-row strong {
+        font-weight: 500;
     }
 </style>
 

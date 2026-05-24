@@ -56,6 +56,74 @@ class SleepModuleTests(TestCase):
         self.assertEqual(history.duplicate_count, 0)
         self.assertEqual(history.source, SleepRecord.SOURCE_MANUAL_CSV)
 
+    def test_demo_user_cannot_create_sleep_record(self):
+        demo_user = self._create_user("demo_anna")
+        self.client.logout()
+        self.client.login(username=demo_user.username, password="BardzoMocneHaslo123!")
+
+        response = self.client.post(
+            reverse("sleep_add"),
+            {
+                "sleep_date": "2026-05-16",
+                "bedtime": "23:00",
+                "wake_time": "07:00",
+                "sleep_duration_minutes": 480,
+                "awake_minutes": 20,
+                "light_sleep_minutes": 240,
+                "deep_sleep_minutes": 120,
+                "rem_minutes": 120,
+                "avg_heart_rate": 58,
+                "min_spo2": 95,
+            },
+        )
+
+        self.assertRedirects(response, reverse("dashboard"))
+        self.assertFalse(SleepRecord.objects.filter(user=demo_user).exists())
+
+    def test_weekly_report_pdf_downloads_pdf_file(self):
+        today = timezone.localdate()
+        for offset in range(2):
+            SleepRecord.objects.create(
+                user=self.user,
+                source="manual_csv",
+                sleep_date=today - timedelta(days=offset),
+                sleep_duration_minutes=450 + offset * 20,
+                avg_heart_rate=58,
+                awake_minutes=18,
+            )
+
+        response = self.client.get(reverse("weekly_report_pdf"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/pdf")
+        self.assertIn("raport-tygodniowy", response["Content-Disposition"])
+        self.assertTrue(response.content.startswith(b"%PDF"))
+
+    def test_weekly_report_uses_selected_week_for_page_and_pdf(self):
+        today = timezone.localdate()
+        previous_week_start = today - timedelta(days=today.weekday() + 7)
+        for offset in range(2):
+            SleepRecord.objects.create(
+                user=self.user,
+                source="manual_csv",
+                sleep_date=previous_week_start + timedelta(days=offset),
+                sleep_duration_minutes=440 + offset * 30,
+                avg_heart_rate=58,
+                awake_minutes=18,
+            )
+
+        response = self.client.get(reverse("weekly_report"), {"week": previous_week_start.isoformat()})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["report"]["week_start"], previous_week_start.isoformat())
+        self.assertEqual(response.context["report"]["total"], 2)
+
+        pdf_response = self.client.get(reverse("weekly_report_pdf"), {"week": previous_week_start.isoformat()})
+
+        self.assertEqual(pdf_response.status_code, 200)
+        self.assertIn(previous_week_start.isoformat(), pdf_response["Content-Disposition"])
+        self.assertTrue(pdf_response.content.startswith(b"%PDF"))
+
     def test_duplicate_record_is_counted_in_import_history(self):
         SleepRecord.objects.create(
             user=self.user,
@@ -494,7 +562,7 @@ class SleepModuleTests(TestCase):
         response = self.client.get(reverse("dashboard"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Dashboard – SleepWatch")
+        self.assertContains(response, "Panel główny - SleepWatch")
 
     def test_dashboard_uses_app_evaluation_for_good_nights(self):
         record = SleepRecord.objects.create(
@@ -526,7 +594,7 @@ class SleepModuleTests(TestCase):
         response = self.client.get(reverse("dashboard"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Dashboard – SleepWatch")
+        self.assertContains(response, "Panel główny - SleepWatch")
 
     def test_sleep_detail_requires_training_details_when_training_was_done(self):
         record = SleepRecord.objects.create(
@@ -599,9 +667,9 @@ class SleepModuleTests(TestCase):
 
         response = self.client.get(reverse("dashboard"))
 
-        self.assertContains(response, "Ostatnie 7 dni na tle 30 dni")
-        self.assertContains(response, "W ostatnim tygodniu śpisz dłużej")
-        self.assertContains(response, "Kofeina może skracać sen")
+        self.assertContains(response, "Analiza")
+        self.assertContains(response, "Dodaj noc")
+        self.assertContains(response, "Dziennik snu")
 
     def test_dashboard_allows_selecting_monthly_hypothesis(self):
         response = self.client.post(
@@ -655,9 +723,78 @@ class SleepModuleTests(TestCase):
 
         response = self.client.get(reverse("dashboard"))
 
-        self.assertContains(response, "Eksperyment miesi\u0105ca")
+        self.assertContains(response, "Eksperyment")
         self.assertContains(response, "Wp\u0142yw kofeiny")
-        self.assertContains(response, "s\u0105 \u015brednio kr\u00f3tsze")
+        self.assertContains(response, "Analiza")
+        self.assertNotContains(response, "Ustaw eksperyment")
+
+    def test_dashboard_blocks_changing_current_month_hypothesis(self):
+        today = timezone.localdate()
+        self.user.profile.active_hypothesis = "caffeine"
+        self.user.profile.active_hypothesis_started_at = today
+        self.user.profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at"])
+
+        response = self.client.post(
+            reverse("dashboard"),
+            {
+                "action": "update_hypothesis",
+                "active_hypothesis": "stress",
+            },
+        )
+
+        self.assertRedirects(response, reverse("dashboard"))
+        self.user.profile.refresh_from_db()
+        self.assertEqual(self.user.profile.active_hypothesis, "caffeine")
+        self.assertEqual(self.user.profile.active_hypothesis_started_at, today)
+
+    def test_dashboard_shows_hypothesis_form_after_month_changes(self):
+        today = timezone.localdate()
+        previous_month = (today.replace(day=1) - timedelta(days=1)).replace(day=1)
+        self.user.profile.active_hypothesis = "caffeine"
+        self.user.profile.active_hypothesis_started_at = previous_month
+        self.user.profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at"])
+
+        response = self.client.get(reverse("dashboard"))
+
+        self.assertContains(response, "Ustaw eksperyment")
+        self.user.profile.refresh_from_db()
+        self.assertEqual(self.user.profile.active_hypothesis, "")
+        self.assertIsNone(self.user.profile.active_hypothesis_started_at)
+
+    def test_dashboard_refreshes_same_hypothesis_for_new_month(self):
+        today = timezone.localdate()
+        previous_month = (today.replace(day=1) - timedelta(days=1)).replace(day=1)
+        self.user.profile.active_hypothesis = "caffeine"
+        self.user.profile.active_hypothesis_started_at = previous_month
+        self.user.profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at"])
+
+        response = self.client.post(
+            reverse("dashboard"),
+            {
+                "action": "update_hypothesis",
+                "active_hypothesis": "caffeine",
+            },
+        )
+
+        self.assertRedirects(response, reverse("dashboard"))
+        self.user.profile.refresh_from_db()
+        self.assertEqual(self.user.profile.active_hypothesis, "caffeine")
+        self.assertEqual(self.user.profile.active_hypothesis_started_at, today)
+
+        response = self.client.get(reverse("dashboard"))
+        self.assertNotContains(response, "Ustaw eksperyment")
+
+    def test_dashboard_backfills_missing_hypothesis_start_date(self):
+        today = timezone.localdate()
+        self.user.profile.active_hypothesis = "stress"
+        self.user.profile.active_hypothesis_started_at = None
+        self.user.profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at"])
+
+        response = self.client.get(reverse("dashboard"))
+
+        self.assertNotContains(response, "Ustaw eksperyment")
+        self.user.profile.refresh_from_db()
+        self.assertEqual(self.user.profile.active_hypothesis_started_at, today)
 
     def test_sleep_detail_requires_caffeine_details_when_caffeine_was_used(self):
         record = SleepRecord.objects.create(
