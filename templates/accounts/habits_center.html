@@ -17,7 +17,9 @@
         <article class="hub-card">
             <div class="hub-pill hub-pill-{{ habit.summary.tone }}" style="width: fit-content;">{{ habit.name }}</div>
             <h3>{{ habit.summary.title }}</h3>
-            <p class="hub-note">{{ habit.summary.body }}</p>
+            {% if habit.summary.body %}
+                <p class="hub-note">{{ habit.summary.body }}</p>
+            {% endif %}
             {% if habit.summary.state == "not_enough_notes" or habit.summary.state == "insufficient_split" %}
                 <div class="hub-pill-row">
                     <a class="button secondary" href="{% url 'sleep_list' %}">Uzupełnij notatki</a>
@@ -32,7 +34,9 @@
 <section class="hub-section">
     <div class="hub-kicker">Eksperyment miesi&#261;ca</div>
     <h2>{{ active_hypothesis_summary.title }}</h2>
-    <p class="hub-copy" style="margin-top: 12px;">{{ active_hypothesis_summary.body }}</p>
+    {% if active_hypothesis_summary.body %}
+        <p class="hub-copy" style="margin-top: 12px;">{{ active_hypothesis_summary.body }}</p>
+    {% endif %}
     {% if active_hypothesis_summary.meta %}
         <p class="hub-copy" style="margin-top: 8px;">{{ active_hypothesis_summary.meta }}</p>
     {% endif %}

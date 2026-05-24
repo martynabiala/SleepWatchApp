@@ -1,5 +1,7 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from io import BytesIO
 import json
+from pathlib import Path
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
@@ -43,6 +45,36 @@ from .forms import (
 from .models import BugReport, Friendship, UserNotification, UserProfile, create_user_notification
 from .tokens import account_activation_token, parental_consent_token
 
+POLISH_MONTH_NAMES = (
+    "styczeń",
+    "luty",
+    "marzec",
+    "kwiecień",
+    "maj",
+    "czerwiec",
+    "lipiec",
+    "sierpień",
+    "wrzesień",
+    "październik",
+    "listopad",
+    "grudzień",
+)
+
+POLISH_MONTH_NAMES_GENITIVE = (
+    "stycznia",
+    "lutego",
+    "marca",
+    "kwietnia",
+    "maja",
+    "czerwca",
+    "lipca",
+    "sierpnia",
+    "września",
+    "października",
+    "listopada",
+    "grudnia",
+)
+
 User = get_user_model()
 
 
@@ -54,6 +86,10 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     pass
+
+
+def csrf_failure_view(request: HttpRequest, reason: str = "") -> HttpResponse:
+    return render(request, "accounts/csrf_failure.html", status=403)
 
 
 class UserPasswordResetView(PasswordResetView):
@@ -82,6 +118,23 @@ def home_view(request: HttpRequest) -> HttpResponse:
     if request.user.is_authenticated:
         return redirect("dashboard")
     return render(request, "home.html")
+
+
+def demo_account_view(request: HttpRequest) -> HttpResponse:
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
+    demo_user = User.objects.filter(username="demo_anna", is_active=True).first()
+    if not demo_user:
+        messages.warning(
+            request,
+            "Konto demo nie jest jeszcze gotowe. Uruchom: py manage.py seed_demo_data --users 1 --days 14 --seed 42",
+        )
+        return redirect("login")
+
+    login(request, demo_user, backend="django.contrib.auth.backends.ModelBackend")
+    messages.success(request, "Otworzono konto demo SleepWatch.")
+    return redirect("dashboard")
 
 
 def signup_view(request: HttpRequest) -> HttpResponse:
@@ -155,21 +208,28 @@ def activate_child_account_view(request: HttpRequest, uidb64: str, token: str) -
 @login_required
 def dashboard_view(request: HttpRequest) -> HttpResponse:
     profile = request.user.profile
+    sync_monthly_hypothesis_state(profile)
+    current_month_hypothesis_locked = has_current_month_hypothesis(profile)
 
     if request.method == "POST" and request.POST.get("action") == "update_hypothesis":
-        previous_hypothesis = profile.active_hypothesis
+        if current_month_hypothesis_locked:
+            messages.info(request, "Eksperyment na ten miesiąc jest już ustawiony.")
+            return redirect("dashboard")
+
         hypothesis_form = MonthlyHypothesisForm(request.POST, instance=profile)
         if hypothesis_form.is_valid():
             new_hypothesis = hypothesis_form.cleaned_data["active_hypothesis"]
             profile.active_hypothesis = new_hypothesis
-            if new_hypothesis != previous_hypothesis:
-                profile.active_hypothesis_started_at = timezone.localdate() if new_hypothesis else None
+            if new_hypothesis:
+                profile.active_hypothesis_started_at = timezone.localdate()
+            else:
+                profile.active_hypothesis_started_at = None
             profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at", "updated_at"])
 
             if profile.active_hypothesis:
-                messages.success(request, "Zapisałyśmy aktywną hipotezę miesiąca.")
+                messages.success(request, "Hipoteza miesiąca została zapisana.")
             else:
-                messages.success(request, "Aktywna hipoteza została wyłączona.")
+                messages.info(request, "Wybierz czynnik, żeby ustawić hipotezę miesiąca.")
             return redirect("dashboard")
     else:
         hypothesis_form = MonthlyHypothesisForm(instance=profile)
@@ -216,6 +276,7 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
         "profile": profile,
         "profile_completion": profile_completion,
         "last_sleep": last_sleep,
+        "last_sleep_outside_current_week": is_sleep_outside_current_week(last_sleep),
         "last_sleep_note": last_sleep_note,
         "last_sleep_evaluation": last_sleep_evaluation,
         "stats_7": stats_7,
@@ -234,8 +295,11 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
             profile_completion,
             stats_7,
         ),
+        "dashboard_tip_label": build_dashboard_tip_label(),
+        "dashboard_day_plan": build_dashboard_day_plan(last_sleep, last_sleep_note, weekly_goal),
         "hypothesis_form": hypothesis_form,
-        "experiment_heading": "Eksperyment miesiąca",
+        "current_month_hypothesis_locked": current_month_hypothesis_locked,
+        "experiment_heading": build_experiment_heading(),
         "active_hypothesis_summary": build_active_hypothesis_summary(sleep_records, profile),
         "dashboard_alerts": build_dashboard_alerts(
             sleep_records,
@@ -245,6 +309,33 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
         ),
     }
     return render(request, "accounts/dashboard.html", context)
+
+
+@login_required
+def weekly_report_view(request: HttpRequest) -> HttpResponse:
+    profile = request.user.profile
+    sleep_records = SleepRecord.objects.filter(user=request.user).select_related("user", "note")
+    selected_week_start = get_selected_week_start(request)
+
+    context = {
+        "profile": profile,
+        "report": build_weekly_report(sleep_records, profile, selected_week_start),
+        "week_options": build_weekly_report_options(sleep_records, selected_week_start),
+    }
+    return render(request, "accounts/weekly_report.html", context)
+
+
+@login_required
+def weekly_report_pdf_view(request: HttpRequest) -> HttpResponse:
+    profile = request.user.profile
+    sleep_records = SleepRecord.objects.filter(user=request.user).select_related("user", "note")
+    selected_week_start = get_selected_week_start(request)
+    report = build_weekly_report(sleep_records, profile, selected_week_start)
+    pdf_bytes = render_weekly_report_pdf(report)
+
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="raport-tygodniowy-{report["week_start"]}.pdf"'
+    return response
 
 
 @login_required
@@ -470,7 +561,7 @@ def build_insight_journal_entries(queryset, profile):
         entries.insert(
             0,
             {
-                "kind": "Eksperyment miesiąca",
+                "kind": build_experiment_heading(),
                 "date_label": "Aktywny teraz",
                 "tone": hypothesis_summary["tone"],
                 "title": hypothesis_summary["title"],
@@ -1445,7 +1536,7 @@ def build_dashboard_tip(last_sleep_evaluation, profile_completion, stats_7):
     if stats_7["total"] < 3:
         return {
             "title": "Dodawaj kolejne noce",
-            "body": "Po kilku kolejnych zapisach dashboard pokaże bardziej konkretne trendy i porównania.",
+            "body": "Po kilku kolejnych zapisach panel główny pokaże bardziej konkretne trendy i porównania.",
             "tone": "neutral",
         }
 
@@ -1617,21 +1708,448 @@ def build_sleep_streak(queryset):
     }
 
 
-def build_weekly_goal(queryset):
+def build_weekly_goal(queryset, week_start=None):
     today = timezone.localdate()
-    week_start = today - timedelta(days=today.weekday())
-    weekly_records = queryset.filter(sleep_date__gte=week_start)
+    if week_start is None:
+        week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+    weekly_records = queryset.filter(sleep_date__range=(week_start, week_end))
     target = 4
     progress = weekly_records.count()
     remaining = max(target - progress, 0)
     return {
         "target": target,
         "progress": min(progress, target),
+        "remaining": remaining,
         "completed": progress >= target,
+        "title": "Cel tygodniowy",
+        "week_range": format_date_range(week_start, week_end),
         "label": f"{progress}/{target} nocy",
-        "body": "Cel tygodnia: zapisz co najmniej 4 noce.",
+        "body": "Zapisz co najmniej 4 noce w tym tygodniu.",
         "hint": "Cel osiągnięty." if progress >= target else f"Zostało jeszcze {remaining} do celu.",
+        "empty_hint": f"Dodaj pierwszą noc z tygodnia {format_date_range(week_start, week_end)}.",
         "percent": min(int((progress / target) * 100), 100),
+    }
+
+
+def is_sleep_outside_current_week(record):
+    if not record:
+        return False
+    today = timezone.localdate()
+    week_start = today - timedelta(days=today.weekday())
+    return record.sleep_date < week_start
+
+
+def polish_nights_count(count):
+    if count == 0:
+        return "nie ma jeszcze żadnych nocy"
+    if count == 1:
+        return "jest 1 noc"
+    if 2 <= count % 10 <= 4 and not 12 <= count % 100 <= 14:
+        return f"są {count} noce"
+    return f"jest {count} nocy"
+
+
+def polish_missing_nights_label(count):
+    if count == 1:
+        return "1 nocy"
+    return f"{count} nocy"
+
+
+def build_dashboard_day_plan(last_sleep, last_sleep_note, weekly_goal):
+    items = []
+
+    if weekly_goal["progress"] == 0:
+        items.append("Dodaj zapis snu z tego tygodnia.")
+    else:
+        items.append("Sprawdź, jak idzie cel tygodniowy.")
+
+    if not last_sleep or not last_sleep_note:
+        items.append("Uzupełnij krótką notatkę o stresie, kofeinie lub treningu.")
+    else:
+        items.append("Dopisz, co mogło wpłynąć na ostatnią noc.")
+
+    if weekly_goal["progress"] >= 2:
+        items.append("Sprawdź raport tygodniowy.")
+    else:
+        items.append("Sprawdź raport tygodniowy, gdy pojawią się minimum 2 noce.")
+
+    return items[:3]
+
+
+def format_activity_date(value):
+    if isinstance(value, datetime):
+        value = timezone.localtime(value).date()
+    return value.strftime("%d.%m")
+
+
+def get_selected_week_start(request):
+    selected_week = request.GET.get("week", "")
+    today = timezone.localdate()
+    default_week_start = today - timedelta(days=today.weekday())
+    if not selected_week:
+        return default_week_start
+    try:
+        parsed_date = date.fromisoformat(selected_week)
+    except ValueError:
+        return default_week_start
+    return parsed_date - timedelta(days=parsed_date.weekday())
+
+
+def build_weekly_report_options(queryset, selected_week_start):
+    today = timezone.localdate()
+    current_week_start = today - timedelta(days=today.weekday())
+    week_starts = {current_week_start, selected_week_start}
+
+    for sleep_date in queryset.values_list("sleep_date", flat=True):
+        week_starts.add(sleep_date - timedelta(days=sleep_date.weekday()))
+
+    options = []
+    for week_start in sorted(week_starts, reverse=True):
+        week_end = week_start + timedelta(days=6)
+        options.append(
+            {
+                "value": week_start.isoformat(),
+                "label": format_date_range(week_start, week_end).capitalize(),
+                "selected": week_start == selected_week_start,
+            }
+        )
+    return options
+
+
+def build_weekly_report(queryset, profile, week_start=None):
+    today = timezone.localdate()
+    if week_start is None:
+        week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+    records = queryset.filter(sleep_date__range=(week_start, week_end)).select_related("note")
+    stats = summarize_period(queryset, week_start, week_end)
+    longest = records.order_by("-sleep_duration_minutes").first()
+    shortest = records.order_by("sleep_duration_minutes").first()
+    weekly_goal = build_weekly_goal(queryset, week_start)
+    factor_summary = build_weekly_factor_summary(records)
+    conclusion = build_weekly_conclusion(records, profile, stats, factor_summary)
+    has_enough_data = stats["total"] >= 2
+    goal_detail = "cel osiągnięty" if weekly_goal["completed"] else f"brakuje {weekly_goal['remaining']} do celu"
+
+    return {
+        "has_enough_data": has_enough_data,
+        "title": f"Podsumowanie {format_date_range(week_start, week_end)}",
+        "range": format_date_range(week_start, week_end),
+        "week_start": week_start.isoformat(),
+        "total": stats["total"],
+        "empty_title": "Brakuje danych z tego tygodnia",
+        "empty_body": "Dodaj minimum 2 noce, żeby SleepWatch mógł policzyć średnią, najlepszą noc i prosty wniosek.",
+        "metrics": [
+            {
+                "label": "Sen",
+                "title": "Średni sen",
+                "value": stats["avg_sleep_display"],
+                "detail": polish_saved_nights_label(stats["total"]),
+            },
+            {
+                "label": "Cel",
+                "title": "Cel tygodniowy",
+                "value": weekly_goal["label"],
+                "detail": goal_detail,
+            },
+            {
+                "label": "Notatki",
+                "title": "Najczęstszy czynnik",
+                "value": factor_summary["top"],
+                "detail": factor_summary["detail"],
+            },
+        ],
+        "best_night": format_report_night(longest),
+        "shortest_night": format_report_night(shortest),
+        "factors": factor_summary["items"],
+        "conclusion": conclusion,
+    }
+
+
+def render_weekly_report_pdf(report):
+    from PIL import Image, ImageDraw, ImageFont
+
+    width, height = 1240, 1754
+    margin = 80
+    background = "#f3f8fe"
+    text = "#15324b"
+    muted = "#506b85"
+    accent = "#2f7eb2"
+    card = "#ffffff"
+    border = "#d7e4ef"
+
+    image = Image.new("RGB", (width, height), background)
+    draw = ImageDraw.Draw(image)
+
+    title_font = load_pdf_font(58, bold=True)
+    h2_font = load_pdf_font(34, bold=True)
+    h3_font = load_pdf_font(25, bold=True)
+    body_font = load_pdf_font(25)
+    small_font = load_pdf_font(20)
+    kicker_font = load_pdf_font(18, bold=True)
+
+    def card_box(x, y, w, h, fill=card):
+        draw.rounded_rectangle((x, y, x + w, y + h), radius=28, fill=fill, outline=border, width=2)
+
+    card_box(margin, margin, width - margin * 2, 250)
+    draw.text((margin + 36, margin + 36), "RAPORT TYGODNIOWY", font=kicker_font, fill=accent)
+    draw.text((margin + 36, margin + 82), report["title"], font=title_font, fill=text)
+    draw.text((margin + 36, margin + 164), "Najważniejsze wnioski z ostatnich 7 dni.", font=body_font, fill=muted)
+
+    if not report["has_enough_data"]:
+        y = margin + 310
+        card_box(margin, y, width - margin * 2, 330)
+        draw.text((margin + 36, y + 38), "STAN RAPORTU", font=kicker_font, fill=accent)
+        draw.text((margin + 36, y + 90), report["empty_title"], font=h2_font, fill=text)
+        draw_wrapped_pdf_text(
+            draw,
+            report["empty_body"],
+            margin + 36,
+            y + 150,
+            width - margin * 2 - 72,
+            body_font,
+            muted,
+        )
+        draw.text((margin + 36, y + 250), "Dodaj noc lub zaimportuj CSV, żeby raport pokazał realne wnioski.", font=small_font, fill=text)
+    else:
+        y = margin + 310
+        gap = 24
+        metric_w = (width - margin * 2 - gap * 2) // 3
+        for index, metric in enumerate(report["metrics"]):
+            x = margin + index * (metric_w + gap)
+            card_box(x, y, metric_w, 245)
+            draw.text((x + 28, y + 30), metric["label"].upper(), font=kicker_font, fill=accent)
+            draw.text((x + 28, y + 78), metric["title"], font=small_font, fill=muted)
+            draw_wrapped_pdf_text(draw, metric["value"], x + 28, y + 118, metric_w - 56, h2_font, text, line_gap=8)
+            draw_wrapped_pdf_text(draw, metric["detail"], x + 28, y + 182, metric_w - 56, small_font, muted)
+
+        y += 290
+        card_box(margin, y, width - margin * 2, 300)
+        draw.text((margin + 36, y + 34), "WNIOSEK TYGODNIA", font=kicker_font, fill=accent)
+        draw_wrapped_pdf_text(
+            draw,
+            report["conclusion"]["body"],
+            margin + 36,
+            y + 84,
+            width - margin * 2 - 72,
+            h3_font,
+            text,
+            line_gap=8,
+        )
+        draw_wrapped_pdf_text(
+            draw,
+            report["conclusion"]["signal"],
+            margin + 36,
+            y + 190,
+            width - margin * 2 - 72,
+            body_font,
+            muted,
+        )
+
+        y += 345
+        card_box(margin, y, width - margin * 2, 380)
+        draw.text((margin + 36, y + 34), "NOCE I CZYNNIKI", font=kicker_font, fill=accent)
+        rows = [
+            ("Najlepsza noc", format_pdf_report_night(report["best_night"])),
+            ("Najkrótsza noc", format_pdf_report_night(report["shortest_night"])),
+        ]
+        row_y = y + 92
+        for label, value in rows:
+            draw.text((margin + 36, row_y), label, font=small_font, fill=muted)
+            draw_wrapped_pdf_text(draw, value, margin + 340, row_y, width - margin * 2 - 376, body_font, text)
+            row_y += 72
+
+        if report["factors"]:
+            draw.text((margin + 36, row_y + 22), "Najczęstsze czynniki", font=small_font, fill=muted)
+            factors = " · ".join(f"{factor['name']}: {factor['count']} razy" for factor in report["factors"])
+            draw_wrapped_pdf_text(draw, factors, margin + 340, row_y + 22, width - margin * 2 - 376, body_font, text)
+
+    buffer = BytesIO()
+    image.save(buffer, format="PDF", resolution=150.0)
+    return buffer.getvalue()
+
+
+def load_pdf_font(size, bold=False):
+    candidates = [
+        Path("C:/Windows/Fonts/arialbd.ttf" if bold else "C:/Windows/Fonts/arial.ttf"),
+        Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        Path("/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/dejavu/DejaVuSans.ttf"),
+    ]
+    for path in candidates:
+        if path.exists():
+            from PIL import ImageFont
+
+            return ImageFont.truetype(str(path), size)
+
+    from PIL import ImageFont
+
+    return ImageFont.load_default()
+
+
+def draw_wrapped_pdf_text(draw, text, x, y, max_width, font, fill, line_gap=6):
+    current_y = y
+    for line in wrap_pdf_text(draw, str(text), font, max_width):
+        draw.text((x, current_y), line, font=font, fill=fill)
+        bbox = draw.textbbox((x, current_y), line, font=font)
+        current_y += bbox[3] - bbox[1] + line_gap
+    return current_y
+
+
+def wrap_pdf_text(draw, text, font, max_width):
+    lines = []
+    for paragraph in text.splitlines() or [""]:
+        words = paragraph.split()
+        if not words:
+            lines.append("")
+            continue
+        line = words[0]
+        for word in words[1:]:
+            candidate = f"{line} {word}"
+            bbox = draw.textbbox((0, 0), candidate, font=font)
+            if bbox[2] - bbox[0] <= max_width:
+                line = candidate
+            else:
+                lines.append(line)
+                line = word
+        lines.append(line)
+    return lines
+
+
+def format_pdf_report_night(night):
+    if isinstance(night, dict):
+        return f"{night['date']} - {night['duration']} - {night['detail']}"
+    return str(night)
+
+
+def format_report_night(record):
+    if not record:
+        return "brak danych"
+    return {
+        "date": f"{record.sleep_date.day} {polish_month_name_genitive(record.sleep_date)}",
+        "duration": record.sleep_duration_display,
+        "detail": build_report_night_detail(record),
+    }
+
+
+def polish_saved_nights_label(count):
+    if count == 1:
+        return "1 zapisana noc"
+    if 2 <= count % 10 <= 4 and not 12 <= count % 100 <= 14:
+        return f"{count} zapisane noce"
+    return f"{count} zapisanych nocy"
+
+
+def build_report_night_detail(record):
+    try:
+        note = record.note
+    except SleepNote.DoesNotExist:
+        return "bez notatki"
+
+    details = []
+    if note.sleep_quality:
+        details.append(f"jakość {note.get_sleep_quality_display().lower()}")
+    if note.stress_level is not None and note.stress_level >= 7:
+        details.append("wysoki stres")
+    if note.caffeine_used:
+        details.append("kofeina")
+    if note.training_done:
+        details.append("trening")
+    return ", ".join(details[:2]) or "notatka uzupełniona"
+
+
+def build_weekly_factor_summary(records):
+    factors = {
+        "Stres": 0,
+        "Kofeina": 0,
+        "Trening": 0,
+        "Drzemka": 0,
+        "Alkohol": 0,
+    }
+
+    for record in records:
+        try:
+            note = record.note
+        except SleepNote.DoesNotExist:
+            continue
+
+        if note.caffeine_used:
+            factors["Kofeina"] += 1
+        if note.stress_level is not None and note.stress_level >= 7:
+            factors["Stres"] += 1
+        if note.training_done:
+            factors["Trening"] += 1
+        if note.nap_taken:
+            factors["Drzemka"] += 1
+        if note.alcohol:
+            factors["Alkohol"] += 1
+
+    sorted_factors = sorted(factors.items(), key=lambda item: item[1], reverse=True)
+    name, count = sorted_factors[0]
+    if count == 0:
+        return {
+            "top": "za mało notatek",
+            "detail": "uzupełnij dziennik snu",
+            "items": [],
+            "top_count": 0,
+        }
+
+    return {
+        "top": name.lower(),
+        "detail": f"{count} razy w notatkach",
+        "items": [
+            {"name": factor_name, "count": factor_count}
+            for factor_name, factor_count in sorted_factors
+            if factor_count
+        ][:3],
+        "top_count": count,
+    }
+
+
+def build_weekly_conclusion(records, profile, stats, factor_summary):
+    total = stats["total"]
+    if total == 0:
+        return {
+            "body": "Dodaj noce z tego tygodnia, żeby raport pokazał realne wnioski.",
+            "signal": "Raport ruszy po minimum 2 zapisach.",
+        }
+    if total < 2:
+        return {
+            "body": "Dodaj jeszcze jedną noc z tego tygodnia, żeby porównać wzorce.",
+            "signal": "Na razie jest tylko 1 zapis.",
+        }
+
+    stress_insight = build_stress_insight(records)
+    if stress_insight:
+        stress_count = factor_summary["items"][0]["count"] if factor_summary["items"] and factor_summary["items"][0]["name"] == "Stres" else None
+        return {
+            "body": stress_insight["body"],
+            "signal": (
+                f"Stres pojawił się w {stress_count} z {total} zapisanych nocy."
+                if stress_count
+                else "Najmocniejszy sygnał pochodzi z notatek o stresie."
+            ),
+        }
+
+    longest = records.order_by("-sleep_duration_minutes").first()
+    shortest = records.order_by("sleep_duration_minutes").first()
+    if longest and shortest:
+        delta = longest.sleep_duration_minutes - shortest.sleep_duration_minutes
+        if delta >= 60:
+            return {
+                "body": f"Największa różnica między nocami w tym tygodniu to {minutes_delta_text(delta)}.",
+                "signal": f"Najkrótsza i najdłuższa noc różnią się o {minutes_delta_text(delta)}.",
+            }
+
+    goal_minutes = profile.sleep_goal_hours * 60
+    if stats["avg_sleep_minutes"] >= goal_minutes:
+        return {
+            "body": "Średni sen w tym tygodniu jest zgodny z Twoim celem.",
+            "signal": f"Średnia wynosi {stats['avg_sleep_display']}.",
+        }
+    return {
+        "body": "Najbardziej przyda się uzupełnienie kolejnych nocy i notatek o stresie lub kofeinie.",
+        "signal": "Im więcej notatek, tym trafniejszy wniosek tygodnia.",
     }
 
 
@@ -1692,6 +2210,12 @@ def build_active_hypothesis_summary(queryset, profile):
 
     summary["started_at"] = profile.active_hypothesis_started_at
     summary["hypothesis_label"] = profile.get_active_hypothesis_display()
+    if profile.active_hypothesis == UserProfile.HYPOTHESIS_STRESS:
+        summary["next_step"] = "Uzupełnij notatkę przy kolejnej nocy, żeby rozpocząć porównanie stresu."
+        summary["cta_label"] = "Dodaj notatkę ze stresem"
+    else:
+        summary["next_step"] = "Uzupełnij notatkę przy kolejnej nocy, żeby rozpocząć porównanie."
+        summary["cta_label"] = "Dodaj notatkę do nocy"
     return summary
 
 
@@ -1707,7 +2231,7 @@ def analyze_boolean_hypothesis(queryset, field_name, title, factor_label, withou
             "tone": "neutral",
             "title": title,
             "body": "Dodaj jeszcze kilka notatek, żeby aplikacja miała z czego zrobić porównanie.",
-            "meta": f"Na razie są {with_count + without_count} noce z takimi notatkami.",
+            "meta": f"Na razie {polish_nights_count(with_count + without_count)} z takimi notatkami.",
         }
 
     if with_count < 2 or without_count < 2:
@@ -1761,8 +2285,8 @@ def analyze_stress_hypothesis(queryset):
             "state": "not_enough_notes",
             "tone": "neutral",
             "title": "Wpływ stresu",
-            "body": "Dodaj jeszcze kilka ocen stresu, żeby aplikacja mogła porównać spokojniejsze i trudniejsze dni.",
-            "meta": f"Na razie są {high_count + low_count} noce z oceną stresu.",
+            "body": "",
+            "meta": f"Na razie {polish_nights_count(high_count + low_count)} z oceną stresu.",
         }
 
     if high_count < 2 or low_count < 2:
@@ -1807,6 +2331,7 @@ def analyze_stress_hypothesis(queryset):
 
 def build_dashboard_alerts(queryset, profile, profile_completion, weekly_goal):
     alerts = []
+    last_sleep = queryset.order_by("-sleep_date").first()
 
     if profile_completion < 100:
         alerts.append(
@@ -1818,13 +2343,37 @@ def build_dashboard_alerts(queryset, profile, profile_completion, weekly_goal):
         )
 
     if not weekly_goal["completed"]:
+        remaining = weekly_goal["remaining"]
         alerts.append(
             {
                 "tone": "neutral",
-                "title": "Cel tygodnia: zapisuj noce regularnie",
-                "body": f"Masz obecnie {weekly_goal['label']}. {weekly_goal['hint']}",
+                "title": f"Brakuje {polish_missing_nights_label(remaining)} do celu tygodniowego",
+                "body": (
+                    f"Dodaj dzisiejszy zapis, żeby domknąć cel {weekly_goal['target']}/{weekly_goal['target']}."
+                    if remaining == 1
+                    else f"Dodaj kolejne zapisy, żeby dojść do celu {weekly_goal['target']}/{weekly_goal['target']}."
+                ),
             }
         )
+
+    if last_sleep:
+        recent_average = (
+            queryset.filter(
+                sleep_date__lt=last_sleep.sleep_date,
+                sleep_date__gte=last_sleep.sleep_date - timedelta(days=7),
+            ).aggregate(avg=Avg("sleep_duration_minutes"))["avg"]
+            or 0
+        )
+        sleep_delta = round(recent_average - last_sleep.sleep_duration_minutes, 1)
+        if recent_average and sleep_delta >= 30:
+            alerts.insert(
+                0,
+                {
+                    "tone": "warning",
+                    "title": "Sen krótszy niż zwykle",
+                    "body": f"Ostatnia noc była krótsza o {minutes_delta_text(sleep_delta)} od średniej z 7 dni.",
+                },
+            )
 
     hypothesis_summary = build_active_hypothesis_summary(queryset, profile)
     if hypothesis_summary["state"] == "inactive":
@@ -1848,7 +2397,7 @@ def build_dashboard_alerts(queryset, profile, profile_completion, weekly_goal):
             {
                 "tone": "neutral",
                 "title": f"Hipoteza: {hypothesis_summary['title']}",
-                "body": hypothesis_summary["body"],
+                "body": hypothesis_summary["body"] or "Na razie zbieramy dane do porównania.",
             }
         )
 
@@ -1858,7 +2407,7 @@ def build_dashboard_alerts(queryset, profile, profile_completion, weekly_goal):
             {
                 "tone": "neutral",
                 "title": "Dodaj pierwsze noce i uruchom swój rytm",
-                "body": "Zaimportuj lub wpisz pierwsze noce, a dashboard zacznie pokazywać postęp, alerty i wyniki eksperymentów.",
+                "body": "Zaimportuj lub wpisz pierwsze noce, a panel główny zacznie pokazywać postęp, alerty i wyniki eksperymentów.",
             },
         )
 
@@ -2138,6 +2687,8 @@ def build_month_comparison(queryset):
     previous_stats = summarize_period(queryset, previous_start, previous_end)
 
     return {
+        "title": f"{polish_month_name(current_start).capitalize()} vs {polish_month_name(previous_start)}",
+        "kicker": build_month_comparison_kicker(current_stats, previous_stats),
         "current_label": current_start.strftime("%m.%Y"),
         "previous_label": previous_start.strftime("%m.%Y"),
         "current": current_stats,
@@ -2154,10 +2705,76 @@ def build_month_comparison(queryset):
     }
 
 
+def build_month_comparison_kicker(current_stats, previous_stats):
+    if current_stats["total"] and not previous_stats["total"]:
+        return "Pierwszy miesiąc obserwacji"
+    if previous_stats["total"]:
+        return "Zmiana miesiąc do miesiąca"
+    return "Perspektywa miesięczna"
+
+
+def polish_month_name(value):
+    return POLISH_MONTH_NAMES[value.month - 1]
+
+
+def polish_month_name_genitive(value):
+    return POLISH_MONTH_NAMES_GENITIVE[value.month - 1]
+
+
+def format_date_range(start_date, end_date):
+    if start_date.month == end_date.month and start_date.year == end_date.year:
+        return f"{start_date.day}-{end_date.day} {polish_month_name_genitive(end_date)}"
+    return (
+        f"{start_date.day} {polish_month_name_genitive(start_date)} - "
+        f"{end_date.day} {polish_month_name_genitive(end_date)}"
+    )
+
+
+def build_dashboard_tip_label():
+    hour = timezone.localtime().hour
+    if 5 <= hour < 12:
+        return "Plan na dziś"
+    if 18 <= hour < 24:
+        return "Na spokojny wieczór"
+    return "Wskazówka dnia"
+
+
+def build_experiment_heading():
+    return f"Eksperyment {polish_month_name_genitive(timezone.localdate())}"
+
+
+def has_current_month_hypothesis(profile):
+    started_at = profile.active_hypothesis_started_at
+    if not profile.active_hypothesis or not started_at:
+        return False
+    today = timezone.localdate()
+    return started_at.year == today.year and started_at.month == today.month
+
+
+def sync_monthly_hypothesis_state(profile):
+    if not profile.active_hypothesis:
+        return
+
+    today = timezone.localdate()
+    started_at = profile.active_hypothesis_started_at
+    if started_at and started_at.year == today.year and started_at.month == today.month:
+        return
+
+    if started_at:
+        profile.active_hypothesis = UserProfile.HYPOTHESIS_NONE
+        profile.active_hypothesis_started_at = None
+        profile.save(update_fields=["active_hypothesis", "active_hypothesis_started_at", "updated_at"])
+        return
+
+    profile.active_hypothesis_started_at = today
+    profile.save(update_fields=["active_hypothesis_started_at", "updated_at"])
+
+
 def build_self_comparison(queryset):
     today = timezone.localdate()
     last_7_start = today - timedelta(days=6)
     last_30_start = today - timedelta(days=29)
+    last_7_label = format_date_range(last_7_start, today)
 
     stats_7 = summarize_period(queryset, last_7_start, today)
     stats_30 = summarize_period(queryset, last_30_start, today)
@@ -2168,6 +2785,10 @@ def build_self_comparison(queryset):
     good_night_share_30 = round((stats_30["good_nights"] / stats_30["total"]) * 100, 1) if stats_30["total"] else 0
 
     return {
+        "title": f"{last_7_label.capitalize()} vs ostatnie 30 dni",
+        "delta_label": f"{last_7_label} vs 30 dni",
+        "chart_title": f"Trendy: {last_7_label}",
+        "last_7_label": last_7_label,
         "last_7": stats_7,
         "last_30": stats_30,
         "delta_sleep_minutes": sleep_delta,

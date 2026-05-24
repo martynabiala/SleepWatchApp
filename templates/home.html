@@ -7,10 +7,10 @@
 <style>
     .home-hero {
         display: grid;
-        grid-template-columns: minmax(320px, 0.78fr) minmax(320px, 0.92fr);
-        gap: 28px;
+        grid-template-columns: minmax(320px, 0.9fr) minmax(320px, 1.1fr);
+        gap: 22px;
         align-items: stretch;
-        max-width: 1080px;
+        max-width: 1140px;
         margin: 0 auto;
     }
 
@@ -18,20 +18,20 @@
     .home-content {
         position: relative;
         overflow: hidden;
-        border-radius: 34px;
-        border: 1px solid rgba(255, 255, 255, 0.85);
+        border-radius: 8px;
+        border: 1px solid rgba(15, 76, 70, 0.12);
         box-shadow: var(--shadow);
     }
 
     .home-visual {
-        min-height: 680px;
+        min-height: 620px;
         padding: 42px 34px;
         display: grid;
-        align-content: end;
+        align-content: center;
         justify-items: center;
         background:
-            radial-gradient(circle at 78% 16%, rgba(255, 229, 172, 0.16), transparent 14%),
-            linear-gradient(180deg, rgba(14, 56, 101, 0.98) 0%, rgba(14, 49, 91, 1) 50%, rgba(10, 35, 67, 1) 100%);
+            linear-gradient(160deg, rgba(15, 76, 70, 0.96), rgba(19, 128, 115, 0.9)),
+            linear-gradient(180deg, #f7fbf8, #e5f2ee);
         color: #ffffff;
     }
 
@@ -40,12 +40,10 @@
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(circle at 16% 12%, rgba(255, 240, 199, 0.9) 0 1.5px, transparent 2.5px),
-            radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.7) 0 1.4px, transparent 2.5px),
-            radial-gradient(circle at 70% 26%, rgba(255, 240, 199, 0.82) 0 1.8px, transparent 3px),
-            radial-gradient(circle at 44% 34%, rgba(255, 255, 255, 0.7) 0 1.6px, transparent 2.5px),
-            radial-gradient(circle at 80% 40%, rgba(255, 240, 199, 0.72) 0 1.4px, transparent 2.5px);
-        opacity: 0.8;
+            linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+            linear-gradient(0deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: 0.32;
         pointer-events: none;
     }
 
@@ -56,32 +54,8 @@
         right: 0;
         bottom: 0;
         height: 28%;
-        background: linear-gradient(180deg, rgba(52, 98, 141, 0.08) 0%, rgba(9, 31, 60, 0.9) 100%);
-        clip-path: polygon(0 84%, 10% 78%, 23% 82%, 38% 72%, 54% 81%, 72% 67%, 88% 81%, 100% 77%, 100% 100%, 0 100%);
+        background: linear-gradient(180deg, rgba(15, 76, 70, 0) 0%, rgba(7, 50, 47, 0.8) 100%);
         pointer-events: none;
-    }
-
-    .home-moon {
-        position: absolute;
-        top: 34px;
-        right: 36px;
-        width: 46px;
-        height: 46px;
-        border-radius: 50%;
-        background: #ffe7b8;
-        box-shadow: 0 0 24px rgba(255, 231, 184, 0.18);
-        z-index: 1;
-    }
-
-    .home-moon::after {
-        content: "";
-        position: absolute;
-        top: 3px;
-        left: 12px;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(14, 56, 101, 0.98);
     }
 
     .home-visual-inner {
@@ -133,8 +107,8 @@
 
     .home-card {
         padding: 28px;
-        border-radius: 28px;
-        border: 1px solid rgba(34, 94, 139, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(15, 76, 70, 0.1);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 254, 0.96));
         box-shadow: 0 18px 38px rgba(20, 58, 92, 0.08);
     }
@@ -165,11 +139,31 @@
 
     .home-list li {
         padding: 16px 18px;
-        border-radius: 20px;
-        border: 1px solid rgba(34, 94, 139, 0.08);
+        border-radius: 8px;
+        border: 1px solid rgba(15, 76, 70, 0.1);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 248, 252, 0.9));
         color: var(--muted);
         font-weight: 600;
+    }
+
+    .home-demo-card {
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid rgba(15, 76, 70, 0.1);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(241, 248, 252, 0.88));
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: center;
+        color: var(--muted);
+        font-weight: 700;
+        line-height: 1.45;
+    }
+
+    .home-demo-card .button {
+        flex: 0 0 auto;
+        min-width: 150px;
+        white-space: nowrap;
     }
 
     :root[data-theme="dark"] .home-visual,
@@ -192,6 +186,39 @@
         border-color: rgba(124, 164, 200, 0.18);
     }
 
+    :root[data-theme="dark"] .home-demo-card {
+        background: linear-gradient(180deg, rgba(24, 40, 60, 0.98), rgba(21, 35, 53, 0.96));
+        border-color: rgba(124, 164, 200, 0.18);
+    }
+
+    :root[data-theme="dark"] .home-content,
+    :root[data-theme="dark"] .home-card,
+    :root[data-theme="dark"] .home-list li,
+    :root[data-theme="dark"] .home-demo-card {
+        border-color: rgba(157, 225, 216, 0.16);
+        background: linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+    }
+
+    :root[data-theme="dark"] .home-visual {
+        border-color: rgba(157, 225, 216, 0.16);
+        background:
+            linear-gradient(160deg, rgba(13, 57, 58, 0.96), rgba(24, 98, 91, 0.9)),
+            linear-gradient(180deg, #10282a, #143134);
+    }
+
+    :root[data-theme="dark"] .home-card h2 {
+        color: #edf8f5;
+    }
+
+    .home-card h2 {
+        font-weight: 700;
+    }
+
+    .home-list li,
+    .home-demo-card {
+        font-weight: 500;
+    }
+
     @media (max-width: 920px) {
         .home-hero {
             grid-template-columns: 1fr;
@@ -200,6 +227,7 @@
         .home-visual {
             min-height: 420px;
         }
+
     }
 
     @media (max-width: 640px) {
@@ -212,23 +240,19 @@
             padding: 22px;
         }
 
-        .home-moon {
-            top: 24px;
-            right: 24px;
-            width: 40px;
-            height: 40px;
+        .home-demo-card {
+            align-items: stretch;
+            flex-direction: column;
         }
 
-        .home-moon::after {
-            width: 34px;
-            height: 34px;
+        .home-demo-card .button {
+            width: 100%;
         }
     }
 </style>
 
 <section class="home-hero">
     <aside class="home-visual">
-        <div class="home-moon" aria-hidden="true"></div>
         <div class="home-visual-inner">
             <div class="home-cat">
                 <img src="{% static 'cat_white_outline.svg' %}" alt="" aria-hidden="true">
@@ -248,6 +272,11 @@
             <li>historia snu, notatki i prostszy wgląd w trendy</li>
             <li>miejsce do budowania regularniejszych nawyków krok po kroku</li>
         </ul>
+
+        <div class="home-demo-card">
+            <span>Chcesz zobaczyć aplikację bez zakładania konta?</span>
+            <a class="button secondary" href="{% url 'demo_account' %}">Otwórz demo</a>
+        </div>
     </article>
 </section>
 {% endblock %}

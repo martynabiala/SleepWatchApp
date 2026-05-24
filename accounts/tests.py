@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core import mail
-from django.test import TestCase, override_settings
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -625,6 +625,17 @@ class AccountsFlowTests(TestCase):
 
         self.assertRedirects(response, reverse("dashboard"))
         self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_invalid_csrf_on_login_shows_friendly_page(self):
+        csrf_client = Client(enforce_csrf_checks=True)
+
+        response = csrf_client.post(
+            reverse("login"),
+            {"username": "maillogin@example.com", "password": "BardzoMocneHaslo123!"},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Sesja formularza wygasła", status_code=403)
 
     def test_logged_user_can_update_profile_without_changing_login_or_email(self):
         user = User.objects.create_user(

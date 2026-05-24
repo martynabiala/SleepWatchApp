@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 from docx import Document
@@ -6,17 +7,17 @@ from docx.shared import Inches
 
 
 BASE_DIR = Path(__file__).resolve().parent
-SOURCE_PATH = BASE_DIR / "SleepWatch_Dokumentacja_ver_1.md"
-TARGET_PATH = BASE_DIR / "SleepWatch_Dokumentacja_ver_1.docx"
+DEFAULT_SOURCE_PATH = BASE_DIR / "SleepWatch_Dokumentacja_ver_1.md"
+DEFAULT_TARGET_PATH = BASE_DIR / "SleepWatch_Dokumentacja_ver_1.docx"
 
 
-def add_image(document: Document, line: str) -> bool:
+def add_image(document: Document, line: str, source_path: Path) -> bool:
     stripped = line.strip()
     if not (stripped.startswith("![") and "](" in stripped and stripped.endswith(")")):
         return False
 
     target = stripped.split("](", 1)[1][:-1].strip()
-    image_path = (SOURCE_PATH.parent / target).resolve()
+    image_path = (source_path.parent / target).resolve()
     if not image_path.exists():
         return False
 
@@ -51,9 +52,9 @@ def add_table(document: Document, lines: list[str]) -> None:
             row[index].text = value
 
 
-def build_docx() -> None:
+def build_docx(source_path: Path = DEFAULT_SOURCE_PATH, target_path: Path = DEFAULT_TARGET_PATH) -> None:
     document = Document()
-    lines = SOURCE_PATH.read_text(encoding="utf-8").splitlines()
+    lines = source_path.read_text(encoding="utf-8").splitlines()
 
     in_code = False
     code_buffer: list[str] = []
@@ -85,7 +86,7 @@ def build_docx() -> None:
             add_table(document, table_buffer)
             table_buffer = []
 
-        if add_image(document, stripped):
+        if add_image(document, stripped, source_path):
             continue
 
         if not stripped:
@@ -121,8 +122,10 @@ def build_docx() -> None:
     if table_buffer:
         add_table(document, table_buffer)
 
-    document.save(TARGET_PATH)
+    document.save(target_path)
 
 
 if __name__ == "__main__":
-    build_docx()
+    source = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else DEFAULT_SOURCE_PATH
+    target = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else DEFAULT_TARGET_PATH
+    build_docx(source, target)

@@ -71,6 +71,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'accounts.middleware.DemoAccountReadOnlyMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -177,6 +178,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+CSRF_FAILURE_VIEW = "accounts.views.csrf_failure_view"
 
 EMAIL_DELIVERY_MODE = os.getenv("EMAIL_DELIVERY_MODE", "file").lower()
 
