@@ -2460,6 +2460,273 @@
         :root[data-theme="dark"] .auth-link {
             color: #bff1e9;
         }
+
+        @media (max-width: 760px) {
+            html {
+                font-size: 16px;
+            }
+
+            body {
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0)),
+                    linear-gradient(135deg, var(--page-top) 0%, var(--page-mid) 54%, var(--page-bottom) 100%);
+            }
+
+            .page {
+                padding: 10px 8px 100px;
+            }
+
+            .shell {
+                width: 100%;
+                max-width: none;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                padding: 10px;
+            }
+
+            .topbar-balance {
+                order: 1;
+                justify-content: flex-start;
+                gap: 8px;
+            }
+
+            .brand-wrap {
+                order: 2;
+                justify-self: start;
+                flex-direction: row;
+                gap: 10px;
+                min-width: 0;
+                text-align: left;
+            }
+
+            .brand-copy {
+                min-width: 0;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .brand {
+                font-size: 1.24rem;
+                line-height: 1.05;
+            }
+
+            .tagline {
+                display: none;
+            }
+
+            .brand-mark {
+                width: 44px;
+                height: 44px;
+                padding: 4px;
+            }
+
+            .nav {
+                order: 3;
+                justify-self: end;
+                justify-content: flex-end;
+                gap: 6px;
+                width: auto;
+            }
+
+            .app-toolbar summary,
+            .settings-toggle,
+            .theme-toggle,
+            .music-toggle,
+            .notification-menu summary {
+                width: 42px;
+                min-width: 42px;
+                height: 42px;
+                border-radius: 8px;
+            }
+
+            .nav > form {
+                display: none;
+            }
+
+            .notification-panel {
+                position: fixed;
+                top: 72px;
+                right: 8px;
+                left: 8px;
+                width: auto;
+                max-height: min(72vh, 560px);
+                overflow: auto;
+                padding: 14px;
+            }
+
+            .app-toolbar-panel {
+                position: fixed;
+                top: 72px;
+                left: 8px;
+                width: min(280px, calc(100vw - 16px));
+                max-height: min(72vh, 560px);
+                overflow: auto;
+            }
+
+            .panel {
+                padding: 16px 12px;
+                border-radius: 8px;
+                box-shadow: 0 10px 26px rgba(13, 73, 68, 0.08);
+            }
+
+            .hero,
+            .panel-grid,
+            .chart-grid,
+            .score-grid,
+            .comparison-grid,
+            .insight-list,
+            .form-grid,
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .soft-card,
+            .card,
+            .hero-card,
+            .metric,
+            .score-card,
+            .chart-card,
+            .comparison-card,
+            .insight-card {
+                padding: 18px;
+            }
+
+            .hero-card h1,
+            .soft-card h1,
+            .auth-card h1 {
+                font-size: 1.85rem;
+                line-height: 1.12;
+            }
+
+            .button,
+            button {
+                min-height: 46px;
+                padding: 11px 14px;
+            }
+
+            form .button,
+            form button {
+                width: 100%;
+            }
+
+            .meta-row,
+            .score-meta-row,
+            .chart-meta,
+            .score-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            input,
+            select,
+            textarea {
+                min-height: 46px;
+                padding: 12px 14px;
+                font-size: 1rem;
+            }
+
+            .auth-shell {
+                display: grid;
+                grid-template-columns: 1fr;
+                max-width: 100%;
+                min-height: auto;
+            }
+
+            .auth-showcase {
+                min-height: auto;
+                padding: 28px 18px;
+            }
+
+            .auth-showcase-content {
+                width: min(100%, 25ch);
+                gap: 14px;
+            }
+
+            .auth-showcase-illustration {
+                width: min(210px, 70vw);
+                padding: 18px;
+            }
+
+            .auth-showcase-illustration img {
+                width: min(170px, 76%);
+            }
+
+            .auth-showcase p {
+                font-size: 0.98rem;
+                line-height: 1.55;
+            }
+
+            .auth-card {
+                padding: 20px 14px;
+            }
+
+            .auth-card-panel {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .auth-tabs {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .auth-tab {
+                min-width: 0;
+                padding-inline: 8px;
+            }
+
+            .mobile-bottom-nav {
+                left: 8px;
+                right: 8px;
+                bottom: 8px;
+                gap: 4px;
+                padding: 6px;
+            }
+
+            .mobile-bottom-nav-link {
+                min-height: 54px;
+                padding: 6px 2px;
+                font-size: 0.66rem;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .page {
+                padding-inline: 6px;
+            }
+
+            .topbar {
+                gap: 8px;
+                padding: 8px;
+            }
+
+            .brand {
+                font-size: 1.08rem;
+            }
+
+            .brand-mark {
+                width: 40px;
+                height: 40px;
+            }
+
+            .settings-toggle,
+            .music-toggle {
+                display: none;
+            }
+
+            .panel {
+                padding: 14px 10px;
+            }
+
+            .mobile-bottom-nav-link span:last-child {
+                font-size: 0.62rem;
+            }
+        }
     </style>
 </head>
 <body>

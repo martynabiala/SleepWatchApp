@@ -121,7 +121,7 @@
         margin: 0 0 10px;
         font-size: clamp(2rem, 3vw, 2.8rem);
         line-height: 1.02;
-        letter-spacing: -0.04em;
+        letter-spacing: 0;
     }
 
     .home-card p {
@@ -231,22 +231,64 @@
     }
 
     @media (max-width: 640px) {
+        .home-hero {
+            gap: 12px;
+        }
+
         .home-content,
         .home-visual {
-            padding: 24px;
+            padding: 22px 18px;
+        }
+
+        .home-visual {
+            min-height: 330px;
+        }
+
+        .home-cat img {
+            width: min(210px, 82%);
+        }
+
+        .home-visual p {
+            font-size: 0.98rem;
+            line-height: 1.55;
         }
 
         .home-card {
-            padding: 22px;
+            padding: 20px;
+        }
+
+        .home-card h2 {
+            font-size: 2rem;
+            line-height: 1.08;
+        }
+
+        .home-list li {
+            padding: 14px 15px;
         }
 
         .home-demo-card {
             align-items: stretch;
             flex-direction: column;
+            padding: 16px;
         }
 
         .home-demo-card .button {
             width: 100%;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .home-content,
+        .home-visual {
+            padding: 18px 14px;
+        }
+
+        .home-visual {
+            min-height: 300px;
+        }
+
+        .home-card h2 {
+            font-size: 1.75rem;
         }
     }
 </style>

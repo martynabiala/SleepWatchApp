@@ -1033,6 +1033,162 @@
     .dashboard-side-card h3 {
         font-weight: 700;
     }
+
+    @media (max-width: 760px) {
+        .shell {
+            max-width: none;
+        }
+
+        .panel {
+            padding: 16px 12px;
+        }
+
+        .dashboard-page {
+            gap: 14px;
+        }
+
+        .dashboard-card,
+        .dashboard-section,
+        .dashboard-side-card,
+        .dashboard-alert-card,
+        .dashboard-hypothesis-card,
+        .dashboard-mini-card,
+        .dashboard-chart-card,
+        .comparison-card,
+        .insight-card {
+            padding: 18px;
+        }
+
+        .dashboard-header {
+            gap: 16px;
+        }
+
+        .dashboard-intro {
+            align-items: center;
+            gap: 14px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.85rem;
+            line-height: 1.12;
+        }
+
+        .dashboard-header p {
+            font-size: 0.98rem;
+            line-height: 1.5;
+        }
+
+        .dashboard-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 8px;
+            font-size: 1.45rem;
+        }
+
+        .dashboard-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .dashboard-actions .button {
+            width: 100%;
+        }
+
+        .dashboard-summary-grid,
+        .dashboard-overview-grid,
+        .dashboard-chart-grid,
+        .dashboard-experiment-grid,
+        .dashboard-mini-grid,
+        .dashboard-alert-grid,
+        .comparison-grid,
+        .chart-meta {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .dashboard-summary-card {
+            min-height: auto;
+            padding: 16px;
+        }
+
+        .dashboard-summary-card strong {
+            font-size: 1.45rem;
+        }
+
+        .dashboard-summary-card .button {
+            width: 100%;
+        }
+
+        .dashboard-day-plan {
+            padding: 16px;
+        }
+
+        .dashboard-hypothesis-card h3,
+        .dashboard-section h3,
+        .dashboard-side-card h3 {
+            font-size: 1.24rem;
+            line-height: 1.2;
+        }
+
+        .dashboard-hypothesis-card.is-experiment-locked .dashboard-experiment-status {
+            margin-top: 24px;
+            margin-bottom: 0;
+        }
+
+        .dashboard-experiment-status {
+            padding: 14px;
+        }
+
+        .dashboard-experiment-status-row {
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .dashboard-experiment-status-icon {
+            width: 32px;
+            height: 32px;
+            flex-basis: 32px;
+        }
+
+        .dashboard-form {
+            gap: 12px;
+        }
+
+        .dashboard-form button,
+        .dashboard-form select,
+        .dashboard-form input,
+        .dashboard-form textarea {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 430px) {
+        .dashboard-intro {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.65rem;
+        }
+
+        .dashboard-card,
+        .dashboard-section,
+        .dashboard-side-card,
+        .dashboard-alert-card,
+        .dashboard-hypothesis-card,
+        .dashboard-mini-card,
+        .dashboard-chart-card,
+        .comparison-card,
+        .insight-card {
+            padding: 16px;
+        }
+
+        .dashboard-experiment-status-row {
+            grid-template-columns: auto minmax(0, 1fr);
+        }
+    }
 </style>
 
 <div class="dashboard-page">
@@ -1047,7 +1203,7 @@
                         <div class="dashboard-avatar avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                     {% endif %}
                     <div>
-                        <h1>Witaj, {{ profile.display_name|default:request.user.username }}</h1>
+                        <h1>Witaj, {% if request.user.username == "demo_anna" %}Użytkowniku{% else %}{{ profile.display_name|default:request.user.username }}{% endif %}</h1>
                         <p>Tu zobaczysz najważniejsze informacje o swoim śnie.</p>
                     </div>
                 </div>
