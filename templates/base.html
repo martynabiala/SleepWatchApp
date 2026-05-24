@@ -2550,22 +2550,52 @@
 
             .notification-panel {
                 position: fixed;
-                top: 72px;
-                right: 8px;
-                left: 8px;
+                top: 64px;
+                right: 10px;
+                left: 10px;
                 width: auto;
                 max-height: min(72vh, 560px);
                 overflow: auto;
-                padding: 14px;
+                padding: 12px;
             }
 
             .app-toolbar-panel {
                 position: fixed;
-                top: 72px;
-                left: 8px;
-                width: min(280px, calc(100vw - 16px));
+                top: 64px;
+                left: 10px;
+                right: 10px;
+                width: auto;
                 max-height: min(72vh, 560px);
                 overflow: auto;
+                padding: 12px;
+                gap: 8px;
+                border-radius: 8px;
+            }
+
+            .app-toolbar-title {
+                font-size: 0.74rem;
+                padding: 2px 4px 0;
+            }
+
+            .app-toolbar-section {
+                gap: 6px;
+            }
+
+            .app-toolbar-section + .app-toolbar-section {
+                padding-top: 8px;
+            }
+
+            .app-toolbar-section-label {
+                font-size: 0.68rem;
+                padding: 0 4px;
+            }
+
+            .app-toolbar-panel a {
+                min-height: 40px;
+                padding: 9px 11px;
+                border-radius: 8px;
+                font-size: 0.95rem;
+                line-height: 1.15;
             }
 
             .panel {
@@ -2686,12 +2716,14 @@
                 bottom: 8px;
                 gap: 4px;
                 padding: 6px;
+                border-radius: 12px;
             }
 
             .mobile-bottom-nav-link {
                 min-height: 54px;
                 padding: 6px 2px;
                 font-size: 0.66rem;
+                border-radius: 8px;
             }
         }
 

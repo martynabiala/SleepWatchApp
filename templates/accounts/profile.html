@@ -518,6 +518,140 @@
     .badge-status {
         font-weight: 500;
     }
+
+    @media (max-width: 760px) {
+        .panel {
+            padding: 16px 12px;
+        }
+
+        .profile-layout {
+            gap: 14px;
+        }
+
+        .profile-card,
+        .profile-badges-card,
+        .profile-summary-card,
+        .profile-edit-card,
+        .avatar-preview-card,
+        .profile-kpi,
+        .profile-highlight-card,
+        .badge-card,
+        .profile-edit-preview,
+        .avatar-option,
+        .avatar-upload {
+            padding: 16px;
+        }
+
+        .profile-header {
+            gap: 12px;
+        }
+
+        .profile-header h1 {
+            font-size: 1.75rem;
+            line-height: 1.12;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            width: 100%;
+            gap: 8px;
+        }
+
+        .profile-actions .button,
+        .profile-actions button {
+            width: 100%;
+        }
+
+        .profile-view-grid,
+        .profile-hero,
+        .profile-highlights,
+        .profile-kpis,
+        .badges-grid,
+        .avatar-picker-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .avatar-preview-card {
+            align-content: start;
+        }
+
+        .avatar-badge,
+        .avatar-photo {
+            width: 74px;
+            height: 74px;
+            font-size: 1.8rem;
+        }
+
+        .profile-summary-card h3 {
+            font-size: 1.32rem;
+            line-height: 1.2;
+        }
+
+        .profile-spacing-meta {
+            margin-top: 14px;
+        }
+
+        .meta-list {
+            gap: 10px;
+        }
+
+        .meta-row,
+        .meta-row-balanced {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 5px;
+            padding-bottom: 12px;
+        }
+
+        .meta-key {
+            font-size: 0.92rem;
+        }
+
+        .meta-row strong {
+            min-width: 0;
+            max-width: 100%;
+            font-size: 1rem;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            word-break: normal;
+        }
+
+        .profile-kpi strong,
+        .profile-highlight-card strong {
+            font-size: 1.35rem;
+            line-height: 1.18;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-highlight-card p,
+        .badge-card p,
+        .profile-avatar-copy p {
+            line-height: 1.45;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .profile-card,
+        .profile-badges-card,
+        .profile-summary-card,
+        .profile-edit-card,
+        .avatar-preview-card,
+        .profile-kpi,
+        .profile-highlight-card,
+        .badge-card,
+        .profile-edit-preview,
+        .avatar-option,
+        .avatar-upload {
+            padding: 14px;
+        }
+
+        .profile-header h1 {
+            font-size: 1.55rem;
+        }
+    }
 </style>
 
 <div class="profile-layout">
