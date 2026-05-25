@@ -65,6 +65,18 @@
         width: 100%;
     }
 
+    .source-option-disabled {
+        opacity: 0.72;
+    }
+
+    .source-option-disabled .source-option-copy span {
+        color: var(--muted);
+    }
+
+    .source-option-disabled .source-option-check {
+        border-style: dashed;
+    }
+
     .source-option input[type="radio"] {
         position: absolute;
         opacity: 0;
@@ -275,12 +287,24 @@
         <div class="eyebrow">Synchronizacja</div>
         <h1>Wybierz domyślny sposób dodawania snu</h1>
         <div class="sync-explainer">
-            <p>To tylko ustawienie domyślne. Nadal możesz korzystać z pozostałych opcji, kiedy będzie Ci wygodniej.</p>
+            <p>W tej wersji aplikacji jako domyślne źródło danych możesz wybrać import pliku CSV. Synchronizacja z telefonu jest pokazana jako funkcja w fazie rozwoju.</p>
         </div>
 
         <form method="post">
             {% csrf_token %}
             <div class="source-options">
+                <div class="source-option source-option-disabled" aria-disabled="true">
+                    <label>
+                        <div class="source-option-top">
+                            <span class="source-option-badge">{{ phone_sync_development.badge }}</span>
+                            <span class="source-option-check" aria-hidden="true"></span>
+                        </div>
+                        <div class="source-option-copy">
+                            <strong>{{ phone_sync_development.label }}</strong>
+                            <span>{{ phone_sync_development.description }}</span>
+                        </div>
+                    </label>
+                </div>
                 {% for value, label in form.fields.preferred_sync_source.choices %}
                     <div class="source-option">
                         <input
@@ -293,7 +317,7 @@
                         <label for="preferred_sync_source_{{ forloop.counter0 }}">
                             <div class="source-option-top">
                                 <span class="source-option-badge">
-                                    {% if value == "health_connect" %}Polecane{% else %}Alternatywa{% endif %}
+                                    Dostępne
                                 </span>
                                 <span class="source-option-check" aria-hidden="true"></span>
                             </div>

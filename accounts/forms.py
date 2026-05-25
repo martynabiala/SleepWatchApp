@@ -229,6 +229,9 @@ class SyncSourceSelectionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["preferred_sync_source"].choices = [
+            (UserProfile.SYNC_SOURCE_MANUAL_CSV, "Import pliku CSV"),
+        ]
         self.fields["preferred_sync_source"].help_text = ""
 
 

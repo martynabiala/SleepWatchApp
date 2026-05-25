@@ -829,6 +829,9 @@ def profile_view(request: HttpRequest, username: str | None = None) -> HttpRespo
 @login_required
 def sync_sources_view(request: HttpRequest) -> HttpResponse:
     profile = request.user.profile
+    if profile.preferred_sync_source == UserProfile.SYNC_SOURCE_HEALTH_CONNECT:
+        profile.preferred_sync_source = UserProfile.SYNC_SOURCE_MANUAL_CSV
+        profile.save(update_fields=["preferred_sync_source", "updated_at"])
     sync_connections = build_sync_connections(request.user)
 
     if request.method == "POST":
@@ -854,6 +857,14 @@ def sync_sources_view(request: HttpRequest) -> HttpResponse:
             "profile": profile,
             "form": form,
             "sync_connections": sync_connections,
+            "phone_sync_development": {
+                "label": "Synchronizacja z telefonu",
+                "badge": "W fazie rozwoju",
+                "description": (
+                    "Integracja z Health Connect wymaga aplikacji mobilnej SleepWatch. "
+                    "W wersji webowej nie można jej jeszcze wybrać jako źródła danych."
+                ),
+            },
         },
     )
 
@@ -1195,11 +1206,10 @@ def mobile_preferences_api_view(request: HttpRequest) -> HttpResponse:
 
     preferred_sync_source = str(payload.get("preferred_sync_source") or "").strip()
     allowed_sources = {
-        UserProfile.SYNC_SOURCE_HEALTH_CONNECT,
         UserProfile.SYNC_SOURCE_MANUAL_CSV,
     }
     if preferred_sync_source not in allowed_sources:
-        return JsonResponse({"detail": "Nieobsługiwane źródło danych."}, status=400)
+        return JsonResponse({"detail": "Synchronizacja z telefonu jest w fazie rozwoju."}, status=400)
 
     profile = token.user.profile
     profile.preferred_sync_source = preferred_sync_source
@@ -1227,20 +1237,21 @@ def build_sync_connections(user):
         {
             "provider": SleepRecord.SOURCE_HEALTH_CONNECT,
             "label": "Synchronizacja z telefonu",
-            "badge": "Automatycznie",
-            "description": "Najlepsza opcja na Androidzie. SleepWatch pobiera dane zapisane w Health Connect i dodaje je do Twojego konta.",
+            "badge": "W fazie rozwoju",
+            "description": "Prototyp integracji z Health Connect. Do pełnego działania będzie wymagać aplikacji mobilnej SleepWatch.",
             "is_connected": bool(health_connection and health_connection.last_synced_at),
-            "status_label": "Połączono" if health_connection and health_connection.last_synced_at else "Gotowe do uruchomienia",
+            "status_label": "W fazie rozwoju",
             "last_synced_at": health_connection.last_synced_at if health_connection else None,
             "last_imported_count": health_connection.last_imported_count if health_connection else 0,
             "last_error": health_connection.last_error if health_connection else "",
             "last_device_name": health_connection.last_device_name if health_connection else "",
-            "next_step": "Wybierz tę opcję, jeśli chcesz dodawać sen automatycznie z telefonu.",
-            "is_recommended": True,
+            "next_step": "Ta opcja nie jest jeszcze dostępna w wersji webowej. Na razie użyj importu CSV albo dodawania ręcznego.",
+            "is_recommended": False,
             "supports_realtime": True,
-            "sync_mode_label": "Automatycznie",
+            "sync_mode_label": "Prototyp",
             "action_url": None,
             "action_label": "",
+            "is_disabled": True,
         },
         {
             "provider": SleepRecord.SOURCE_MANUAL_CSV,

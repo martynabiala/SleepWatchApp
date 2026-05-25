@@ -1155,4 +1155,15 @@ class SleepModuleTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.user.profile.refresh_from_db()
-        self.assertEqual(self.user.profile.preferred_sync_source, "health_connect")
+        self.assertEqual(self.user.profile.preferred_sync_source, "manual_csv")
+
+        response = self.client.post(
+            reverse("mobile_preferences_api"),
+            data={"preferred_sync_source": "health_connect"},
+            content_type="application/json",
+            headers={"Authorization": f"Bearer {token.key}"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.user.profile.refresh_from_db()
+        self.assertEqual(self.user.profile.preferred_sync_source, "manual_csv")

@@ -11,7 +11,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from accounts.models import BugReport, Friendship, UserNotification
+from accounts.models import BugReport, Friendship, UserNotification, UserProfile
 from accounts.notifications import create_due_daily_reminder_for_user
 from accounts.views import build_badges
 from sleep.models import SleepNote, SleepRecord
@@ -261,6 +261,27 @@ class AccountsFlowTests(TestCase):
         self.assertContains(response, reverse("profile"))
         self.assertContains(response, reverse("sync_sources"))
         self.assertContains(response, reverse("bug_report"))
+
+    def test_sync_sources_marks_phone_sync_as_development(self):
+        user = User.objects.create_user(
+            username="sync_user",
+            email="sync@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        user.profile.preferred_sync_source = UserProfile.SYNC_SOURCE_HEALTH_CONNECT
+        user.profile.save(update_fields=["preferred_sync_source"])
+        self.client.login(username="sync_user", password="BardzoMocneHaslo123!")
+
+        response = self.client.get(reverse("sync_sources"))
+
+        self.assertEqual(response.status_code, 200)
+        user.profile.refresh_from_db()
+        self.assertEqual(user.profile.preferred_sync_source, UserProfile.SYNC_SOURCE_MANUAL_CSV)
+        self.assertContains(response, "W fazie rozwoju")
+        self.assertContains(response, "Integracja z Health Connect")
+        self.assertNotContains(response, 'value="health_connect"')
+        self.assertContains(response, 'value="manual_csv"')
 
     def test_user_can_submit_bug_report(self):
         user = User.objects.create_user(

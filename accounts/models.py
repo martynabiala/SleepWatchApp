@@ -115,7 +115,7 @@ class UserProfile(models.Model):
         "Preferowane źródło synchronizacji",
         max_length=20,
         choices=PREFERRED_SYNC_SOURCE_CHOICES,
-        default=SYNC_SOURCE_HEALTH_CONNECT,
+        default=SYNC_SOURCE_MANUAL_CSV,
     )
     active_hypothesis = models.CharField(
         "Aktywna hipoteza miesiąca",
