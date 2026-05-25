@@ -985,12 +985,17 @@ class AccountsFlowTests(TestCase):
                 sleep_date=today - timedelta(days=day),
                 sleep_duration_minutes=420 + (day % 5) * 10,
                 avg_heart_rate=55 + (day % 4),
+                light_sleep_minutes=220,
+                deep_sleep_minutes=120,
+                rem_minutes=100,
             )
 
         response = self.client.get(reverse("sleep_analysis"), {"range": "90"})
 
         self.assertContains(response, "Analiza snu")
         self.assertContains(response, "90 dni")
+        self.assertContains(response, "Struktura faz snu")
+        self.assertContains(response, "Sen głęboki")
         self.assertContains(response, "Wykres czasu snu")
         self.assertContains(response, "Wykres liczby wybudzeń")
         self.assertContains(response, "Wykres średniego tętna")

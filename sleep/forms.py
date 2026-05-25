@@ -93,7 +93,7 @@ class ManualSleepRecordForm(forms.ModelForm):
             "awakenings_count": "Liczba wybudzeń",
         }
         help_texts = {
-            "awakenings_count": "Opcjonalnie, jeśli pamiętasz ile razy obudziłaś się w nocy.",
+            "awakenings_count": "Opcjonalnie, jeśli pamiętasz liczbę wybudzeń w nocy.",
         }
         widgets = {
             "sleep_date": forms.DateInput(attrs={"type": "date"}),

@@ -382,6 +382,7 @@ def analysis_view(request: HttpRequest) -> HttpResponse:
         "selected_range": selected_range,
         "selected_range_label": selected_option["label"],
         "analysis_stats": build_sleep_stats(sleep_records, selected_days),
+        "sleep_phase_analysis": build_sleep_phase_analysis(sleep_records, selected_days),
         "sleep_chart": build_chart_series(sleep_records, selected_days, "sleep_duration_minutes"),
         "hr_chart": build_chart_series(sleep_records, selected_days, "avg_heart_rate"),
         "awakenings_chart": build_chart_series(sleep_records, selected_days, "awakenings_count"),
@@ -1412,7 +1413,7 @@ def friends_view(request: HttpRequest) -> HttpResponse:
                     existing.status = Friendship.STATUS_PENDING
                     existing.responded_at = None
                     existing.save(update_fields=["sender", "receiver", "status", "responded_at", "updated_at"])
-                    messages.success(request, "Wysłałyśmy nowe zaproszenie do znajomych.")
+                    messages.success(request, "Nowe zaproszenie do znajomych zostało wysłane.")
                 return redirect("friends")
 
             Friendship.objects.create(
@@ -2597,6 +2598,68 @@ def build_chart_series(queryset, days, field_name):
     }
 
 
+def build_sleep_phase_analysis(queryset, days):
+    end_date = timezone.localdate()
+    start_date = end_date - timedelta(days=days - 1)
+    records = list(
+        queryset.filter(sleep_date__range=(start_date, end_date))
+        .exclude(light_sleep_minutes__isnull=True, deep_sleep_minutes__isnull=True, rem_minutes__isnull=True)
+        .values("light_sleep_minutes", "deep_sleep_minutes", "rem_minutes")
+    )
+    phase_records = [
+        record
+        for record in records
+        if (record["light_sleep_minutes"] or 0)
+        + (record["deep_sleep_minutes"] or 0)
+        + (record["rem_minutes"] or 0)
+        > 0
+    ]
+    if not phase_records:
+        return None
+
+    totals = {
+        "light": sum(record["light_sleep_minutes"] or 0 for record in phase_records),
+        "deep": sum(record["deep_sleep_minutes"] or 0 for record in phase_records),
+        "rem": sum(record["rem_minutes"] or 0 for record in phase_records),
+    }
+    total_phase_minutes = sum(totals.values())
+    if not total_phase_minutes:
+        return None
+
+    phase_labels = {
+        "light": "Sen lekki",
+        "deep": "Sen głęboki",
+        "rem": "REM",
+    }
+    phase_classes = {
+        "light": "phase-light",
+        "deep": "phase-deep",
+        "rem": "phase-rem",
+    }
+    phases = []
+    for key in ("light", "deep", "rem"):
+        average_minutes = totals[key] / len(phase_records)
+        percentage = round((totals[key] / total_phase_minutes) * 100)
+        phases.append(
+            {
+                "key": key,
+                "label": phase_labels[key],
+                "css_class": phase_classes[key],
+                "avg_display": minutes_to_display(average_minutes),
+                "percentage": percentage,
+            }
+        )
+
+    dominant_phase = max(phases, key=lambda phase: phase["percentage"])
+    return {
+        "total_nights": len(phase_records),
+        "phases": phases,
+        "dominant_label": dominant_phase["label"].lower(),
+        "dominant_percentage": dominant_phase["percentage"],
+        "avg_total_display": minutes_to_display(total_phase_minutes / len(phase_records)),
+    }
+
+
 def build_line_chart(queryset, days, field_name):
     end_date = timezone.localdate()
     start_date = end_date - timedelta(days=days - 1)
@@ -2971,14 +3034,14 @@ def build_quality_insight(queryset):
         return {
             "tone": "positive",
             "title": "Przeważają dobre noce",
-            "body": f"{good_nights} z {total_notes} ocenionych nocy oznaczyłaś jako dobre, więc trend wygląda obiecująco.",
+            "body": f"{good_nights} z {total_notes} ocenionych nocy oznaczono jako dobra noc, więc trend wygląda obiecująco.",
         }
 
     if bad_share >= 0.5:
         return {
             "tone": "warning",
             "title": "Coraz więcej słabszych nocy",
-            "body": f"{bad_nights} z {total_notes} ocenionych nocy oznaczyłaś jako słabe. Warto sprawdzić poziom stresu, kofeiny i regularność snu.",
+            "body": f"{bad_nights} z {total_notes} ocenionych nocy oznaczono jako słaba noc. Warto sprawdzić poziom stresu, kofeiny i regularność snu.",
         }
 
     return None

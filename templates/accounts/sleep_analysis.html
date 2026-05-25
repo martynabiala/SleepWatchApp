@@ -134,6 +134,19 @@
         background: #ef8f70;
     }
 
+    .dot-phase,
+    .phase-light {
+        background: #77cfc0;
+    }
+
+    .phase-deep {
+        background: #0f766e;
+    }
+
+    .phase-rem {
+        background: #d97757;
+    }
+
     .analysis-chart-card .chart-meta {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -182,6 +195,53 @@
         color: var(--muted);
     }
 
+    .phase-card {
+        grid-column: 1 / -1;
+    }
+
+    .phase-summary {
+        display: grid;
+        gap: 18px;
+    }
+
+    .phase-bar {
+        display: flex;
+        min-height: 34px;
+        overflow: hidden;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 76, 70, 0.12);
+        background: rgba(255, 255, 255, 0.72);
+    }
+
+    .phase-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .phase-item {
+        border-radius: 18px;
+        border: 1px solid rgba(145, 124, 232, 0.14);
+        background: rgba(255, 255, 255, 0.82);
+        padding: 14px;
+        display: grid;
+        gap: 8px;
+    }
+
+    .phase-item-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 600;
+    }
+
+    .phase-item strong {
+        font-size: 1.2rem;
+        color: var(--text);
+    }
+
     .chart-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: start;
@@ -195,6 +255,7 @@
         .analysis-summary,
         .analysis-insights,
         .analysis-chart-card .chart-meta,
+        .phase-list,
         .chart-grid {
             grid-template-columns: 1fr;
         }
@@ -242,7 +303,8 @@
 
         .analysis-summary-card,
         .analysis-insight-card,
-        .analysis-stat {
+        .analysis-stat,
+        .phase-item {
             padding: 14px;
         }
 
@@ -290,6 +352,8 @@
     :root[data-theme="dark"] .analysis-chart-card,
     :root[data-theme="dark"] .analysis-chip,
     :root[data-theme="dark"] .analysis-stat,
+    :root[data-theme="dark"] .phase-item,
+    :root[data-theme="dark"] .phase-bar,
     :root[data-theme="dark"] .analysis-canvas-wrap,
     :root[data-theme="dark"] .analysis-empty {
         border-color: rgba(157, 225, 216, 0.16);
@@ -300,6 +364,8 @@
 
     :root[data-theme="dark"] .analysis-chip,
     :root[data-theme="dark"] .analysis-stat,
+    :root[data-theme="dark"] .phase-item,
+    :root[data-theme="dark"] .phase-bar,
     :root[data-theme="dark"] .analysis-canvas-wrap,
     :root[data-theme="dark"] .analysis-empty {
         background: rgba(10, 29, 31, 0.58);
@@ -386,6 +452,53 @@
     </div>
 
     <div class="chart-grid">
+        <section class="soft-card chart-card analysis-chart-card phase-card">
+            <div class="analysis-chart-head">
+                <div class="analysis-chart-copy">
+                    <h3>Struktura faz snu</h3>
+                    <p>Pokazuje średni udział snu lekkiego, głębokiego i REM w wybranym zakresie, jeśli import zawiera takie dane.</p>
+                </div>
+                <span class="analysis-chip"><span class="chip-dot dot-phase"></span>Fazy snu</span>
+            </div>
+            {% if sleep_phase_analysis %}
+                <div class="chart-meta">
+                    <div class="analysis-stat">
+                        <span>Noce z fazami</span>
+                        <strong>{{ sleep_phase_analysis.total_nights }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Średnia suma faz</span>
+                        <strong>{{ sleep_phase_analysis.avg_total_display }}</strong>
+                    </div>
+                    <div class="analysis-stat">
+                        <span>Największy udział</span>
+                        <strong>{{ sleep_phase_analysis.dominant_label }} {{ sleep_phase_analysis.dominant_percentage }}%</strong>
+                    </div>
+                </div>
+                <div class="phase-summary">
+                    <div class="phase-bar" aria-hidden="true">
+                        {% for phase in sleep_phase_analysis.phases %}
+                            <span class="phase-bar-segment {{ phase.css_class }}" style="width: {{ phase.percentage }}%;"></span>
+                        {% endfor %}
+                    </div>
+                    <div class="phase-list">
+                        {% for phase in sleep_phase_analysis.phases %}
+                            <div class="phase-item">
+                                <div class="phase-item-head">
+                                    <span class="chip-dot {{ phase.css_class }}" aria-hidden="true"></span>
+                                    <span>{{ phase.label }}</span>
+                                </div>
+                                <strong>{{ phase.avg_display }}</strong>
+                                <span>{{ phase.percentage }}% struktury snu</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="analysis-empty">Brakuje danych o fazach snu. Ta analiza pojawi się po imporcie danych zawierających sen lekki, głęboki i REM.</div>
+            {% endif %}
+        </section>
+
         <section class="soft-card chart-card analysis-chart-card">
             <div class="analysis-chart-head">
                 <div class="analysis-chart-copy">
