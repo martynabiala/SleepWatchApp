@@ -455,19 +455,19 @@
         <section class="soft-card chart-card analysis-chart-card phase-card">
             <div class="analysis-chart-head">
                 <div class="analysis-chart-copy">
-                    <h3>Struktura faz snu</h3>
-                    <p>Pokazuje średni udział snu lekkiego, głębokiego i REM w wybranym zakresie, jeśli import zawiera takie dane.</p>
+                    <h3>Podział snu na fazy</h3>
+                    <p>Pokazuje udział snu lekkiego, głębokiego i REM w wybranym zakresie, jeśli import zawiera takie dane.</p>
                 </div>
                 <span class="analysis-chip"><span class="chip-dot dot-phase"></span>Fazy snu</span>
             </div>
             {% if sleep_phase_analysis %}
                 <div class="chart-meta">
                     <div class="analysis-stat">
-                        <span>Noce z fazami</span>
+                        <span>Dane o fazach</span>
                         <strong>{{ sleep_phase_analysis.total_nights }}</strong>
                     </div>
                     <div class="analysis-stat">
-                        <span>Średnia suma faz</span>
+                        <span>Czas snu</span>
                         <strong>{{ sleep_phase_analysis.avg_total_display }}</strong>
                     </div>
                     <div class="analysis-stat">
@@ -489,7 +489,7 @@
                                     <span>{{ phase.label }}</span>
                                 </div>
                                 <strong>{{ phase.avg_display }}</strong>
-                                <span>{{ phase.percentage }}% struktury snu</span>
+                                <span>{{ phase.percentage }}% snu</span>
                             </div>
                         {% endfor %}
                     </div>

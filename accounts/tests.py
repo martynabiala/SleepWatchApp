@@ -994,7 +994,7 @@ class AccountsFlowTests(TestCase):
 
         self.assertContains(response, "Analiza snu")
         self.assertContains(response, "90 dni")
-        self.assertContains(response, "Struktura faz snu")
+        self.assertContains(response, "Podział snu na fazy")
         self.assertContains(response, "Sen głęboki")
         self.assertContains(response, "Wykres czasu snu")
         self.assertContains(response, "Wykres liczby wybudzeń")
