@@ -165,8 +165,7 @@
         border: 1px solid rgba(145, 124, 232, 0.14);
         background: #fff;
         padding: 18px 18px 12px;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
+        overflow: hidden;
     }
 
     .analysis-canvas-wrap canvas {
@@ -263,15 +262,15 @@
         }
 
         .analysis-canvas-wrap {
-            margin-inline: -4px;
-            padding: 12px 10px 10px;
+            margin-inline: 0;
+            padding: 10px 6px 8px;
             border-radius: 12px;
         }
 
         .analysis-canvas-wrap canvas {
-            width: 680px;
-            min-width: 680px;
-            height: 320px;
+            width: 100% !important;
+            min-width: 0;
+            height: 280px;
         }
 
         .analysis-empty {
@@ -282,9 +281,7 @@
 
     @media (max-width: 420px) {
         .analysis-canvas-wrap canvas {
-            width: 620px;
-            min-width: 620px;
-            height: 300px;
+            height: 260px;
         }
     }
 
@@ -500,6 +497,7 @@
         if (!canvas || !chartData || !window.Chart) {
             return;
         }
+        const isCompactChart = window.matchMedia("(max-width: 640px)").matches;
 
         new Chart(canvas, {
             type: "line",
@@ -513,9 +511,9 @@
                     pointBackgroundColor: "#ffffff",
                     pointBorderColor: options.color,
                     pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    borderWidth: 4,
+                    pointRadius: isCompactChart ? 2.5 : 4,
+                    pointHoverRadius: isCompactChart ? 4 : 6,
+                    borderWidth: isCompactChart ? 3 : 4,
                     tension: 0.35,
                     fill: true,
                     spanGaps: true
@@ -537,7 +535,7 @@
                         titleColor: "#ffffff",
                         bodyColor: "#ffffff",
                         cornerRadius: 12,
-                        padding: 12,
+                        padding: isCompactChart ? 10 : 12,
                         displayColors: false,
                         callbacks: {
                             label: function(context) {
@@ -553,9 +551,9 @@
                         },
                         ticks: {
                             color: "#6f5275",
-                            maxTicksLimit: 6,
+                            maxTicksLimit: isCompactChart ? 3 : 6,
                             font: {
-                                size: 12,
+                                size: isCompactChart ? 10 : 12,
                                 weight: "600"
                             }
                         },
@@ -567,9 +565,10 @@
                         beginAtZero: false,
                         ticks: {
                             color: "#6f5275",
-                            padding: 10,
+                            padding: isCompactChart ? 6 : 10,
+                            maxTicksLimit: isCompactChart ? 4 : 6,
                             font: {
-                                size: 12,
+                                size: isCompactChart ? 10 : 12,
                                 weight: "600"
                             },
                             callback: options.tickFormatter

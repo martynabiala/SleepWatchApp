@@ -1729,8 +1729,23 @@
             display: none;
         }
 
-        .mobile-bottom-nav-link {
+        .mobile-bottom-nav-link,
+        .mobile-bottom-nav-button {
             text-decoration: none;
+        }
+
+        .mobile-bottom-nav-form {
+            margin: 0;
+            min-width: 0;
+        }
+
+        .mobile-bottom-nav-button {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            font-family: inherit;
+            cursor: pointer;
         }
 
         .mobile-bottom-nav-icon {
@@ -1887,7 +1902,8 @@
                 box-shadow: 0 18px 42px rgba(24, 60, 93, 0.18);
             }
 
-            .mobile-bottom-nav-link {
+            .mobile-bottom-nav-link,
+            .mobile-bottom-nav-button {
                 min-width: 0;
                 min-height: 56px;
                 border-radius: 18px;
@@ -1926,6 +1942,11 @@
             :root[data-theme="dark"] .mobile-bottom-nav-link.is-active {
                 background: rgba(98, 194, 180, 0.16);
                 color: var(--text);
+            }
+
+            .mobile-bottom-nav-button:hover {
+                transform: none;
+                box-shadow: none;
             }
         }
         /* Clearwave-inspired refresh */
@@ -2159,6 +2180,7 @@
 
         .mobile-bottom-nav,
         .mobile-bottom-nav-link,
+        .mobile-bottom-nav-button,
         .mobile-bottom-nav-icon {
             border-radius: 8px;
         }
@@ -2400,7 +2422,8 @@
         .notification-content-button,
         .notification-action,
         .notification-read-button,
-        .mobile-bottom-nav-link {
+        .mobile-bottom-nav-link,
+        .mobile-bottom-nav-button {
             font-weight: 600;
         }
 
@@ -2508,8 +2531,9 @@
             }
 
             .topbar {
-                grid-template-columns: auto 1fr auto;
+                grid-template-columns: auto auto;
                 align-items: center;
+                justify-content: space-between;
                 gap: 10px;
                 margin-bottom: 10px;
                 padding: 10px;
@@ -2522,12 +2546,7 @@
             }
 
             .brand-wrap {
-                order: 2;
-                justify-self: start;
-                flex-direction: row;
-                gap: 10px;
-                min-width: 0;
-                text-align: left;
+                display: none;
             }
 
             .brand-copy {
@@ -2552,7 +2571,7 @@
             }
 
             .nav {
-                order: 3;
+                order: 2;
                 justify-self: end;
                 justify-content: flex-end;
                 gap: 6px;
@@ -2560,9 +2579,7 @@
             }
 
             .app-toolbar summary,
-            .settings-toggle,
             .theme-toggle,
-            .music-toggle,
             .notification-menu summary {
                 width: 42px;
                 min-width: 42px;
@@ -2570,6 +2587,8 @@
                 border-radius: 8px;
             }
 
+            .settings-toggle,
+            .music-toggle,
             .nav > form {
                 display: none;
             }
@@ -2790,7 +2809,8 @@
                 border-radius: 12px;
             }
 
-            .mobile-bottom-nav-link {
+            .mobile-bottom-nav-link,
+            .mobile-bottom-nav-button {
                 min-height: 54px;
                 padding: 6px 2px;
                 font-size: 0.66rem;
@@ -2806,19 +2826,6 @@
             .topbar {
                 gap: 8px;
                 padding: 8px;
-            }
-
-            .brand {
-                font-size: 1.08rem;
-            }
-
-            .brand-mark {
-                width: 40px;
-                height: 40px;
-            }
-
-            .settings-toggle {
-                display: none;
             }
 
             .app-toolbar-panel {
@@ -2837,7 +2844,8 @@
                 padding: 14px 10px;
             }
 
-            .mobile-bottom-nav-link span:last-child {
+            .mobile-bottom-nav-link span:last-child,
+            .mobile-bottom-nav-button span:last-child {
                 font-size: 0.62rem;
             }
         }
@@ -2996,18 +3004,21 @@
                     <span class="mobile-bottom-nav-icon" aria-hidden="true">+</span>
                     <span>Dodaj</span>
                 </a>
-                <a class="mobile-bottom-nav-link{% if current_route == 'sleep_list' or current_route == 'sleep_detail' %} is-active{% endif %}" href="{% url 'sleep_list' %}">
-                    <span class="mobile-bottom-nav-icon" aria-hidden="true">H</span>
-                    <span>Historia</span>
-                </a>
-                <a class="mobile-bottom-nav-link{% if current_route == 'evening_checkin' or current_route == 'morning_checkin' %} is-active{% endif %}" href="{% url 'evening_checkin' %}">
-                    <span class="mobile-bottom-nav-icon" aria-hidden="true">C</span>
-                    <span>Check-in</span>
-                </a>
                 <a class="mobile-bottom-nav-link{% if current_route == 'profile' %} is-active{% endif %}" href="{% url 'profile' %}">
                     <span class="mobile-bottom-nav-icon" aria-hidden="true">U</span>
                     <span>Profil</span>
                 </a>
+                <a class="mobile-bottom-nav-link{% if current_route == 'settings' %} is-active{% endif %}" href="{% url 'settings' %}">
+                    <span class="mobile-bottom-nav-icon" aria-hidden="true">S</span>
+                    <span>Ustawienia</span>
+                </a>
+                <form class="mobile-bottom-nav-form" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="mobile-bottom-nav-button" type="submit">
+                        <span class="mobile-bottom-nav-icon" aria-hidden="true">X</span>
+                        <span>Wyloguj</span>
+                    </button>
+                </form>
             </nav>
         {% endwith %}
     {% endif %}
