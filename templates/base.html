@@ -337,9 +337,35 @@
             text-align: left;
         }
 
+        .app-toolbar-panel form {
+            margin: 0;
+            display: block;
+        }
+
+        .app-toolbar-panel button {
+            width: 100%;
+            min-height: 0;
+            padding: 9px 12px;
+            border-radius: 16px;
+            background: rgba(22, 78, 125, 0.07);
+            color: var(--text);
+            border: 1px solid rgba(22, 78, 125, 0.08);
+            box-shadow: none;
+            font: inherit;
+            font-weight: 700;
+            text-align: left;
+            justify-content: flex-start;
+        }
+
         :root[data-theme="dark"] .app-toolbar-panel a {
             background: rgba(98, 194, 180, 0.14);
             border: 1px solid rgba(157, 225, 216, 0.16);
+        }
+
+        :root[data-theme="dark"] .app-toolbar-panel button {
+            background: rgba(98, 194, 180, 0.14);
+            border: 1px solid rgba(157, 225, 216, 0.16);
+            color: var(--text);
         }
 
         .app-toolbar-item-muted {
@@ -2598,7 +2624,8 @@
                 padding: 0 2px;
             }
 
-            .app-toolbar-panel a {
+            .app-toolbar-panel a,
+            .app-toolbar-panel button {
                 min-height: 38px;
                 padding: 8px 10px;
                 border-radius: 8px;
@@ -2790,8 +2817,7 @@
                 height: 40px;
             }
 
-            .settings-toggle,
-            .music-toggle {
+            .settings-toggle {
                 display: none;
             }
 
@@ -2800,7 +2826,8 @@
                 padding: 12px;
             }
 
-            .app-toolbar-panel a {
+            .app-toolbar-panel a,
+            .app-toolbar-panel button {
                 min-height: 36px;
                 padding: 8px;
                 font-size: 0.8rem;
@@ -2853,6 +2880,14 @@
                                         <div class="app-toolbar-section-label">Społeczność</div>
                                         <a href="{% url 'friends' %}">Znajomi</a>
                                         <a href="{% url 'peer_sleep' %}">Sen społeczności</a>
+                                    </div>
+                                    <div class="app-toolbar-section">
+                                        <div class="app-toolbar-section-label">Konto</div>
+                                        <a href="{% url 'settings' %}">Ustawienia</a>
+                                        <form method="post" action="{% url 'logout' %}">
+                                            {% csrf_token %}
+                                            <button type="submit">Wyloguj</button>
+                                        </form>
                                     </div>
                                 </nav>
                             </details>
