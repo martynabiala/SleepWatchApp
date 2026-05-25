@@ -165,6 +165,8 @@
         border: 1px solid rgba(145, 124, 232, 0.14);
         background: #fff;
         padding: 18px 18px 12px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
     }
 
     .analysis-canvas-wrap canvas {
@@ -204,6 +206,85 @@
 
         .analysis-canvas-wrap canvas {
             height: 260px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .panel {
+            padding: 16px 10px;
+        }
+
+        .analysis-page {
+            gap: 16px;
+        }
+
+        .analysis-header,
+        .analysis-chart-card {
+            padding: 18px;
+        }
+
+        .analysis-header h1 {
+            font-size: 1.8rem;
+            line-height: 1.12;
+        }
+
+        .analysis-range {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .analysis-range .button {
+            width: 100%;
+            min-height: 42px;
+            padding: 9px 8px;
+            font-size: 0.86rem;
+        }
+
+        .analysis-summary-card,
+        .analysis-insight-card,
+        .analysis-stat {
+            padding: 14px;
+        }
+
+        .analysis-chart-head {
+            gap: 10px;
+        }
+
+        .analysis-chart-copy h3 {
+            font-size: 1.18rem;
+            line-height: 1.2;
+        }
+
+        .analysis-chip {
+            width: fit-content;
+            padding: 7px 10px;
+            font-size: 0.8rem;
+        }
+
+        .analysis-canvas-wrap {
+            margin-inline: -4px;
+            padding: 12px 10px 10px;
+            border-radius: 12px;
+        }
+
+        .analysis-canvas-wrap canvas {
+            width: 680px;
+            min-width: 680px;
+            height: 320px;
+        }
+
+        .analysis-empty {
+            padding: 18px;
+            border-radius: 12px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .analysis-canvas-wrap canvas {
+            width: 620px;
+            min-width: 620px;
+            height: 300px;
         }
     }
 
