@@ -3001,9 +3001,9 @@
                     <span class="mobile-bottom-nav-icon" aria-hidden="true">U</span>
                     <span>Profil</span>
                 </a>
-                <a class="mobile-bottom-nav-link{% if current_route == 'settings' %} is-active{% endif %}" href="{% url 'settings' %}">
-                    <span class="mobile-bottom-nav-icon" aria-hidden="true">S</span>
-                    <span>Ustawienia</span>
+                <a class="mobile-bottom-nav-link{% if current_route == 'sleep_analysis' %} is-active{% endif %}" href="{% url 'sleep_analysis' %}">
+                    <span class="mobile-bottom-nav-icon" aria-hidden="true">A</span>
+                    <span>Analiza</span>
                 </a>
                 <form class="mobile-bottom-nav-form" method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
