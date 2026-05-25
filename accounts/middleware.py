@@ -32,6 +32,7 @@ class DemoAccountReadOnlyMiddleware:
             return False
 
         allowed_paths = {
+            reverse("demo_signup"),
             reverse("logout"),
         }
         return request.path not in allowed_paths

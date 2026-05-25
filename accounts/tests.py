@@ -517,6 +517,20 @@ class AccountsFlowTests(TestCase):
         self.assertIn("potwierdzenie adresu e-mail", mail.outbox[0].subject.lower())
         self.assertIn("jan@example.com", mail.outbox[0].to)
 
+    def test_demo_signup_action_logs_out_and_opens_signup(self):
+        User.objects.create_user(
+            username="demo_anna",
+            email="demo@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        self.client.login(username="demo_anna", password="BardzoMocneHaslo123!")
+
+        response = self.client.post(reverse("demo_signup"))
+
+        self.assertRedirects(response, reverse("signup"))
+        self.assertNotIn("_auth_user_id", self.client.session)
+
     def test_child_signup_sends_parental_consent_email(self):
         response = self.client.post(
             reverse("signup"),

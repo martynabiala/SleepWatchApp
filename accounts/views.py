@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth import authenticate, get_user_model, login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (
     LoginView,
@@ -144,6 +144,14 @@ def demo_account_view(request: HttpRequest) -> HttpResponse:
     login(request, demo_user, backend="django.contrib.auth.backends.ModelBackend")
     messages.success(request, "Otworzono konto demo SleepWatch.")
     return redirect("dashboard")
+
+
+@require_POST
+def demo_signup_view(request: HttpRequest) -> HttpResponse:
+    if request.user.is_authenticated and request.user.username == "demo_anna":
+        auth_logout(request)
+        messages.info(request, "Załóż własne konto, żeby zapisywać swoje dane i korzystać z aplikacji bez ograniczeń.")
+    return redirect("signup")
 
 
 def signup_view(request: HttpRequest) -> HttpResponse:
