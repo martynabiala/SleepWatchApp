@@ -2550,52 +2550,96 @@
 
             .notification-panel {
                 position: fixed;
-                top: 64px;
-                right: 10px;
-                left: 10px;
+                top: 62px;
+                right: 12px;
+                left: 12px;
                 width: auto;
-                max-height: min(72vh, 560px);
+                max-height: min(58dvh, 460px);
                 overflow: auto;
                 padding: 12px;
+                border-radius: 12px;
+                background: #ffffff;
+                z-index: 180;
             }
 
             .app-toolbar-panel {
                 position: fixed;
-                top: 64px;
-                left: 10px;
-                right: 10px;
+                top: 62px;
+                left: 12px;
+                right: 12px;
                 width: auto;
-                max-height: min(72vh, 560px);
+                max-height: min(62dvh, 480px);
                 overflow: auto;
-                padding: 12px;
-                gap: 8px;
-                border-radius: 8px;
+                padding: 14px;
+                gap: 10px;
+                border-radius: 12px;
+                background: #ffffff;
+                z-index: 180;
             }
 
             .app-toolbar-title {
-                font-size: 0.74rem;
-                padding: 2px 4px 0;
+                font-size: 0.72rem;
+                padding: 0 2px 2px;
             }
 
             .app-toolbar-section {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 6px;
             }
 
             .app-toolbar-section + .app-toolbar-section {
-                padding-top: 8px;
+                padding-top: 10px;
             }
 
             .app-toolbar-section-label {
-                font-size: 0.68rem;
-                padding: 0 4px;
+                grid-column: 1 / -1;
+                font-size: 0.66rem;
+                padding: 0 2px;
             }
 
             .app-toolbar-panel a {
-                min-height: 40px;
-                padding: 9px 11px;
+                min-height: 38px;
+                padding: 8px 10px;
                 border-radius: 8px;
-                font-size: 0.95rem;
+                font-size: 0.86rem;
                 line-height: 1.15;
+                white-space: normal;
+                box-shadow: none;
+            }
+
+            :root[data-theme="dark"] .notification-panel,
+            :root[data-theme="dark"] .app-toolbar-panel {
+                background: #132a2c;
+            }
+
+            body.has-open-menu .mobile-bottom-nav,
+            body.has-open-notifications .mobile-bottom-nav {
+                display: none;
+            }
+
+            .notification-panel-header {
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .notification-panel h3 {
+                font-size: 1rem;
+            }
+
+            .notification-read-button {
+                padding: 7px 9px;
+                font-size: 0.72rem;
+            }
+
+            .nav .notification-item {
+                padding: 10px;
+                border-radius: 8px;
+                gap: 8px;
+            }
+
+            .nav .notification-content-button strong {
+                font-size: 0.9rem;
             }
 
             .panel {
@@ -2749,6 +2793,17 @@
             .settings-toggle,
             .music-toggle {
                 display: none;
+            }
+
+            .app-toolbar-panel {
+                max-height: min(58dvh, 430px);
+                padding: 12px;
+            }
+
+            .app-toolbar-panel a {
+                min-height: 36px;
+                padding: 8px;
+                font-size: 0.8rem;
             }
 
             .panel {
@@ -2930,6 +2985,21 @@
                 return;
             }
 
+            const syncOpenState = () => {
+                document.body.classList.toggle(
+                    "has-open-menu",
+                    Boolean(document.querySelector(".app-toolbar[open]")),
+                );
+                document.body.classList.toggle(
+                    "has-open-notifications",
+                    Boolean(document.querySelector(".notification-menu[open]")),
+                );
+            };
+
+            closeableDetails.forEach((details) => {
+                details.addEventListener("toggle", syncOpenState);
+            });
+
             document.addEventListener("click", (event) => {
                 closeableDetails.forEach((details) => {
                     if (!details.open || details.contains(event.target)) {
@@ -2938,6 +3008,7 @@
 
                     details.open = false;
                 });
+                syncOpenState();
             });
 
             document.addEventListener("keydown", (event) => {
@@ -2948,6 +3019,7 @@
                 closeableDetails.forEach((details) => {
                     details.open = false;
                 });
+                syncOpenState();
             });
         }());
 
