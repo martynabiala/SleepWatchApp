@@ -14,6 +14,7 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView,
 )
+from django.core.management import call_command
 from django.core.mail import send_mail
 from django.db.models import Avg, Q
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
@@ -126,10 +127,18 @@ def demo_account_view(request: HttpRequest) -> HttpResponse:
 
     demo_user = User.objects.filter(username="demo_anna", is_active=True).first()
     if not demo_user:
-        messages.warning(
-            request,
-            "Konto demo nie jest jeszcze gotowe. Uruchom: py manage.py seed_demo_data --users 1 --days 14 --seed 42",
-        )
+        try:
+            call_command("seed_demo_data", users=1, days=14, seed=42, verbosity=0)
+        except Exception:
+            messages.warning(
+                request,
+                "Nie udało się teraz przygotować konta demo. Spróbuj ponownie za chwilę.",
+            )
+            return redirect("login")
+        demo_user = User.objects.filter(username="demo_anna", is_active=True).first()
+
+    if not demo_user:
+        messages.warning(request, "Nie udało się teraz przygotować konta demo. Spróbuj ponownie za chwilę.")
         return redirect("login")
 
     login(request, demo_user, backend="django.contrib.auth.backends.ModelBackend")
