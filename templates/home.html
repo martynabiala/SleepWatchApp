@@ -237,20 +237,24 @@
 
         .home-content,
         .home-visual {
-            padding: 22px 18px;
+            padding: 18px 14px;
         }
 
         .home-visual {
-            min-height: 330px;
+            min-height: auto;
         }
 
         .home-cat img {
-            width: min(210px, 82%);
+            width: min(170px, 72%);
+        }
+
+        .home-visual-inner {
+            gap: 12px;
         }
 
         .home-visual p {
-            font-size: 0.98rem;
-            line-height: 1.55;
+            font-size: 0.94rem;
+            line-height: 1.45;
         }
 
         .home-card {
@@ -280,11 +284,15 @@
     @media (max-width: 420px) {
         .home-content,
         .home-visual {
-            padding: 18px 14px;
+            padding: 16px 12px;
         }
 
         .home-visual {
-            min-height: 300px;
+            min-height: auto;
+        }
+
+        .home-cat img {
+            width: min(150px, 70%);
         }
 
         .home-card h2 {

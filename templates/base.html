@@ -2586,6 +2586,56 @@
                 display: none;
             }
 
+            body.is-guest .topbar {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 12px;
+            }
+
+            body.is-guest .topbar-balance {
+                display: none;
+            }
+
+            body.is-guest .brand-wrap {
+                justify-self: center;
+                gap: 8px;
+            }
+
+            body.is-guest .brand-copy {
+                display: grid;
+                gap: 2px;
+            }
+
+            body.is-guest .brand {
+                font-size: 1.05rem;
+                line-height: 1;
+            }
+
+            body.is-guest .tagline {
+                display: none;
+            }
+
+            body.is-guest .brand-mark {
+                width: 40px;
+                height: 40px;
+            }
+
+            body.is-guest .nav {
+                display: grid;
+                grid-template-columns: 42px minmax(0, 1fr) minmax(0, 1fr);
+                justify-self: stretch;
+                width: 100%;
+                gap: 8px;
+            }
+
+            body.is-guest .nav a {
+                min-height: 42px;
+                padding: 10px 8px;
+                justify-content: center;
+                text-align: center;
+                font-size: 0.86rem;
+            }
+
             .notification-panel {
                 position: fixed;
                 top: 62px;
@@ -2844,7 +2894,7 @@
         }
     </style>
 </head>
-<body>
+<body class="{% if user.is_authenticated %}is-authenticated{% else %}is-guest{% endif %}">
     <audio id="background-music" loop preload="auto">
         <source src="{% static 'bread-theme.mp3' %}" type="audio/mpeg">
     </audio>
