@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Panel główny - SleepWatch{% endblock %}
 
@@ -133,11 +133,11 @@
         object-fit: cover;
     }
 
-    .avatar-moon { background: linear-gradient(135deg, #0f766e 0%, #118f82 100%); }
+    .avatar-moon { background: linear-gradient(135deg, #39236e 0%, #7a5ad8 100%); }
     .avatar-star { background: linear-gradient(135deg, #d99a49 0%, #f1c36c 100%); }
     .avatar-cloud { background: linear-gradient(135deg, #59a8d3 0%, #b7dff1 100%); }
     .avatar-sun { background: linear-gradient(135deg, #d47c55 0%, #efb37d 100%); }
-    .avatar-leaf { background: linear-gradient(135deg, #2e8b7b 0%, #75c3b5 100%); }
+    .avatar-leaf { background: linear-gradient(135deg, #39236e 0%, #b7a8f3 100%); }
     .avatar-heart { background: linear-gradient(135deg, #b9617b 0%, #e3a4b5 100%); }
 
     .dashboard-header {
@@ -382,8 +382,8 @@
         margin-top: 16px;
         padding: 18px;
         border-radius: 8px;
-        border: 1px solid rgba(15, 118, 110, 0.14);
-        background: linear-gradient(180deg, rgba(244, 250, 247, 0.98), rgba(234, 246, 241, 0.92));
+        border: 1px solid rgba(57, 35, 110, 0.14);
+        background: linear-gradient(180deg, rgba(248, 247, 252, 0.98), rgba(240, 237, 249, 0.92));
         display: grid;
         gap: 12px;
     }
@@ -410,8 +410,8 @@
         display: grid;
         place-items: center;
         flex: 0 0 auto;
-        background: rgba(15, 118, 110, 0.12);
-        color: #0b4f4a;
+        background: rgba(57, 35, 110, 0.12);
+        color: #39236e;
         font-weight: 700;
     }
 
@@ -644,8 +644,8 @@
     }
 
     :root[data-theme="dark"] .dashboard-toolbar {
-        border-color: rgba(157, 225, 216, 0.16);
-        background: linear-gradient(135deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+        border-color: rgba(183, 168, 243, 0.16);
+        background: linear-gradient(135deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
         box-shadow: 0 14px 26px rgba(3, 10, 18, 0.24);
     }
 
@@ -675,10 +675,10 @@
     :root[data-theme="dark"] .chart-stat,
     :root[data-theme="dark"] .dashboard-canvas-wrap,
     :root[data-theme="dark"] .dashboard-empty {
-        border-color: rgba(157, 225, 216, 0.16);
+        border-color: rgba(183, 168, 243, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(98, 194, 180, 0.08), transparent 28%),
-            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+            radial-gradient(circle at top right, rgba(139, 114, 217, 0.08), transparent 28%),
+            linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
         box-shadow: 0 14px 28px rgba(3, 10, 18, 0.18);
     }
 
@@ -688,7 +688,7 @@
     :root[data-theme="dark"] .dashboard-day-plan,
     :root[data-theme="dark"] .dashboard-rating-card {
         background:
-            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+            linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .dashboard-card h1,
@@ -726,13 +726,13 @@
     :root[data-theme="dark"] .dashboard-alert-positive,
     :root[data-theme="dark"] .dashboard-alert-warning,
     :root[data-theme="dark"] .dashboard-alert-neutral {
-        background: linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+        background: linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .dashboard-hypothesis-meta,
     :root[data-theme="dark"] .dashboard-note {
-        background: rgba(98, 194, 180, 0.1);
-        border-color: rgba(157, 225, 216, 0.16);
+        background: rgba(139, 114, 217, 0.1);
+        border-color: rgba(183, 168, 243, 0.16);
     }
 
     :root[data-theme="dark"] .dashboard-avatar {
@@ -747,24 +747,24 @@
     :root[data-theme="dark"] .dashboard-hypothesis-label,
     :root[data-theme="dark"] .dashboard-day-plan li::marker,
     :root[data-theme="dark"] .dashboard-stars {
-        color: #8bded2;
+        color: #b7a8f3;
     }
 
     :root[data-theme="dark"] .meta-row {
-        border-bottom-color: rgba(157, 225, 216, 0.12);
+        border-bottom-color: rgba(183, 168, 243, 0.12);
     }
 
     :root[data-theme="dark"] .dashboard-form select,
     :root[data-theme="dark"] .dashboard-form input,
     :root[data-theme="dark"] .dashboard-form textarea {
-        background: rgba(12, 43, 42, 0.94);
-        border-color: rgba(157, 225, 216, 0.18);
+        background: rgba(29, 24, 50, 0.94);
+        border-color: rgba(183, 168, 243, 0.18);
         color: var(--text);
     }
 
     :root[data-theme="dark"] .dashboard-form select {
         color-scheme: dark;
-        background-color: #0c2b2a;
+        background-color: #151d2b;
     }
 
     @media (max-width: 1180px) {
@@ -840,9 +840,9 @@
     /* Clearwave-inspired dashboard refresh */
     .dashboard-toolbar {
         border-radius: 8px;
-        border-color: rgba(15, 76, 70, 0.14);
-        background: #0f766e;
-        box-shadow: 0 14px 28px rgba(15, 76, 70, 0.14);
+        border-color: rgba(57, 35, 110, 0.14);
+        background: #39236e;
+        box-shadow: 0 14px 28px rgba(57, 35, 110, 0.14);
     }
 
     .dashboard-toolbar a {
@@ -869,15 +869,15 @@
     .dashboard-hypothesis-meta,
     .dashboard-note {
         border-radius: 8px;
-        border-color: rgba(15, 76, 70, 0.12);
+        border-color: rgba(57, 35, 110, 0.12);
         background:
-            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 250, 0.96));
-        box-shadow: 0 12px 26px rgba(13, 73, 68, 0.07);
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(249, 248, 252, 0.96));
+        box-shadow: 0 12px 26px rgba(42, 31, 83, 0.07);
     }
 
     .dashboard-card {
         background:
-            linear-gradient(135deg, rgba(240, 250, 246, 0.92), rgba(255, 255, 255, 0.98) 42%),
+            linear-gradient(135deg, rgba(247, 244, 252, 0.92), rgba(255, 255, 255, 0.98) 42%),
             #ffffff;
     }
 
@@ -893,7 +893,7 @@
         top: 0;
         bottom: 0;
         width: 4px;
-        background: #0f766e;
+        background: #39236e;
     }
 
     .dashboard-summary-card strong {
@@ -906,7 +906,7 @@
     .dashboard-section-kicker,
     .dashboard-alert-label,
     .dashboard-hypothesis-label {
-        color: #0f766e;
+        color: #39236e;
     }
 
     .dashboard-avatar {
@@ -914,19 +914,19 @@
         box-shadow: none;
     }
 
-    .avatar-moon { background: linear-gradient(135deg, #0f766e 0%, #118f82 100%); }
+    .avatar-moon { background: linear-gradient(135deg, #39236e 0%, #7a5ad8 100%); }
     .avatar-star { background: linear-gradient(135deg, #d97757 0%, #f1b074 100%); }
-    .avatar-cloud { background: linear-gradient(135deg, #77cfc0 0%, #d9f3ee 100%); }
+    .avatar-cloud { background: linear-gradient(135deg, #7a5ad8 0%, #ebe6ff 100%); }
     .avatar-sun { background: linear-gradient(135deg, #e0a85b 0%, #f7d394 100%); }
-    .avatar-leaf { background: linear-gradient(135deg, #2f8f73 0%, #8bd6bc 100%); }
+    .avatar-leaf { background: linear-gradient(135deg, #39236e 0%, #b7a8f3 100%); }
     .avatar-heart { background: linear-gradient(135deg, #be6b72 0%, #e6a0a7 100%); }
 
     .progress {
-        background: rgba(15, 118, 110, 0.12);
+        background: rgba(57, 35, 110, 0.12);
     }
 
     .progress-bar {
-        background: linear-gradient(90deg, #0f766e, #d97757);
+        background: linear-gradient(90deg, #39236e, #f0ad4e);
     }
 
     .dashboard-day-plan ul {
@@ -950,8 +950,8 @@
     :root[data-theme="dark"] .chart-stat,
     :root[data-theme="dark"] .dashboard-hypothesis-meta,
     :root[data-theme="dark"] .dashboard-note {
-        border-color: rgba(157, 225, 216, 0.16);
-        background: linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+        border-color: rgba(183, 168, 243, 0.16);
+        background: linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
         box-shadow: 0 12px 26px rgba(2, 15, 16, 0.24);
     }
 
@@ -960,23 +960,23 @@
     }
 
     :root[data-theme="dark"] .dashboard-toolbar {
-        border-color: rgba(157, 225, 216, 0.16);
-        background: linear-gradient(135deg, #173f42, #235d5d);
+        border-color: rgba(183, 168, 243, 0.16);
+        background: linear-gradient(135deg, #211744, #39236e);
         box-shadow: 0 12px 26px rgba(2, 15, 16, 0.24);
     }
 
     :root[data-theme="dark"] .dashboard-experiment-status {
-        border-color: rgba(157, 225, 216, 0.16);
-        background: linear-gradient(180deg, rgba(15, 35, 37, 0.98), rgba(12, 32, 34, 0.96));
+        border-color: rgba(183, 168, 243, 0.16);
+        background: linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .dashboard-experiment-status-icon {
-        background: rgba(98, 194, 180, 0.14);
-        color: #bff1e9;
+        background: rgba(139, 114, 217, 0.14);
+        color: #ddd4ff;
     }
 
     :root[data-theme="dark"] .dashboard-summary-card::before {
-        background: #62c2b4;
+        background: #8b72d9;
     }
 
     :root[data-theme="dark"] .dashboard-kicker,
@@ -984,7 +984,7 @@
     :root[data-theme="dark"] .dashboard-section-kicker,
     :root[data-theme="dark"] .dashboard-alert-label,
     :root[data-theme="dark"] .dashboard-hypothesis-label {
-        color: #8bded2;
+        color: #b7a8f3;
     }
 
     :root[data-theme="dark"] .dashboard-card h1,
@@ -996,11 +996,11 @@
     }
 
     :root[data-theme="dark"] .progress {
-        background: rgba(98, 194, 180, 0.16);
+        background: rgba(139, 114, 217, 0.16);
     }
 
     :root[data-theme="dark"] .progress-bar {
-        background: linear-gradient(90deg, #62c2b4, #d9a06f);
+        background: linear-gradient(90deg, #8b72d9, #f0ad4e);
     }
 
     .dashboard-toolbar a,
@@ -1189,6 +1189,540 @@
             grid-template-columns: auto minmax(0, 1fr);
         }
     }
+
+    /* Purple portfolio-style dashboard refresh */
+    .dashboard-page {
+        gap: 20px;
+    }
+
+    .dashboard-hero {
+        gap: 0;
+    }
+
+    .dashboard-card,
+    .dashboard-section,
+    .dashboard-side-card,
+    .dashboard-summary-card,
+    .dashboard-day-plan,
+    .dashboard-tip,
+    .dashboard-alert-card,
+    .dashboard-hypothesis-card,
+    .dashboard-mini-card,
+    .dashboard-chart-card,
+    .comparison-card,
+    .insight-card,
+    .dashboard-canvas-wrap,
+    .dashboard-empty,
+    .chart-stat,
+    .dashboard-hypothesis-meta,
+    .dashboard-note {
+        border-radius: 0;
+        border: 1px solid rgba(48, 49, 51, 0.08);
+        background: #ffffff;
+        box-shadow: 0 18px 42px rgba(42, 31, 83, 0.07);
+    }
+
+    .dashboard-card {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .dashboard-page {
+        max-width: 1380px;
+        margin: 0 auto;
+    }
+
+    .dashboard-hero-main {
+        display: grid;
+        grid-template-columns: minmax(230px, 0.82fr) minmax(340px, 1.55fr) minmax(230px, 0.82fr);
+        gap: 0;
+        background: #ffffff;
+    }
+
+    .dashboard-header {
+        grid-column: 1 / -1;
+        padding: 22px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 22px;
+        border-bottom: 1px solid rgba(48, 49, 51, 0.08);
+        background: #ffffff;
+    }
+
+    .dashboard-intro {
+        gap: 14px;
+    }
+
+    .dashboard-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        color: #ffffff;
+        font-size: 1.2rem;
+        background: linear-gradient(135deg, #39236e 0%, #7a5ad8 100%);
+        box-shadow: none;
+    }
+
+    .avatar-moon,
+    .avatar-star,
+    .avatar-cloud,
+    .avatar-sun,
+    .avatar-leaf,
+    .avatar-heart {
+        background: linear-gradient(135deg, #39236e 0%, #7a5ad8 100%);
+    }
+
+    .dashboard-kicker {
+        color: #7c858c;
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        font-weight: 700;
+    }
+
+    .dashboard-header h1 {
+        font-size: clamp(1.45rem, 2.2vw, 2.1rem);
+        font-weight: 400;
+        color: #303133;
+    }
+
+    .dashboard-header p {
+        color: #8b9298;
+        font-size: 0.95rem;
+    }
+
+    .dashboard-actions {
+        flex: 0 0 auto;
+        justify-content: flex-end;
+    }
+
+    .dashboard-actions .button {
+        min-height: 38px;
+        padding: 9px 18px;
+    }
+
+    .dashboard-summary-grid {
+        display: contents;
+    }
+
+    .dashboard-summary-card {
+        min-height: 250px;
+        padding: 24px 28px;
+        border-width: 0 1px 1px 0;
+        box-shadow: none;
+        justify-content: flex-start;
+        gap: 14px;
+        position: relative;
+    }
+
+    .dashboard-summary-card::before {
+        display: none;
+    }
+
+    .dashboard-summary-card:nth-child(1) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .dashboard-summary-card:nth-child(2) {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .dashboard-summary-card:nth-child(3) {
+        grid-column: 3;
+        grid-row: 2;
+        border-right: 0;
+    }
+
+    .dashboard-summary-card:nth-child(4) {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .dashboard-summary-card:nth-child(4) strong {
+        font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+        line-height: 1.25;
+        font-weight: 500;
+    }
+
+    .dashboard-summary-card:nth-child(4) p {
+        font-size: 0.92rem;
+        line-height: 1.55;
+    }
+
+    .dashboard-day-plan {
+        grid-column: 2 / 4;
+        grid-row: 3;
+        min-height: 240px;
+        padding: 28px;
+        border-width: 0 0 1px;
+        box-shadow: none;
+    }
+
+    .dashboard-summary-card span,
+    .dashboard-tip-label,
+    .dashboard-section-kicker,
+    .dashboard-alert-label,
+    .dashboard-hypothesis-label {
+        color: #7c858c;
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .dashboard-summary-card strong {
+        color: #303133;
+        font-size: clamp(1.7rem, 2.35vw, 2.4rem);
+        font-weight: 400;
+        letter-spacing: 0;
+    }
+
+    .dashboard-summary-card p,
+    .dashboard-day-plan ul,
+    .dashboard-section p,
+    .dashboard-hypothesis-card p {
+        color: #7c858c;
+        font-weight: 300;
+    }
+
+    .dashboard-summary-card .button {
+        margin-top: auto;
+    }
+
+    .dashboard-mini-chart {
+        margin-top: auto;
+        min-height: 92px;
+        border-radius: 18px;
+        border: 1px solid rgba(57, 35, 110, 0.1);
+        background: linear-gradient(180deg, rgba(248, 247, 252, 0.95), rgba(255, 255, 255, 0.86));
+        padding: 12px 12px 8px;
+    }
+
+    .dashboard-mini-chart canvas {
+        display: block;
+        width: 100%;
+        height: 82px;
+    }
+
+    .progress {
+        width: 100%;
+        height: 10px;
+        margin-top: auto;
+        border-radius: 999px;
+        background: #ececf4;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #39236e 0%, #7a5ad8 100%);
+    }
+
+    .dashboard-summary-card:nth-child(2)::after {
+        display: none;
+    }
+
+    .dashboard-last-night-card {
+        justify-content: center;
+    }
+
+    .dashboard-last-night-content {
+        width: min(100%, 260px);
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+        margin: auto;
+        text-align: center;
+    }
+
+    .dashboard-last-night-value {
+        color: #202124;
+        font-size: clamp(2.2rem, 3.4vw, 3.25rem);
+        line-height: 0.95;
+        font-weight: 520;
+        letter-spacing: -0.035em;
+    }
+
+    .dashboard-last-night-phases {
+        display: grid;
+        gap: 8px;
+        color: #303133;
+        font-size: 0.94rem;
+        font-weight: 650;
+        line-height: 1.35;
+    }
+
+    .dashboard-last-night-phases div {
+        display: grid;
+        grid-template-columns: 78px auto;
+        justify-content: center;
+        align-items: baseline;
+        gap: 10px;
+    }
+
+    .dashboard-last-night-phases span,
+    .dashboard-last-night-phases strong {
+        width: auto;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        line-height: 1.25;
+        letter-spacing: 0;
+        text-transform: none;
+    }
+
+    .dashboard-last-night-phases span {
+        color: #6d5a9f;
+        font-size: 0.82rem;
+        font-weight: 800;
+        text-align: right;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .dashboard-last-night-phases strong {
+        color: #202124;
+        font-size: 1rem;
+        font-weight: 700;
+        text-align: left;
+    }
+
+    .dashboard-last-night-empty {
+        color: #7c858c;
+        font-size: 0.92rem;
+        font-weight: 430;
+        line-height: 1.5;
+    }
+
+    .dashboard-summary-card:nth-child(3) {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+    }
+
+    .dashboard-summary-card:nth-child(3)::after {
+        display: none;
+    }
+
+    .dashboard-trend-card {
+        min-height: 258px;
+    }
+
+    .dashboard-trend-content {
+        width: min(100%, 260px);
+        display: grid;
+        justify-items: center;
+        gap: 16px;
+        margin: auto;
+        text-align: center;
+    }
+
+    .dashboard-trend-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: #39236e;
+        font-size: 0.95rem;
+        font-weight: 750;
+    }
+
+    .dashboard-trend-arrow {
+        font-size: 1.05rem;
+        line-height: 1;
+    }
+
+    .dashboard-trend-value {
+        color: #202124;
+        font-size: clamp(2.2rem, 3.4vw, 3.25rem);
+        line-height: 0.95;
+        font-weight: 520;
+        letter-spacing: -0.035em;
+    }
+
+    .dashboard-trend-caption {
+        color: #7c858c;
+        font-size: 0.88rem;
+        font-weight: 650;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .dashboard-section {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .dashboard-experiment-grid {
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 0;
+    }
+
+    .dashboard-hypothesis-card {
+        min-height: 260px;
+        padding: 28px;
+        border-width: 0 1px 0 0;
+        box-shadow: none;
+    }
+
+    .dashboard-hypothesis-card:last-child {
+        border-right: 0;
+    }
+
+    .dashboard-experiment-status,
+    .dashboard-hypothesis-meta,
+    .dashboard-note,
+    .dashboard-experiment-list div {
+        border-color: rgba(57, 35, 110, 0.1);
+        background: #f8f7fc;
+        box-shadow: none;
+    }
+
+    .dashboard-experiment-status-icon {
+        background: rgba(57, 35, 110, 0.1);
+        color: #39236e;
+    }
+
+    .dashboard-experiment-list div {
+        color: #303133;
+        font-weight: 400;
+    }
+
+    .dashboard-toolbar {
+        background: #ffffff;
+        border: 1px solid rgba(48, 49, 51, 0.08);
+        box-shadow: 0 18px 42px rgba(42, 31, 83, 0.07);
+    }
+
+    .dashboard-toolbar a {
+        color: #39236e;
+        border-color: rgba(57, 35, 110, 0.1);
+        background: #f8f7fc;
+    }
+
+    .dashboard-toolbar a::before {
+        background: #7a5ad8;
+    }
+
+    :root[data-theme="dark"] .dashboard-card,
+    :root[data-theme="dark"] .dashboard-section,
+    :root[data-theme="dark"] .dashboard-side-card,
+    :root[data-theme="dark"] .dashboard-summary-card,
+    :root[data-theme="dark"] .dashboard-day-plan,
+    :root[data-theme="dark"] .dashboard-tip,
+    :root[data-theme="dark"] .dashboard-alert-card,
+    :root[data-theme="dark"] .dashboard-hypothesis-card,
+    :root[data-theme="dark"] .dashboard-mini-card,
+    :root[data-theme="dark"] .dashboard-chart-card,
+    :root[data-theme="dark"] .comparison-card,
+    :root[data-theme="dark"] .insight-card,
+    :root[data-theme="dark"] .dashboard-canvas-wrap,
+    :root[data-theme="dark"] .dashboard-empty,
+    :root[data-theme="dark"] .chart-stat,
+    :root[data-theme="dark"] .dashboard-hypothesis-meta,
+    :root[data-theme="dark"] .dashboard-note,
+    :root[data-theme="dark"] .dashboard-header,
+    :root[data-theme="dark"] .dashboard-toolbar {
+        border-color: rgba(255, 255, 255, 0.1);
+        background: #1b2435;
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+    }
+
+    :root[data-theme="dark"] .dashboard-header h1,
+    :root[data-theme="dark"] .dashboard-summary-card strong,
+    :root[data-theme="dark"] .dashboard-section h3,
+    :root[data-theme="dark"] .dashboard-hypothesis-card h3,
+    :root[data-theme="dark"] .dashboard-day-plan h3 {
+        color: #f3f6fb;
+    }
+
+    :root[data-theme="dark"] .dashboard-kicker,
+    :root[data-theme="dark"] .dashboard-summary-card span,
+    :root[data-theme="dark"] .dashboard-tip-label,
+    :root[data-theme="dark"] .dashboard-section-kicker,
+    :root[data-theme="dark"] .dashboard-alert-label,
+    :root[data-theme="dark"] .dashboard-hypothesis-label {
+        color: #b7a8f3;
+    }
+
+    :root[data-theme="dark"] .dashboard-summary-card p,
+    :root[data-theme="dark"] .dashboard-day-plan ul,
+    :root[data-theme="dark"] .dashboard-section p,
+    :root[data-theme="dark"] .dashboard-hypothesis-card p,
+    :root[data-theme="dark"] .dashboard-header p {
+        color: #b4becb;
+    }
+
+    :root[data-theme="dark"] .dashboard-experiment-status,
+    :root[data-theme="dark"] .dashboard-hypothesis-meta,
+    :root[data-theme="dark"] .dashboard-note,
+    :root[data-theme="dark"] .dashboard-mini-chart,
+    :root[data-theme="dark"] .dashboard-experiment-list div {
+        border-color: rgba(183, 168, 243, 0.14);
+        background: #232e44;
+        color: #f3f6fb;
+    }
+
+    :root[data-theme="dark"] .dashboard-experiment-list div {
+        background: rgba(196, 181, 253, 0.1);
+        color: #ede9fe;
+    }
+
+    :root[data-theme="dark"] .dashboard-experiment-status-icon {
+        background: rgba(139, 114, 217, 0.16);
+        color: #b7a8f3;
+    }
+
+    :root[data-theme="dark"] .dashboard-toolbar a {
+        color: #f3f6fb;
+        border-color: rgba(183, 168, 243, 0.14);
+        background: #232e44;
+    }
+
+    :root[data-theme="dark"] .dashboard-summary-card:nth-child(2)::after {
+        background:
+            linear-gradient(180deg, rgba(27, 36, 53, 0), #1b2435),
+            repeating-linear-gradient(to bottom, transparent 0 23px, rgba(255, 255, 255, 0.08) 24px),
+            linear-gradient(135deg, transparent 0 12%, rgba(183, 168, 243, 0.12) 12% 38%, transparent 38% 45%, rgba(139, 114, 217, 0.18) 45% 72%, transparent 72%);
+        border-bottom-color: rgba(183, 168, 243, 0.42);
+    }
+
+    @media (max-width: 980px) {
+        .dashboard-hero-main {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-header,
+        .dashboard-summary-card:nth-child(1),
+        .dashboard-summary-card:nth-child(2),
+        .dashboard-summary-card:nth-child(3),
+        .dashboard-summary-card:nth-child(4),
+        .dashboard-day-plan {
+            grid-column: 1;
+            grid-row: auto;
+            border-width: 0 0 1px;
+        }
+
+        .dashboard-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .dashboard-experiment-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-hypothesis-card {
+            border-width: 0 0 1px;
+        }
+    }
 </style>
 
 <div class="dashboard-page">
@@ -1198,7 +1732,7 @@
                 <div class="dashboard-kicker">Panel główny</div>
                 <div class="dashboard-intro">
                     {% if profile.avatar_image_src %}
-                        <img class="dashboard-avatar dashboard-avatar-photo" src="{{ profile.avatar_image_src }}" alt="Awatar uzytkownika">
+                        <img class="dashboard-avatar dashboard-avatar-photo" src="{{ profile.avatar_image_src }}" alt="Awatar użytkownika">
                     {% else %}
                         <div class="dashboard-avatar avatar-{{ profile.avatar }}">{{ profile.avatar_symbol }}</div>
                     {% endif %}
@@ -1215,36 +1749,56 @@
             </div>
 
             <div class="dashboard-summary-grid">
-                <article class="dashboard-summary-card">
-                    <span>Ostatni zapis w aplikacji</span>
-                    <strong>{% if last_sleep %}{{ last_sleep.sleep_duration_display }}{% else %}-{% endif %}</strong>
-                    <p>{% if last_sleep %}{{ last_sleep.sleep_date|date:"d.m.Y" }}{% else %}Dodaj pierwszą noc, aby zobaczyć podsumowanie.{% endif %}</p>
-                    {% if last_sleep_outside_current_week %}
-                        <p>Ostatni zapis jest spoza bieżącego tygodnia.</p>
-                    {% endif %}
-                    <a class="button secondary" href="{% if last_sleep %}{% url 'sleep_detail' last_sleep.pk %}{% else %}{% url 'sleep_add' %}{% endif %}">
-                        {% if last_sleep %}Szczegóły{% else %}Dodaj noc{% endif %}
-                    </a>
+                <article class="dashboard-summary-card dashboard-last-night-card">
+                    <div class="dashboard-last-night-content">
+                        <span>Ostatnia noc</span>
+                        <strong class="dashboard-last-night-value">{% if last_sleep %}{{ last_sleep.sleep_duration_display }}{% else %}-{% endif %}</strong>
+                        {% if last_sleep_phase_summary %}
+                            <div class="dashboard-last-night-phases">
+                                {% for phase in last_sleep_phase_summary %}
+                                    <div><span>{{ phase.label }}:</span><strong>{{ phase.value }}</strong></div>
+                                {% endfor %}
+                            </div>
+                        {% elif last_sleep %}
+                            <div class="dashboard-last-night-empty">Brak danych o fazach snu.</div>
+                        {% else %}
+                            <div class="dashboard-last-night-empty">Dodaj pierwszą noc, aby zobaczyć podsumowanie.</div>
+                        {% endif %}
+                    </div>
                 </article>
 
                 <article class="dashboard-summary-card">
                     <span>Ostatnie 7 dni</span>
                     {% if stats_7.total >= 2 %}
                         <strong>{{ stats_7.avg_sleep_display }}</strong>
-                        <p>{{ stats_7.good_nights }} dobrych nocy na {{ stats_7.total }} zapisanych.</p>
+                        {% if sleep_chart_7 %}
+                            <div class="dashboard-mini-chart">
+                                <canvas id="dashboardSleepMiniChart" aria-label="Wykres czasu snu z ostatnich 7 dni"></canvas>
+                            </div>
+                        {% endif %}
                     {% else %}
                         <strong>Za mało danych</strong>
                         <p>Dodaj 2 noce, żeby zobaczyć średnią.</p>
                     {% endif %}
-                    <a class="button secondary" href="{% url 'sleep_analysis' %}">Analiza</a>
                 </article>
 
-                <article class="dashboard-summary-card">
-                    <span>{{ weekly_goal.title }}</span>
-                    <strong>{{ weekly_goal.label }}</strong>
-                    <p>{% if weekly_goal.progress == 0 %}{{ weekly_goal.empty_hint }}{% else %}{{ weekly_goal.hint }}{% endif %}</p>
-                    <div class="progress" aria-hidden="true">
-                        <div class="progress-bar" data-progress="{{ weekly_goal.percent }}"></div>
+                <article class="dashboard-summary-card dashboard-trend-card">
+                    <div class="dashboard-trend-content">
+                        <span>Trend tygodniowy</span>
+                        <div class="dashboard-trend-status">
+                            <span class="dashboard-trend-arrow" aria-hidden="true">
+                                {% if self_comparison.delta_sleep_minutes > 0 %}↗{% elif self_comparison.delta_sleep_minutes < 0 %}↘{% else %}→{% endif %}
+                            </span>
+                            {% if self_comparison.delta_sleep_minutes > 0 %}
+                                Poprawa
+                            {% elif self_comparison.delta_sleep_minutes < 0 %}
+                                Spadek
+                            {% else %}
+                                Bez zmian
+                            {% endif %}
+                        </div>
+                        <strong class="dashboard-trend-value">{{ self_comparison.delta_sleep_display }}</strong>
+                        <div class="dashboard-trend-caption">średniego snu</div>
                     </div>
                 </article>
 
@@ -1337,11 +1891,84 @@
     </section>
 </div>
 
+{{ sleep_chart_7|json_script:"dashboard-sleep-chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
     document.querySelectorAll(".progress-bar[data-progress]").forEach((element) => {
         const rawValue = Number(element.dataset.progress);
         const safeValue = Number.isFinite(rawValue) ? Math.max(0, Math.min(100, rawValue)) : 0;
         element.style.width = `${safeValue}%`;
     });
+
+    function dashboardMinutesLabel(value) {
+        const hours = Math.floor(value / 60);
+        const minutes = Math.round(value % 60);
+        return minutes === 0 ? `${hours} h` : `${hours} h ${String(minutes).padStart(2, "0")}`;
+    }
+
+    const dashboardChartElement = document.getElementById("dashboard-sleep-chart-data");
+    const dashboardChartCanvas = document.getElementById("dashboardSleepMiniChart");
+    if (dashboardChartElement && dashboardChartCanvas && window.Chart) {
+        const chartData = JSON.parse(dashboardChartElement.textContent);
+        new Chart(dashboardChartCanvas, {
+            type: "line",
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    data: chartData.values,
+                    borderColor: "#39236e",
+                    backgroundColor: "rgba(122, 90, 216, 0.14)",
+                    pointBackgroundColor: "#ffffff",
+                    pointBorderColor: "#39236e",
+                    pointBorderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    borderWidth: 3,
+                    tension: 0.35,
+                    fill: true,
+                    spanGaps: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: "#39236e",
+                        titleColor: "#ffffff",
+                        bodyColor: "#ffffff",
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return chartData.display_values[context.dataIndex];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: "#7c6f93",
+                            maxTicksLimit: 4,
+                            font: { size: 10, weight: "600" }
+                        },
+                        border: { display: false }
+                    },
+                    y: {
+                        grid: { color: "rgba(57, 35, 110, 0.08)" },
+                        ticks: {
+                            color: "#7c6f93",
+                            maxTicksLimit: 3,
+                            font: { size: 10, weight: "600" },
+                            callback: dashboardMinutesLabel
+                        },
+                        border: { display: false }
+                    }
+                }
+            }
+        });
+    }
 </script>
 {% endblock %}

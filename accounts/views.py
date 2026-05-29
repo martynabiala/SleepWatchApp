@@ -296,6 +296,7 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
         "last_sleep_outside_current_week": is_sleep_outside_current_week(last_sleep),
         "last_sleep_note": last_sleep_note,
         "last_sleep_evaluation": last_sleep_evaluation,
+        "last_sleep_phase_summary": build_last_sleep_phase_summary(last_sleep),
         "stats_7": stats_7,
         "stats_30": stats_30,
         "sleep_chart_7": build_chart_series(sleep_records, 7, "sleep_duration_minutes"),
@@ -3086,6 +3087,18 @@ def summarize_auto_nights(records):
         "good_nights": good_nights,
         "bad_nights": bad_nights,
     }
+
+
+def build_last_sleep_phase_summary(record):
+    if record is None:
+        return []
+
+    phases = []
+    if record.rem_minutes is not None:
+        phases.append({"label": "REM", "value": minutes_to_display(record.rem_minutes)})
+    if record.deep_sleep_minutes is not None:
+        phases.append({"label": "Głęboki", "value": minutes_to_display(record.deep_sleep_minutes)})
+    return phases
 
 
 def minutes_to_display(value):

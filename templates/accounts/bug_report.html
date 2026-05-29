@@ -105,12 +105,12 @@
     :root[data-theme="dark"] .bug-report-empty {
         border-color: rgba(124, 164, 200, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(98, 194, 180, 0.1), transparent 28%),
-            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+            radial-gradient(circle at top right, rgba(183, 168, 243, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .bug-report-status {
-        background: rgba(98, 194, 180, 0.14);
+        background: rgba(183, 168, 243, 0.14);
         color: #dcecff;
     }
 
@@ -127,7 +127,7 @@
 
 <div class="bug-report-layout">
     <section class="bug-report-card">
-        <div class="eyebrow">Pomoc</div>
+        <div class="section-label">Pomoc</div>
         <h1>Zgłoś błąd</h1>
         <form method="post">
             {% csrf_token %}
