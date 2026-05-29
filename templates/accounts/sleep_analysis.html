@@ -33,7 +33,7 @@
     }
 
     .analysis-range .button.active {
-        background: linear-gradient(135deg, #0f766e 0%, #118f82 100%);
+        background: linear-gradient(135deg, #39236e 0%, #7a5ad8 100%);
         color: #fff;
     }
 
@@ -85,7 +85,7 @@
         gap: 16px;
         padding: 26px;
         background:
-            radial-gradient(circle at top right, rgba(15, 118, 110, 0.1), transparent 28%),
+            radial-gradient(circle at top right, rgba(57, 35, 110, 0.1), transparent 28%),
             linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 252, 250, 0.97));
     }
 
@@ -123,11 +123,11 @@
     }
 
     .dot-sleep {
-        background: #0f766e;
+        background: #39236e;
     }
 
     .dot-heart {
-        background: #62c2b4;
+        background: #b7a8f3;
     }
 
     .dot-awakenings {
@@ -136,11 +136,11 @@
 
     .dot-phase,
     .phase-light {
-        background: #77cfc0;
+        background: #c4b5fd;
     }
 
     .phase-deep {
-        background: #0f766e;
+        background: #39236e;
     }
 
     .phase-rem {
@@ -356,10 +356,10 @@
     :root[data-theme="dark"] .phase-bar,
     :root[data-theme="dark"] .analysis-canvas-wrap,
     :root[data-theme="dark"] .analysis-empty {
-        border-color: rgba(157, 225, 216, 0.16);
+        border-color: rgba(183, 168, 243, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(98, 194, 180, 0.1), transparent 28%),
-            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+            radial-gradient(circle at top right, rgba(183, 168, 243, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .analysis-chip,
@@ -368,11 +368,11 @@
     :root[data-theme="dark"] .phase-bar,
     :root[data-theme="dark"] .analysis-canvas-wrap,
     :root[data-theme="dark"] .analysis-empty {
-        background: rgba(10, 29, 31, 0.58);
+        background: rgba(29, 24, 50, 0.58);
     }
 
     :root[data-theme="dark"] .analysis-range .button.active {
-        background: linear-gradient(135deg, #2eb5a5 0%, #62c2b4 100%);
+        background: linear-gradient(135deg, #7a5ad8 0%, #b7a8f3 100%);
         color: #092426;
     }
 </style>
@@ -380,7 +380,7 @@
 <div class="analysis-page">
     <section class="hero-card analysis-header">
         <div>
-            <div class="eyebrow">Analiza snu</div>
+            <div class="section-label">Analiza snu</div>
             <h1>Wykresy i trendy</h1>
         </div>
 
@@ -710,8 +710,8 @@
 
     createLineChart("sleepChart", sleepChartData, {
         label: "Czas snu",
-        color: "#0f766e",
-        fill: "rgba(15, 118, 110, 0.14)",
+        color: "#39236e",
+        fill: "rgba(57, 35, 110, 0.14)",
         tickFormatter: function(value) {
             return minutesToHourLabel(value);
         }
@@ -719,8 +719,8 @@
 
     createLineChart("hrChart", hrChartData, {
         label: "Średnie tętno",
-        color: "#62c2b4",
-        fill: "rgba(98, 194, 180, 0.14)",
+        color: "#7a5ad8",
+        fill: "rgba(122, 90, 216, 0.14)",
         tickFormatter: function(value) {
             return value;
         }

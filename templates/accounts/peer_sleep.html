@@ -26,7 +26,7 @@
         inset: 0 auto auto 0;
         width: 100%;
         height: 8px;
-        background: linear-gradient(90deg, #0f766e, #77cfc0, #d97757);
+        background: linear-gradient(90deg, #39236e, #c4b5fd, #d97757);
     }
 
     .peer-eyebrow {
@@ -111,7 +111,7 @@
         inset: 0 auto auto 0;
         width: 100%;
         height: 6px;
-        background: linear-gradient(90deg, rgba(15, 118, 110, 0.42), rgba(119, 207, 192, 0.8));
+        background: linear-gradient(90deg, rgba(57, 35, 110, 0.42), rgba(196, 181, 253, 0.8));
     }
 
     .peer-card h4 {
@@ -263,11 +263,11 @@
         object-fit: cover;
     }
 
-    .avatar-moon { background: linear-gradient(135deg, #0f766e 0%, #118f82 100%); }
+    .avatar-moon { background: linear-gradient(135deg, #39236e 0%, #7a5ad8 100%); }
     .avatar-star { background: linear-gradient(135deg, #ffb46b 0%, #ffdd7d 100%); }
     .avatar-cloud { background: linear-gradient(135deg, #8dc8ff 0%, #bfdfff 100%); }
     .avatar-sun { background: linear-gradient(135deg, #ff8f70 0%, #ffc06a 100%); }
-    .avatar-leaf { background: linear-gradient(135deg, #57b890 0%, #8ed4ac 100%); }
+    .avatar-leaf { background: linear-gradient(135deg, #7c3aed 0%, #c4b5fd 100%); }
     .avatar-heart { background: linear-gradient(135deg, #ef6ba8 0%, #f6a4c8 100%); }
 
     :root[data-theme="dark"] .peer-hero-card,
@@ -276,14 +276,14 @@
     :root[data-theme="dark"] .peer-card,
     :root[data-theme="dark"] .peer-empty,
     :root[data-theme="dark"] .peer-member-card {
-        border-color: rgba(157, 225, 216, 0.16);
+        border-color: rgba(183, 168, 243, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(98, 194, 180, 0.1), transparent 30%),
-            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+            radial-gradient(circle at top right, rgba(183, 168, 243, 0.1), transparent 30%),
+            linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .peer-row {
-        border-bottom-color: rgba(157, 225, 216, 0.14);
+        border-bottom-color: rgba(183, 168, 243, 0.14);
     }
 
     :root[data-theme="dark"] .peer-member-avatar {
@@ -299,7 +299,7 @@
 
 <div class="peer-page">
     <section class="hero-card peer-hero-card">
-        <div class="eyebrow peer-eyebrow">Sen społeczności</div>
+        <div class="section-label peer-eyebrow">Sen społeczności</div>
         <div class="peer-hero-grid">
             <div class="peer-intro">
                 <div>
@@ -409,7 +409,7 @@
                                 <summary class="peer-member-toggle">
                                     <div class="peer-member-head">
                                         {% if member.avatar_image_url %}
-                                            <img class="peer-member-avatar peer-member-avatar-photo" src="{{ member.avatar_image_url }}" alt="Awatar uzytkownika">
+                                            <img class="peer-member-avatar peer-member-avatar-photo" src="{{ member.avatar_image_url }}" alt="Awatar użytkownika">
                                         {% else %}
                                             <div class="peer-member-avatar avatar-{{ member.avatar }}">{{ member.avatar_symbol }}</div>
                                         {% endif %}

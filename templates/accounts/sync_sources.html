@@ -162,7 +162,7 @@
     }
 
     .source-option input[type="radio"]:checked + label .source-option-check::after {
-        background: linear-gradient(135deg, #0f766e, #118f82);
+        background: linear-gradient(135deg, #39236e, #7a5ad8);
     }
 
     .source-option input[type="radio"]:focus-visible + label {
@@ -175,12 +175,12 @@
     :root[data-theme="dark"] .source-option {
         border-color: rgba(124, 164, 200, 0.16);
         background:
-            radial-gradient(circle at top right, rgba(98, 194, 180, 0.1), transparent 28%),
-            linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+            radial-gradient(circle at top right, rgba(183, 168, 243, 0.1), transparent 28%),
+            linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .source-option-badge {
-        background: rgba(98, 194, 180, 0.14);
+        background: rgba(183, 168, 243, 0.14);
         color: #dcecff;
     }
 
@@ -190,15 +190,15 @@
     }
 
     :root[data-theme="dark"] .source-option input[type="radio"]:checked + label {
-        box-shadow: inset 0 0 0 2px rgba(98, 194, 180, 0.42);
+        box-shadow: inset 0 0 0 2px rgba(183, 168, 243, 0.42);
         background:
-            radial-gradient(circle at top right, rgba(98, 194, 180, 0.14), transparent 28%),
+            radial-gradient(circle at top right, rgba(183, 168, 243, 0.14), transparent 28%),
             rgba(29, 47, 70, 0.98);
     }
 
     :root[data-theme="dark"] .source-option input[type="radio"]:checked + label .source-option-check {
         border-color: rgba(148, 196, 236, 0.48);
-        background: rgba(10, 29, 31, 0.96);
+        background: rgba(29, 24, 50, 0.96);
     }
 
     @media (max-width: 820px) {
@@ -212,7 +212,7 @@
         border-radius: 8px;
         border-color: rgba(15, 76, 70, 0.12);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 250, 0.96));
-        box-shadow: 0 12px 26px rgba(13, 73, 68, 0.07);
+        box-shadow: 0 12px 26px rgba(42, 31, 83, 0.07);
     }
 
     .sources-card {
@@ -225,50 +225,50 @@
         position: absolute;
         inset: 0 0 auto 0;
         height: 4px;
-        background: linear-gradient(90deg, #0f766e, #77cfc0, #d97757);
+        background: linear-gradient(90deg, #39236e, #c4b5fd, #d97757);
     }
 
     .source-chip,
     .source-option-badge {
         border-radius: 999px;
-        background: rgba(15, 118, 110, 0.1);
-        color: #0b4f4a;
+        background: rgba(57, 35, 110, 0.1);
+        color: #4c1d95;
     }
 
     .source-option input[type="radio"]:checked + label {
-        box-shadow: inset 0 0 0 2px rgba(15, 118, 110, 0.38);
+        box-shadow: inset 0 0 0 2px rgba(57, 35, 110, 0.38);
         background: linear-gradient(180deg, rgba(241, 250, 246, 0.98), rgba(255, 255, 255, 0.94));
     }
 
     .source-option input[type="radio"]:checked + label .source-option-check::after {
-        background: #0f766e;
+        background: #39236e;
     }
 
     :root[data-theme="dark"] .sources-card,
     :root[data-theme="dark"] .source-detail-card,
     :root[data-theme="dark"] .source-option {
-        border-color: rgba(157, 225, 216, 0.16);
-        background: linear-gradient(180deg, rgba(23, 49, 52, 0.98), rgba(18, 39, 42, 0.96));
+        border-color: rgba(183, 168, 243, 0.16);
+        background: linear-gradient(180deg, rgba(29, 24, 50, 0.98), rgba(22, 19, 39, 0.96));
     }
 
     :root[data-theme="dark"] .source-chip,
     :root[data-theme="dark"] .source-option-badge {
-        background: rgba(98, 194, 180, 0.14);
-        color: #bff1e9;
+        background: rgba(183, 168, 243, 0.14);
+        color: #ddd4ff;
     }
 
     :root[data-theme="dark"] .source-option input[type="radio"]:checked + label {
-        box-shadow: inset 0 0 0 2px rgba(98, 194, 180, 0.38);
-        background: linear-gradient(180deg, rgba(28, 61, 64, 0.98), rgba(20, 46, 49, 0.96));
+        box-shadow: inset 0 0 0 2px rgba(183, 168, 243, 0.38);
+        background: linear-gradient(180deg, rgba(35, 46, 68, 0.98), rgba(27, 36, 53, 0.96));
     }
 
     :root[data-theme="dark"] .source-option input[type="radio"]:checked + label .source-option-check {
         border-color: rgba(139, 222, 210, 0.52);
-        background: rgba(10, 29, 31, 0.9);
+        background: rgba(29, 24, 50, 0.9);
     }
 
     :root[data-theme="dark"] .source-option input[type="radio"]:checked + label .source-option-check::after {
-        background: #62c2b4;
+        background: #b7a8f3;
     }
 
     .source-chip,
@@ -284,7 +284,7 @@
 
 <div class="sources-layout">
     <section class="sources-card">
-        <div class="eyebrow">Synchronizacja</div>
+        <div class="section-label">Synchronizacja</div>
         <h1>Wybierz domyślny sposób dodawania snu</h1>
         <div class="sync-explainer">
             <p>W tej wersji aplikacji jako domyślne źródło danych możesz wybrać import pliku CSV. Synchronizacja z telefonu jest pokazana jako funkcja w fazie rozwoju.</p>
