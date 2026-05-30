@@ -4033,6 +4033,7 @@
     </audio>
     {% if user.is_authenticated %}
         <nav class="app-sidebar" aria-label="Nawigacja aplikacji">
+            <button class="mobile-nav-arrow mobile-nav-arrow-left" type="button" aria-label="Poprzednie opcje">‹</button>
             <div class="app-sidebar-links">
                 <a class="app-sidebar-link is-home{% if request.resolver_match.url_name == 'dashboard' %} is-active{% endif %}" href="{% url 'dashboard' %}" title="Panel główny" aria-label="Panel główny"><svg class="app-sidebar-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-5h5v5"></path></svg><em>Panel główny</em></a>
                 <a class="app-sidebar-link{% if request.resolver_match.url_name == 'sleep_add' %} is-active{% endif %}" href="{% url 'sleep_add' %}" title="Dodaj noc" aria-label="Dodaj noc"><svg class="app-sidebar-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg><em>Dodaj noc</em></a>
@@ -4045,6 +4046,7 @@
                 <a class="app-sidebar-link{% if request.resolver_match.url_name == 'friends' %} is-active{% endif %}" href="{% url 'friends' %}" title="Znajomi" aria-label="Znajomi"><svg class="app-sidebar-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><em>Znajomi</em></a>
                 <a class="app-sidebar-link{% if request.resolver_match.url_name == 'peer_sleep' %} is-active{% endif %}" href="{% url 'peer_sleep' %}" title="Sen społeczności" aria-label="Sen społeczności"><svg class="app-sidebar-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3.6 9h16.8"></path><path d="M3.6 15h16.8"></path><path d="M12 3a14 14 0 0 1 0 18"></path><path d="M12 3a14 14 0 0 0 0 18"></path></svg><em>Sen społeczności</em></a>
             </div>
+            <button class="mobile-nav-arrow mobile-nav-arrow-right" type="button" aria-label="Następne opcje">›</button>
         </nav>
     {% endif %}
     <div class="page">
@@ -5691,6 +5693,109 @@
         }
     }
 </style>
+
+
+<style id="sleepwatch-mobile-nav-arrows">
+    .mobile-nav-arrow {
+        display: none;
+    }
+
+    @media (max-width: 760px) {
+        body.is-authenticated .app-sidebar::before {
+            content: none !important;
+            display: none !important;
+        }
+
+        body.is-authenticated .app-sidebar::after {
+            display: none !important;
+        }
+
+        body.is-authenticated .app-sidebar-links {
+            padding: 0 42px !important;
+            scroll-behavior: smooth !important;
+        }
+
+        body.is-authenticated .mobile-nav-arrow {
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 8 !important;
+            display: grid !important;
+            place-items: center !important;
+            width: 34px !important;
+            height: 54px !important;
+            min-height: 54px !important;
+            padding: 0 !important;
+            border-radius: 16px !important;
+            border: 1px solid rgba(57, 35, 110, 0.12) !important;
+            background: rgba(255, 255, 255, 0.94) !important;
+            color: #39236e !important;
+            box-shadow: 0 10px 22px rgba(42, 31, 83, 0.14) !important;
+            font-size: 1.9rem !important;
+            font-weight: 900 !important;
+            line-height: 1 !important;
+            cursor: pointer !important;
+            backdrop-filter: blur(12px) !important;
+        }
+
+        :root[data-theme="dark"] body.is-authenticated .mobile-nav-arrow {
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            background: rgba(27, 34, 51, 0.94) !important;
+            color: #c4b5fd !important;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34) !important;
+        }
+
+        body.is-authenticated .mobile-nav-arrow-left {
+            left: 10px !important;
+        }
+
+        body.is-authenticated .mobile-nav-arrow-right {
+            right: 10px !important;
+        }
+
+        body.is-authenticated .mobile-nav-arrow.is-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        body.is-authenticated .mobile-nav-arrow:active {
+            transform: translateY(-50%) scale(0.96) !important;
+        }
+    }
+</style>
+
+
+<script id="sleepwatch-mobile-nav-arrows-script">
+    (function () {
+        const sidebar = document.querySelector('.app-sidebar');
+        const track = document.querySelector('.app-sidebar-links');
+        const left = document.querySelector('.mobile-nav-arrow-left');
+        const right = document.querySelector('.mobile-nav-arrow-right');
+
+        if (!sidebar || !track || !left || !right) {
+            return;
+        }
+
+        const updateArrows = () => {
+            const maxScroll = Math.max(track.scrollWidth - track.clientWidth, 0);
+            left.classList.toggle('is-hidden', track.scrollLeft <= 8);
+            right.classList.toggle('is-hidden', track.scrollLeft >= maxScroll - 8);
+        };
+
+        const scrollByPage = (direction) => {
+            const amount = Math.max(track.clientWidth * 0.72, 180);
+            track.scrollBy({ left: direction * amount, behavior: 'smooth' });
+            window.setTimeout(updateArrows, 320);
+        };
+
+        left.addEventListener('click', () => scrollByPage(-1));
+        right.addEventListener('click', () => scrollByPage(1));
+        track.addEventListener('scroll', updateArrows, { passive: true });
+        window.addEventListener('resize', updateArrows);
+        window.addEventListener('load', updateArrows, { once: true });
+        updateArrows();
+    }());
+</script>
 
 </body>
 </html>
