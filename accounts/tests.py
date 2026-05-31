@@ -805,7 +805,7 @@ class AccountsFlowTests(TestCase):
         self.assertTrue(user.profile.avatar_image_data)
         self.assertEqual(user.profile.avatar_image_mime, "image/gif")
         self.assertContains(response, "data:image/gif;base64,")
-        self.assertContains(response, "Wlasne zdjecie")
+        self.assertContains(response, "Własne zdjęcie")
 
     def test_uploaded_media_file_url_is_served(self):
         media_root = tempfile.mkdtemp()
@@ -833,11 +833,49 @@ class AccountsFlowTests(TestCase):
 
         response = self.client.get(f"{reverse('profile')}?edit=1")
 
-        self.assertContains(response, "Aktualne zdjecie")
+        self.assertContains(response, "Aktualne zdjęcie")
         self.assertContains(response, "data:image/jpeg;base64,dGVzdC1pbWFnZQ==")
         self.assertContains(response, 'class="avatar-photo"', html=False)
         self.assertNotContains(response, "Teraz:")
         self.assertNotContains(response, "Wyczyść")
+
+    def test_profile_update_keeps_existing_uploaded_avatar_without_new_file(self):
+        media_root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, media_root, ignore_errors=True)
+        user = User.objects.create_user(
+            username="avatarkeep",
+            email="avatarkeep@example.com",
+            password="BardzoMocneHaslo123!",
+            is_active=True,
+        )
+        avatar_path = Path(media_root) / "avatars" / "user_1"
+        avatar_path.mkdir(parents=True)
+        (avatar_path / "avatar.jpg").write_bytes(b"test-image")
+        user.profile.avatar_image = "avatars/user_1/avatar.jpg"
+        user.profile.avatar_image_data = "dGVzdC1pbWFnZQ=="
+        user.profile.avatar_image_mime = "image/jpeg"
+        user.profile.save(update_fields=["avatar_image", "avatar_image_data", "avatar_image_mime"])
+        self.client.login(username="avatarkeep", password="BardzoMocneHaslo123!")
+
+        with override_settings(MEDIA_ROOT=media_root):
+            response = self.client.post(
+                f"{reverse('profile')}?edit=1",
+                {
+                    "username": "avatarkeep",
+                    "display_name": "Avatar Keep",
+                    "avatar": "moon",
+                    "age_group": "26-35",
+                    "lifestyle": "moderate",
+                    "sleep_goal_hours": 8,
+                },
+                follow=True,
+            )
+
+        user.refresh_from_db()
+        self.assertRedirects(response, reverse("profile"))
+        self.assertEqual(user.profile.avatar_image.name, "avatars/user_1/avatar.jpg")
+        self.assertEqual(user.profile.avatar_image_data, "dGVzdC1pbWFnZQ==")
+        self.assertEqual(user.profile.avatar_image_mime, "image/jpeg")
 
     def test_profile_page_shows_login_and_email_as_read_only_summary(self):
         user = User.objects.create_user(

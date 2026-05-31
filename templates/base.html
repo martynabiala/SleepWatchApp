@@ -2459,15 +2459,21 @@
             font-weight: 700;
         }
 
-        /* Auth color cleanup: remove the last old blue accents from login/register. */
+        /* Auth color cleanup: keep login/register in the purple visual system. */
         .auth-app-brand-copy strong {
             color: var(--text);
         }
 
         .auth-showcase {
             background:
-                linear-gradient(160deg, rgba(15, 76, 70, 0.96), rgba(19, 128, 115, 0.9)),
-                linear-gradient(180deg, #f7fbf8, #e5f2ee);
+                linear-gradient(160deg, rgba(57, 35, 110, 0.98), rgba(109, 74, 255, 0.88)),
+                linear-gradient(180deg, #f8f7ff, #ece8fb);
+        }
+
+        .auth-showcase p,
+        .auth-showcase-copy p {
+            color: rgba(255, 255, 255, 0.94) !important;
+            text-shadow: 0 2px 12px rgba(25, 16, 54, 0.26);
         }
 
         .auth-showcase::before,
@@ -2493,8 +2499,8 @@
 
         :root[data-theme="dark"] .auth-showcase {
             background:
-                linear-gradient(160deg, rgba(13, 57, 58, 0.96), rgba(24, 98, 91, 0.9)),
-                linear-gradient(180deg, #10282a, #143134);
+                linear-gradient(160deg, rgba(25, 18, 48, 0.98), rgba(76, 45, 128, 0.92)),
+                linear-gradient(180deg, #120d22, #201837);
         }
 
         :root[data-theme="dark"] .auth-card {
@@ -5762,6 +5768,21 @@
         body.is-authenticated .mobile-nav-arrow:active {
             transform: translateY(-50%) scale(0.96) !important;
         }
+    }
+</style>
+
+
+<style id="sleepwatch-auth-showcase-contrast-final">
+    .auth-showcase .auth-showcase-copy p,
+    .auth-showcase p {
+        color: #ffffff !important;
+        opacity: 1 !important;
+        text-shadow: 0 2px 14px rgba(25, 16, 54, 0.38) !important;
+    }
+
+    :root[data-theme="dark"] .auth-showcase .auth-showcase-copy p,
+    :root[data-theme="dark"] .auth-showcase p {
+        color: #ffffff !important;
     }
 </style>
 

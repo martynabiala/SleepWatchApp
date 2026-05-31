@@ -154,7 +154,7 @@ class UserProfile(models.Model):
     @property
     def avatar_label(self):
         if self.avatar_image_src:
-            return "Wlasne zdjecie"
+            return "Własne zdjęcie"
         return self.get_avatar_display()
 
     @property

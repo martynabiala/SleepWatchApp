@@ -24,6 +24,7 @@ class SleepImportMappingForm(forms.Form):
         ("deep_sleep_minutes", "Kolumna z czasem snu głębokiego"),
         ("rem_minutes", "Kolumna z czasem REM"),
         ("avg_heart_rate", "Kolumna ze średnim tętnem"),
+        ("awakenings_count", "Kolumna z liczbą wybudzeń"),
         ("min_spo2", "Kolumna z minimalnym SpO2"),
     )
 

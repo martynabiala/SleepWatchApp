@@ -181,7 +181,7 @@ class ProfileForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super().save(commit=False)
         avatar_image = self.cleaned_data.get("avatar_image")
-        if avatar_image:
+        if avatar_image and hasattr(avatar_image, "content_type"):
             profile.avatar_image_data = base64.b64encode(avatar_image.read()).decode("ascii")
             profile.avatar_image_mime = avatar_image.content_type or "image/jpeg"
             avatar_image.seek(0)

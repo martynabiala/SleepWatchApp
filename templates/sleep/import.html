@@ -76,7 +76,14 @@
                 </div>
             {% endfor %}
         </div>
-        <p style="margin-top: 16px;">Opcjonalnie: <code>avg_heart_rate</code>, <code>min_spo2</code>.</p>
+        <p style="margin-top: 16px;">Opcjonalnie:</p>
+        <div class="meta-list">
+            {% for column in optional_columns %}
+                <div class="meta-row">
+                    <span class="meta-key">{{ column }}</span>
+                </div>
+            {% endfor %}
+        </div>
     </aside>
 </div>
 

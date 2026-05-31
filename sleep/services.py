@@ -19,6 +19,7 @@ REQUIRED_COLUMNS = {
 }
 
 OPTIONAL_COLUMNS = {
+    "awakenings_count",
     "avg_heart_rate",
     "min_spo2",
 }
@@ -77,6 +78,17 @@ GENERIC_COLUMN_ALIASES = {
         "avg_hr",
         "sleep_avg_hr",
     },
+    "awakenings_count": {
+        "awakenings_count",
+        "awakenings",
+        "wakeups",
+        "wakeup_count",
+        "wakeups_count",
+        "night_wakeups",
+        "number_of_awakenings",
+        "liczba_wybudzen",
+        "wybudzenia",
+    },
     "min_spo2": {
         "min_spo2",
         "spo2_min",
@@ -94,6 +106,7 @@ MI_FITNESS_COLUMN_ALIASES = {
     "deep_sleep_minutes": {"deep sleep minutes"},
     "rem_minutes": {"rem minutes"},
     "avg_heart_rate": {"average heart rate"},
+    "awakenings_count": {"awakenings", "wakeups", "wakeup count"},
     "min_spo2": {"lowest spo2"},
 }
 
@@ -105,6 +118,7 @@ ZEPP_LIFE_COLUMN_ALIASES = {
     "deep_sleep_minutes": {"deep sleep"},
     "rem_minutes": {"rem sleep"},
     "avg_heart_rate": {"heart rate avg", "sleep avg hr"},
+    "awakenings_count": {"awakenings", "wakeups", "wakeup count"},
     "min_spo2": {"spo2 min", "lowest spo2"},
 }
 
@@ -240,6 +254,7 @@ def normalize_row(row, raw_row):
     deep_sleep_minutes = parse_required_int(row["deep_sleep_minutes"])
     rem_minutes = parse_required_int(row["rem_minutes"])
     avg_heart_rate = parse_optional_int(row.get("avg_heart_rate"))
+    awakenings_count = parse_optional_int(row.get("awakenings_count"))
     min_spo2 = parse_optional_int(row.get("min_spo2"))
 
     if sleep_duration_minutes <= 0:
@@ -259,6 +274,7 @@ def normalize_row(row, raw_row):
         "deep_sleep_minutes": deep_sleep_minutes,
         "rem_minutes": rem_minutes,
         "avg_heart_rate": avg_heart_rate,
+        "awakenings_count": awakenings_count,
         "min_spo2": min_spo2,
         "raw_data": raw_row,
     }

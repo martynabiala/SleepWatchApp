@@ -29,8 +29,8 @@ class SleepModuleTests(TestCase):
     def test_csv_import_creates_sleep_record_and_history(self):
         csv_content = (
             "sleep_date,sleep_duration_minutes,awake_minutes,light_sleep_minutes,deep_sleep_minutes,"
-            "rem_minutes,avg_heart_rate,min_spo2\n"
-            "2026-03-20,430,25,210,110,95,58,93\n"
+            "rem_minutes,awakenings_count,avg_heart_rate,min_spo2\n"
+            "2026-03-20,430,25,210,110,95,2,58,93\n"
         )
         uploaded_file = SimpleUploadedFile(
             "sleep.csv",
@@ -49,6 +49,7 @@ class SleepModuleTests(TestCase):
         record = SleepRecord.objects.get()
         self.assertEqual(record.sleep_duration_minutes, 430)
         self.assertEqual(record.deep_sleep_minutes, 110)
+        self.assertEqual(record.awakenings_count, 2)
         self.assertEqual(record.source, SleepRecord.SOURCE_MANUAL_CSV)
         self.assertEqual(ImportHistory.objects.count(), 1)
         history = ImportHistory.objects.get()
@@ -150,8 +151,8 @@ class SleepModuleTests(TestCase):
 
     def test_csv_import_accepts_alias_column_names(self):
         csv_content = (
-            "date,total_sleep_minutes,minutes_awake,light_sleep,deep_sleep,rem,avg_hr,spo2_min\n"
-            "31.03.2026,430,25,210,110,95,58,93\n"
+            "date,total_sleep_minutes,minutes_awake,light_sleep,deep_sleep,rem,wakeups,avg_hr,spo2_min\n"
+            "31.03.2026,430,25,210,110,95,3,58,93\n"
         )
         uploaded_file = SimpleUploadedFile("alias.csv", csv_content.encode("utf-8"))
 
@@ -168,6 +169,7 @@ class SleepModuleTests(TestCase):
         self.assertEqual(record.light_sleep_minutes, 210)
         self.assertEqual(record.deep_sleep_minutes, 110)
         self.assertEqual(record.rem_minutes, 95)
+        self.assertEqual(record.awakenings_count, 3)
         self.assertEqual(record.avg_heart_rate, 58)
         self.assertEqual(record.min_spo2, 93)
         self.assertEqual(record.source, SleepRecord.SOURCE_MANUAL_CSV)
@@ -257,7 +259,7 @@ class SleepModuleTests(TestCase):
             {"file": uploaded_file},
         )
 
-        self.assertContains(response, "Ręczne mapowanie kolumn")
+        self.assertIsNotNone(response.context["mapping_form"])
 
         response = self.client.post(
             reverse("sleep_import"),
@@ -280,6 +282,39 @@ class SleepModuleTests(TestCase):
         self.assertEqual(record.sleep_duration_minutes, 430)
         self.assertEqual(record.source, SleepRecord.SOURCE_MANUAL_CSV)
         self.assertContains(response, "Wykryty format: Ręczne mapowanie CSV")
+
+    def test_import_manual_mapping_accepts_awakenings_column(self):
+        csv_content = (
+            "Night,Total,Wake,Light,Deep,RemPulse,Wakeups\n"
+            "2026-03-27,430,20,220,110,80,4\n"
+        )
+        uploaded_file = SimpleUploadedFile("custom-awakenings.csv", csv_content.encode("utf-8"))
+
+        response = self.client.post(
+            reverse("sleep_import"),
+            {"file": uploaded_file},
+        )
+
+        self.assertIsNotNone(response.context["mapping_form"])
+
+        response = self.client.post(
+            reverse("sleep_import"),
+            {
+                "step": "map_columns",
+                "sleep_date": "Night",
+                "sleep_duration_minutes": "Total",
+                "awake_minutes": "Wake",
+                "light_sleep_minutes": "Light",
+                "deep_sleep_minutes": "Deep",
+                "rem_minutes": "RemPulse",
+                "awakenings_count": "Wakeups",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("sleep_import"))
+        record = SleepRecord.objects.get(sleep_date="2026-03-27")
+        self.assertEqual(record.awakenings_count, 4)
 
     def test_manual_sleep_add_creates_record_and_calculates_duration(self):
         response = self.client.post(

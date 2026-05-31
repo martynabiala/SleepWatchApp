@@ -91,6 +91,11 @@ def build_import_context(request, form, mapping_form=None, mapping_columns=None,
             "deep_sleep_minutes",
             "rem_minutes",
         ],
+        "optional_columns": [
+            "awakenings_count",
+            "avg_heart_rate",
+            "min_spo2",
+        ],
         "supported_formats": [
             "Własny plik CSV",
             "Mi Fitness CSV",

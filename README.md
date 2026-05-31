@@ -168,20 +168,28 @@ Praktyczna uwaga:
 
 ## Format importu CSV
 
-Aktualny etap obsluguje prosty import pliku CSV z kolumnami:
+Aktualny etap obsluguje import pliku CSV z kolumnami:
 
 ```text
-sleep_date,sleep_duration_minutes,avg_heart_rate,min_heart_rate,max_heart_rate,min_spo2,movement_level
-2026-03-20,430,58,49,74,93,low
-2026-03-21,405,61,52,78,92,medium
+sleep_date,sleep_duration_minutes,awake_minutes,light_sleep_minutes,deep_sleep_minutes,rem_minutes,awakenings_count,avg_heart_rate,min_spo2
+2026-03-20,430,25,210,110,95,2,58,93
+2026-03-21,405,30,200,95,90,3,61,92
 ```
 
-Dozwolone wartosci `movement_level`:
+Wymagane kolumny:
 
-- `low`
-- `medium`
-- `high`
-- `unknown`
+- `sleep_date`
+- `sleep_duration_minutes`
+- `awake_minutes`
+- `light_sleep_minutes`
+- `deep_sleep_minutes`
+- `rem_minutes`
+
+Opcjonalne kolumny:
+
+- `awakenings_count`
+- `avg_heart_rate`
+- `min_spo2`
 
 ## Jak utworzyc administratora
 
